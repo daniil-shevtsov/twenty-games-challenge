@@ -18,17 +18,26 @@ public partial class Game : Node2D
 	private GameBounds gameBounds;
 
 	private Dictionary<PlayerKey, Player> players = new Dictionary<PlayerKey, Player>();
+	private Ball ball;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		gameBounds = GetNode<GameBounds>("GameBounds");
-		var gameBoundsCenter = gameBounds.shape.Size.Y / 2;
+		var gameBoundsCenter = new Vector2(
+			gameBounds.shape.Size.X / 2,
+			gameBounds.shape.Size.Y / 2
+		);
+
 		var leftPlayer = GetNode<Player>("LeftPlayer");
-		leftPlayer.GlobalPosition = new Vector2(paddleOffset, gameBoundsCenter);
+		leftPlayer.GlobalPosition = new Vector2(paddleOffset, gameBoundsCenter.Y);
 
 		var rightPlayer = GetNode<Player>("RightPlayer");
-		rightPlayer.GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBoundsCenter);
+		rightPlayer.GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBoundsCenter.Y);
+
+
+		ball = GetNode<Ball>("Ball");
+		ball.GlobalPosition = gameBoundsCenter;
 
 		players = new Dictionary<PlayerKey, Player>() {
 			{ PlayerKey.Left, leftPlayer },

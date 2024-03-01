@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://ofjsd85m5g5i"]
+[gd_scene load_steps=5 format=3 uid="uid://ofjsd85m5g5i"]
 
 [ext_resource type="PackedScene" uid="uid://brho6rbkl0uq3" path="res://player.tscn" id="1_276bt"]
 [ext_resource type="Script" path="res://Game.cs" id="1_ioucr"]
 [ext_resource type="PackedScene" uid="uid://fjexrn0pd2ep" path="res://game_bounds.tscn" id="2_r251j"]
+[ext_resource type="PackedScene" uid="uid://d3pd3q57q8yr0" path="res://ball.tscn" id="4_fb6ws"]
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_ioucr")
@@ -12,3 +13,5 @@ script = ExtResource("1_ioucr")
 [node name="LeftPlayer" parent="." instance=ExtResource("1_276bt")]
 
 [node name="RightPlayer" parent="." instance=ExtResource("1_276bt")]
+
+[node name="Ball" parent="." instance=ExtResource("4_fb6ws")]
