@@ -1,13 +1,48 @@
-[gd_scene load_steps=3 format=3 uid="uid://fjexrn0pd2ep"]
+[gd_scene load_steps=7 format=3 uid="uid://fjexrn0pd2ep"]
 
 [ext_resource type="Script" path="res://GameBounds.cs" id="1_u4l7v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_66er6"]
 size = Vector2(1153, 647)
 
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_4gsp4"]
+b = Vector2(0, 650)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_thhxe"]
+b = Vector2(1150, 0)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_1a1fo"]
+a = Vector2(1150, 0)
+b = Vector2(1150, 650)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_rikkd"]
+a = Vector2(0, 650)
+b = Vector2(1150, 650)
+
 [node name="GameBounds" type="Area2D"]
 script = ExtResource("1_u4l7v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(575.5, 322.5)
 shape = SubResource("RectangleShape2D_66er6")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("SegmentShape2D_4gsp4")
+
+[node name="TopWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TopWall"]
+shape = SubResource("SegmentShape2D_thhxe")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("SegmentShape2D_1a1fo")
+
+[node name="BottomWall" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomWall"]
+shape = SubResource("SegmentShape2D_rikkd")

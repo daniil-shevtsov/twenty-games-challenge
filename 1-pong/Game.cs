@@ -19,6 +19,7 @@ public partial class Game : Node2D
 
 	private Dictionary<PlayerKey, Player> players = new Dictionary<PlayerKey, Player>();
 	private Ball ball;
+	private Vector2 ballVelocity = new Vector2(0.5f, 0.5f) * 300f;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -58,6 +59,14 @@ public partial class Game : Node2D
 			{
 				handlePaddleInput(entry.Value.Item1, entry.Value.Item2, delta);
 			}
+		}
+
+
+		var ballCollision = ball.MoveAndCollide(ballVelocity * (float)delta);
+		if (ballCollision != null)
+		{
+			GD.Print("ball Collision");
+			ballVelocity = ballVelocity.Bounce(ballCollision.GetNormal());
 		}
 	}
 

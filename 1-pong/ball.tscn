@@ -3,8 +3,9 @@
 [ext_resource type="Script" path="res://Ball.cs" id="1_o7v6e"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fenlc"]
+radius = 113.0
 
-[node name="Ball" type="StaticBody2D"]
+[node name="Ball" type="CharacterBody2D"]
 script = ExtResource("1_o7v6e")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class Ball : StaticBody2D
+public partial class Ball : CharacterBody2D
 {
 	public CollisionShape2D collisionShape = null;
 	public CircleShape2D shape = null;
