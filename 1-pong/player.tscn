@@ -1,14 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://brho6rbkl0uq3"]
+[gd_scene load_steps=3 format=3 uid="uid://brho6rbkl0uq3"]
+
+[ext_resource type="Script" path="res://Player.cs" id="1_wir20"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cr8c2"]
 size = Vector2(20, 100)
 
-[node name="LeftPlayer" type="Node2D"]
+[node name="Player" type="StaticBody2D"]
+script = ExtResource("1_wir20")
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_cr8c2")
 
-[node name="Polygon2D" type="Polygon2D" parent="RigidBody2D"]
+[node name="Polygon2D" type="Polygon2D" parent="."]
 polygon = PackedVector2Array(-10, -50, 10, -50, 10, 50, -10, 50)
