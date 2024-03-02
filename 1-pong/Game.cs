@@ -21,24 +21,23 @@ public partial class Game : Node2D
 	private Ball ball;
 	private Vector2 ballVelocity = new Vector2(0.5f, 0.5f) * 300f;
 
+	private int lastBallVelocityXSign = 1;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		gameBounds = GetNode<GameBounds>("GameBounds");
-		var gameBoundsCenter = new Vector2(
-			gameBounds.shape.Size.X / 2,
-			gameBounds.shape.Size.Y / 2
-		);
 
 		var leftPlayer = GetNode<Player>("LeftPlayer");
-		leftPlayer.GlobalPosition = new Vector2(paddleOffset, gameBoundsCenter.Y);
+		leftPlayer.GlobalPosition = new Vector2(paddleOffset, gameBounds.Center().Y);
 
 		var rightPlayer = GetNode<Player>("RightPlayer");
-		rightPlayer.GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBoundsCenter.Y);
+		rightPlayer.GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBounds.Center().Y);
 
 
 		ball = GetNode<Ball>("Ball");
-		ball.GlobalPosition = gameBoundsCenter;
+		ball.GlobalPosition = gameBounds.Center();
+		respawnBall();
 
 		players = new Dictionary<PlayerKey, Player>() {
 			{ PlayerKey.Left, leftPlayer },
@@ -68,6 +67,18 @@ public partial class Game : Node2D
 			GD.Print("ball Collision");
 			ballVelocity = ballVelocity.Bounce(ballCollision.GetNormal());
 		}
+
+		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
+		var ballRight = ball.GlobalPosition.X + ball.shape.Radius;
+		if (ballRight <= 0)
+		{
+			// a little bit unintuitive that it's left part of screen but right player 
+			handlePlayerScored(scoredPlayer: PlayerKey.Right);
+		}
+		else if (ballLeft >= gameBounds.shape.Size.X)
+		{
+			handlePlayerScored(scoredPlayer: PlayerKey.Left);
+		}
 	}
 
 	private void handlePaddleInput(PlayerKey key, PaddleDirection direction, double delta)
@@ -95,6 +106,19 @@ public partial class Game : Node2D
 			player.GlobalPosition = newPosition;
 		}
 	}
+
+	private void handlePlayerScored(PlayerKey scoredPlayer)
+	{
+		respawnBall();
+	}
+
+	private void respawnBall()
+	{
+		lastBallVelocityXSign = -lastBallVelocityXSign;
+		ball.GlobalPosition = gameBounds.Center();
+		ballVelocity = new Vector2(0.5f * lastBallVelocityXSign, 0.5f) * 300f;
+	}
+
 
 	enum PlayerKey
 	{

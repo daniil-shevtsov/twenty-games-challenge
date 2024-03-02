@@ -14,4 +14,12 @@ public partial class GameBounds : Area2D
 	public override void _Process(double delta)
 	{
 	}
+
+	public Vector2 Center()
+	{
+		return new Vector2(
+				shape.Size.X / 2,
+				shape.Size.Y / 2
+			);
+	}
 }
