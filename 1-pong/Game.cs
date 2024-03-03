@@ -18,6 +18,7 @@ public partial class Game : Node2D
 	private GameBounds gameBounds;
 
 	private Dictionary<PlayerKey, Player> players = new Dictionary<PlayerKey, Player>();
+	private Dictionary<PlayerKey, Score> scores = new Dictionary<PlayerKey, Score>();
 	private Ball ball;
 	private Vector2 ballVelocity = new Vector2(0.5f, 0.5f) * 300f;
 
@@ -43,6 +44,22 @@ public partial class Game : Node2D
 			{ PlayerKey.Left, leftPlayer },
 			{ PlayerKey.Right, rightPlayer }
 		};
+
+		scores = new Dictionary<PlayerKey, Score>() {
+			{ PlayerKey.Left, GetNode<Score>("LeftScore") },
+			{ PlayerKey.Right, GetNode<Score>("RightScore") }
+		};
+
+		var scoreOffsetY = gameBounds.shape.Size.Y * 0.05f;
+		var screenQuarterX = gameBounds.shape.Size.X / 4f;
+		scores[PlayerKey.Left].GlobalPosition = new Vector2(
+				screenQuarterX,
+				scoreOffsetY
+		);
+		scores[PlayerKey.Right].GlobalPosition = new Vector2(
+				gameBounds.shape.Size.X - screenQuarterX,
+				scoreOffsetY
+		);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
