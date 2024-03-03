@@ -19,10 +19,17 @@ script = ExtResource("1_ioucr")
 [node name="Ball" parent="." instance=ExtResource("4_fb6ws")]
 
 [node name="LeftScore" parent="." instance=ExtResource("5_gmei8")]
-offset_left = 202.0
-offset_top = -370.0
-offset_right = 275.0
-offset_bottom = -195.0
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -87.5
+offset_right = 36.5
+offset_bottom = 87.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="RightScore" parent="." instance=ExtResource("5_gmei8")]
 offset_left = 404.0
@@ -31,3 +38,5 @@ offset_right = 477.0
 offset_bottom = -565.0
 
 [node name="Divider" parent="." instance=ExtResource("6_p2tfc")]
+collision_layer = 2048
+collision_mask = 2048

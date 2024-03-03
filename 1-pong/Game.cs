@@ -50,24 +50,35 @@ public partial class Game : Node2D
 			{ PlayerKey.Right, GetNode<Score>("RightScore") }
 		};
 
-		var scoreOffsetY = gameBounds.shape.Size.Y * 0.05f;
+		var scoreOffsetY = gameBounds.shape.Size.Y * 0.15f;
 		var screenQuarterX = gameBounds.shape.Size.X / 4f;
-		scores[PlayerKey.Left].GlobalPosition = new Vector2(
+		var leftScoreTopLeft = new Vector2(
 				screenQuarterX,
 				scoreOffsetY
 		);
-		scores[PlayerKey.Right].GlobalPosition = new Vector2(
+		var rightScoreTopLeft = new Vector2(
 				gameBounds.shape.Size.X - screenQuarterX,
 				scoreOffsetY
+		);
+		scores[PlayerKey.Left].GlobalPosition = new Vector2(
+				leftScoreTopLeft.X - scores[PlayerKey.Left].Size.X / 2,
+				leftScoreTopLeft.Y - scores[PlayerKey.Left].Size.Y / 2
+		);
+		scores[PlayerKey.Right].GlobalPosition = new Vector2(
+				rightScoreTopLeft.X - scores[PlayerKey.Right].Size.X / 2,
+				rightScoreTopLeft.Y - scores[PlayerKey.Right].Size.Y / 2
 		);
 		GD.Print($"KEK bounds center = {gameBounds.Center()} scores = {scores[PlayerKey.Left].GlobalPosition} {scores[PlayerKey.Right].GlobalPosition} gameBounds size = {gameBounds.shape.Size}");
 		var divider = GetNode<Divider>("Divider");
 		divider.GlobalPosition = gameBounds.Center();
+		GD.Print($"KEK {gameBounds.shape.Size} {GetViewport().GetVisibleRect().Size} {GetViewportRect().Size}");
+
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+
 	}
 
 	public override void _PhysicsProcess(double delta)
