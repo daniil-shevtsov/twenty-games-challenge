@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1n7raqbmtqb7"]
+
+[ext_resource type="Script" path="res://Divider.cs" id="1_2yyls"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i3sge"]
+size = Vector2(10, 800)
+
+[node name="Divider" type="StaticBody2D"]
+script = ExtResource("1_2yyls")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_i3sge")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-5, -400, 5, -400, 5, 400, -5, 400)

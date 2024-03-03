@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://ofjsd85m5g5i"]
+[gd_scene load_steps=7 format=3 uid="uid://ofjsd85m5g5i"]
 
 [ext_resource type="PackedScene" uid="uid://brho6rbkl0uq3" path="res://player.tscn" id="1_276bt"]
 [ext_resource type="Script" path="res://Game.cs" id="1_ioucr"]
 [ext_resource type="PackedScene" uid="uid://fjexrn0pd2ep" path="res://game_bounds.tscn" id="2_r251j"]
 [ext_resource type="PackedScene" uid="uid://d3pd3q57q8yr0" path="res://ball.tscn" id="4_fb6ws"]
 [ext_resource type="PackedScene" uid="uid://qphwnx7aitwp" path="res://score.tscn" id="5_gmei8"]
+[ext_resource type="PackedScene" uid="uid://c1n7raqbmtqb7" path="res://divider.tscn" id="6_p2tfc"]
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_ioucr")
@@ -28,3 +29,5 @@ offset_left = 404.0
 offset_top = -740.0
 offset_right = 477.0
 offset_bottom = -565.0
+
+[node name="Divider" parent="." instance=ExtResource("6_p2tfc")]

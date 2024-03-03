@@ -60,6 +60,9 @@ public partial class Game : Node2D
 				gameBounds.shape.Size.X - screenQuarterX,
 				scoreOffsetY
 		);
+		GD.Print($"KEK bounds center = {gameBounds.Center()} scores = {scores[PlayerKey.Left].GlobalPosition} {scores[PlayerKey.Right].GlobalPosition} gameBounds size = {gameBounds.shape.Size}");
+		var divider = GetNode<Divider>("Divider");
+		divider.GlobalPosition = gameBounds.Center();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
