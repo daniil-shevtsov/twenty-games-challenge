@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 public partial class Game : Node2D
 {
-	private float playerSpeed = 300f;
+	private float playerSpeed = 650f;
+	private float ballSpeed = 600;
 	private float paddleOffset = 40f;
+	private Vector2 ballDefaultDirection = new Vector2(0.5f, 0.5f);
 
 	private Dictionary<string, Tuple<PlayerKey, PaddleDirection>> paddleInputs = new Dictionary<string, Tuple<PlayerKey, PaddleDirection>>
 	{
@@ -22,7 +24,7 @@ public partial class Game : Node2D
 	private Dictionary<PlayerKey, int> scores = new Dictionary<PlayerKey, int>();
 
 	private Ball ball;
-	private Vector2 ballVelocity = new Vector2(0.5f, 0.5f) * 300f;
+	private Vector2 ballVelocity;
 
 	private int lastBallVelocityXSign = 1;
 
@@ -55,11 +57,11 @@ public partial class Game : Node2D
 		var scoreOffsetY = gameBounds.shape.Size.Y * 0.15f;
 		var screenQuarterX = gameBounds.shape.Size.X / 4f;
 		var leftScoreTopLeft = new Vector2(
-				screenQuarterX,
+				gameBounds.Center().X - screenQuarterX,
 				scoreOffsetY
 		);
 		var rightScoreTopLeft = new Vector2(
-				gameBounds.shape.Size.X - screenQuarterX,
+				gameBounds.Center().X + screenQuarterX,
 				scoreOffsetY
 		);
 		scoreViews[PlayerKey.Left].GlobalPosition = new Vector2(
@@ -153,7 +155,10 @@ public partial class Game : Node2D
 	{
 		lastBallVelocityXSign = -lastBallVelocityXSign;
 		ball.GlobalPosition = gameBounds.Center();
-		ballVelocity = new Vector2(0.5f * lastBallVelocityXSign, 0.5f) * 300f;
+		ballVelocity = new Vector2(
+			ballDefaultDirection.X * lastBallVelocityXSign,
+			ballDefaultDirection.Y
+		) * ballSpeed;
 	}
 
 
