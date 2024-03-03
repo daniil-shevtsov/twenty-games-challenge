@@ -18,7 +18,9 @@ public partial class Game : Node2D
 	private GameBounds gameBounds;
 
 	private Dictionary<PlayerKey, Player> players = new Dictionary<PlayerKey, Player>();
-	private Dictionary<PlayerKey, Score> scores = new Dictionary<PlayerKey, Score>();
+	private Dictionary<PlayerKey, Score> scoreViews = new Dictionary<PlayerKey, Score>();
+	private Dictionary<PlayerKey, int> scores = new Dictionary<PlayerKey, int>();
+
 	private Ball ball;
 	private Vector2 ballVelocity = new Vector2(0.5f, 0.5f) * 300f;
 
@@ -45,7 +47,7 @@ public partial class Game : Node2D
 			{ PlayerKey.Right, rightPlayer }
 		};
 
-		scores = new Dictionary<PlayerKey, Score>() {
+		scoreViews = new Dictionary<PlayerKey, Score>() {
 			{ PlayerKey.Left, GetNode<Score>("LeftScore") },
 			{ PlayerKey.Right, GetNode<Score>("RightScore") }
 		};
@@ -60,15 +62,17 @@ public partial class Game : Node2D
 				gameBounds.shape.Size.X - screenQuarterX,
 				scoreOffsetY
 		);
-		scores[PlayerKey.Left].GlobalPosition = new Vector2(
-				leftScoreTopLeft.X - scores[PlayerKey.Left].Size.X / 2,
-				leftScoreTopLeft.Y - scores[PlayerKey.Left].Size.Y / 2
+		scoreViews[PlayerKey.Left].GlobalPosition = new Vector2(
+				leftScoreTopLeft.X - scoreViews[PlayerKey.Left].Size.X / 2,
+				leftScoreTopLeft.Y - scoreViews[PlayerKey.Left].Size.Y / 2
 		);
-		scores[PlayerKey.Right].GlobalPosition = new Vector2(
-				rightScoreTopLeft.X - scores[PlayerKey.Right].Size.X / 2,
-				rightScoreTopLeft.Y - scores[PlayerKey.Right].Size.Y / 2
+		scoreViews[PlayerKey.Right].GlobalPosition = new Vector2(
+				rightScoreTopLeft.X - scoreViews[PlayerKey.Right].Size.X / 2,
+				rightScoreTopLeft.Y - scoreViews[PlayerKey.Right].Size.Y / 2
 		);
-		GD.Print($"KEK bounds center = {gameBounds.Center()} scores = {scores[PlayerKey.Left].GlobalPosition} {scores[PlayerKey.Right].GlobalPosition} gameBounds size = {gameBounds.shape.Size}");
+		scores[PlayerKey.Left] = 0;
+		scores[PlayerKey.Right] = 0;
+		GD.Print($"KEK bounds center = {gameBounds.Center()} scores = {scoreViews[PlayerKey.Left].GlobalPosition} {scoreViews[PlayerKey.Right].GlobalPosition} gameBounds size = {gameBounds.shape.Size}");
 		var divider = GetNode<Divider>("Divider");
 		divider.GlobalPosition = gameBounds.Center();
 		GD.Print($"KEK {gameBounds.shape.Size} {GetViewport().GetVisibleRect().Size} {GetViewportRect().Size}");
@@ -141,6 +145,8 @@ public partial class Game : Node2D
 	private void handlePlayerScored(PlayerKey scoredPlayer)
 	{
 		respawnBall();
+		scores[scoredPlayer]++;
+		scoreViews[scoredPlayer].Text = scores[scoredPlayer].ToString();
 	}
 
 	private void respawnBall()
