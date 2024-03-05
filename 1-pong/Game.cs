@@ -97,13 +97,21 @@ public partial class Game : Node2D
 			}
 		}
 
+		updateBall((float)delta);
+	}
 
-		var ballCollision = ball.MoveAndCollide(ballVelocity * (float)delta);
+	private void updateBall(float delta)
+	{
+		var ballCollision = ball.MoveAndCollide(ballVelocity * delta);
 		if (ballCollision != null)
 		{
-			GD.Print("ball Collision");
-			//ballVelocity = ballVelocity.Bounce(ballCollision.GetNormal());
-			changeBallDirection(ballVelocity.Bounce(ballCollision.GetNormal()).Normalized());
+			var oldDirection = ballVelocity.Normalized();
+			var normal = ballCollision.GetNormal();
+			var bounced = ballVelocity.Bounce(normal);
+			var normalized = bounced.Normalized();
+			changeBallDirection(normalized);
+			var newDirection = ballVelocity.Normalized();
+			GD.Print($"Collision: {oldDirection} {normal} {bounced} {normalized} {newDirection}");
 		}
 
 		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
