@@ -1,12 +1,12 @@
 using Godot;
 using System;
 
-public partial class Player : Node2D
+public partial class Player : CharacterBody2D
 {
 	// public RigidBody2D body;
 	// public CollisionShape2D shape;
 
-	
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{

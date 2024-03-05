@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public partial class Game : Node2D
 {
-	private float playerSpeed = 650f;
-	private float ballSpeed = 600;
+	private float playerSpeed = 600f;
+	private float ballSpeed = 650;
 	private float paddleOffset = 40f;
 	private Vector2 ballDefaultDirection = new Vector2(0.5f, 0.5f);
 
@@ -102,7 +102,8 @@ public partial class Game : Node2D
 		if (ballCollision != null)
 		{
 			GD.Print("ball Collision");
-			ballVelocity = ballVelocity.Bounce(ballCollision.GetNormal());
+			//ballVelocity = ballVelocity.Bounce(ballCollision.GetNormal());
+			changeBallDirection(ballVelocity.Bounce(ballCollision.GetNormal()).Normalized());
 		}
 
 		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
@@ -118,16 +119,16 @@ public partial class Game : Node2D
 		}
 	}
 
-	private void handlePaddleInput(PlayerKey key, PaddleDirection direction, double delta)
+	private void handlePaddleInput(PlayerKey key, PaddleDirection pressedDirection, double delta)
 	{
 		var directionSign = 0;
 
-		if (direction == PaddleDirection.Up)
+		if (pressedDirection == PaddleDirection.Up)
 		{
 			directionSign = -1;
 
 		}
-		else if (direction == PaddleDirection.Down)
+		else if (pressedDirection == PaddleDirection.Down)
 		{
 			directionSign = 1;
 		}
@@ -135,12 +136,9 @@ public partial class Game : Node2D
 		if (directionSign != 0)
 		{
 			var player = players[key];
-			var currentPosition = player.GlobalPosition;
-			var newPosition = new Vector2(
-				currentPosition.X,
-				currentPosition.Y + directionSign * playerSpeed * (float)delta
-			);
-			player.GlobalPosition = newPosition;
+			var direction = new Vector2(0f, directionSign);
+
+			var collision = player.MoveAndCollide(direction * playerSpeed * (float)delta);
 		}
 	}
 
@@ -155,10 +153,12 @@ public partial class Game : Node2D
 	{
 		lastBallVelocityXSign = -lastBallVelocityXSign;
 		ball.GlobalPosition = gameBounds.Center();
-		ballVelocity = new Vector2(
-			ballDefaultDirection.X * lastBallVelocityXSign,
-			ballDefaultDirection.Y
-		) * ballSpeed;
+		changeBallDirection(new Vector2(ballDefaultDirection.X * lastBallVelocityXSign, ballDefaultDirection.Y));
+	}
+
+	private void changeBallDirection(Vector2 newDirection)
+	{
+		ballVelocity = newDirection * ballSpeed;
 	}
 
 
