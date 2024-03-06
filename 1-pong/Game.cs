@@ -9,6 +9,9 @@ public partial class Game : Node2D
 	private float paddleOffset = 40f;
 	private Vector2 ballDefaultDirection = new Vector2(0.5f, 0.5f);
 
+
+	private bool isAiActivated = true;
+
 	private Dictionary<string, Tuple<PlayerKey, PaddleDirection>> paddleInputs = new Dictionary<string, Tuple<PlayerKey, PaddleDirection>>
 	{
 			{ "left_player_up", new Tuple<PlayerKey, PaddleDirection>(PlayerKey.Left, PaddleDirection.Up) },
@@ -91,13 +94,28 @@ public partial class Game : Node2D
 	{
 		foreach (var entry in paddleInputs)
 		{
-			if (Input.IsActionPressed(entry.Key))
+			var (playerKey, pressedDirection) = entry.Value;
+			var shouldHandlePlayerInput = playerKey != PlayerKey.Right! || !isAiActivated;
+			if (Input.IsActionPressed(entry.Key) && shouldHandlePlayerInput)
 			{
-				handlePaddleInput(entry.Value.Item1, entry.Value.Item2, delta);
+				handlePaddleInput(playerKey, pressedDirection, delta);
+			}
+			else if (isAiActivated)
+			{
+				var aiDecidedDirection = decideAiDirection();
+				if (aiDecidedDirection != PaddleDirection.Stop)
+				{
+					handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
+				}
 			}
 		}
 
 		updateBall((float)delta);
+	}
+
+	private PaddleDirection decideAiDirection()
+	{
+		return PaddleDirection.Stop;
 	}
 
 	private void updateBall(float delta)
@@ -179,6 +197,7 @@ public partial class Game : Node2D
 	enum PaddleDirection
 	{
 		Up,
-		Down
+		Down,
+		Stop
 	}
 }
