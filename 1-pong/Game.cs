@@ -115,7 +115,25 @@ public partial class Game : Node2D
 
 	private PaddleDirection decideAiDirection()
 	{
-		return PaddleDirection.Stop;
+		var currentBallPosition = ball.GlobalPosition;
+		var currentPaddle = players[PlayerKey.Right];
+		var currentPaddlePosition = currentPaddle.GlobalPosition;
+		var currentBallVelocity = ballVelocity;
+
+		var paddleTop = currentPaddlePosition.Y - currentPaddle.shape.Size.Y / 2;
+		var paddleBottom = currentPaddlePosition.Y + currentPaddle.shape.Size.Y / 2;
+
+		var decision = PaddleDirection.Stop;
+		if (currentBallPosition.Y < currentPaddlePosition.Y)
+		{
+			decision = PaddleDirection.Up;
+		}
+		else if (currentBallPosition.Y > currentPaddlePosition.Y)
+		{
+			decision = PaddleDirection.Down;
+		}
+
+		return decision;
 	}
 
 	private void updateBall(float delta)
