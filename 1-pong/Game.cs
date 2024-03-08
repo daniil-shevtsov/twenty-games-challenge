@@ -105,6 +105,7 @@ public partial class Game : Node2D
 				var aiDecidedDirection = decideAiDirection();
 				if (aiDecidedDirection != PaddleDirection.Stop)
 				{
+					GD.Print($"decided: {aiDecidedDirection}");
 					handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
 				}
 			}
