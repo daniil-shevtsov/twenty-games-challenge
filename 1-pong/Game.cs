@@ -94,7 +94,16 @@ public partial class Game : Node2D
 		pausables.Add(ball);
 		pausables.Add(players[PlayerKey.Left]);
 		pausables.Add(players[PlayerKey.Right]);
+
+		var quitGameButton = (Button)FindChild("QuitGame");
+		quitGameButton.Pressed += onQuitClicked;
 	}
+
+	private void onQuitClicked()
+	{
+		GetTree().Quit();
+	}
+
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
