@@ -29,12 +29,19 @@ public partial class Game : Node2D
 	private Ball ball;
 	private Vector2 ballVelocity;
 
+	private PauseMenu menu;
+	private bool isPaused = false;
+
 	private int lastBallVelocityXSign = 1;
+
+	private List<Node> pausables = new List<Node>();
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		gameBounds = GetNode<GameBounds>("GameBounds");
+		menu = GetNode<PauseMenu>("PauseMenu");
+		GD.Print($"LUL MENU: {menu}");
 
 		var leftPlayer = GetNode<Player>("LeftPlayer");
 		leftPlayer.GlobalPosition = new Vector2(paddleOffset, gameBounds.Center().Y);
@@ -56,6 +63,8 @@ public partial class Game : Node2D
 			{ PlayerKey.Left, GetNode<Score>("LeftScore") },
 			{ PlayerKey.Right, GetNode<Score>("RightScore") }
 		};
+
+		updatePause(isPaused: false);
 
 		var scoreOffsetY = gameBounds.shape.Size.Y * 0.15f;
 		var screenQuarterX = gameBounds.shape.Size.X / 4f;
@@ -82,6 +91,9 @@ public partial class Game : Node2D
 		divider.GlobalPosition = gameBounds.Center();
 		GD.Print($"KEK {gameBounds.shape.Size} {GetViewport().GetVisibleRect().Size} {GetViewportRect().Size}");
 
+		pausables.Add(ball);
+		pausables.Add(players[PlayerKey.Left]);
+		pausables.Add(players[PlayerKey.Right]);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -92,26 +104,38 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		foreach (var entry in paddleInputs)
+
+		if (Input.IsActionJustPressed("pause"))
 		{
-			var (playerKey, pressedDirection) = entry.Value;
-			var shouldHandlePlayerInput = playerKey != PlayerKey.Right! || !isAiActivated;
-			if (Input.IsActionPressed(entry.Key) && shouldHandlePlayerInput)
+			updatePause(!isPaused);
+		}
+
+		if (players[PlayerKey.Left].IsProcessing() || players[PlayerKey.Right].IsProcessing())
+		{
+			foreach (var entry in paddleInputs)
 			{
-				handlePaddleInput(playerKey, pressedDirection, delta);
-			}
-			else if (isAiActivated)
-			{
-				var aiDecidedDirection = decideAiDirection();
-				if (aiDecidedDirection != PaddleDirection.Stop)
+				var (playerKey, pressedDirection) = entry.Value;
+				var shouldHandlePlayerInput = playerKey != PlayerKey.Right! || !isAiActivated;
+				if (Input.IsActionPressed(entry.Key) && shouldHandlePlayerInput)
 				{
-					GD.Print($"decided: {aiDecidedDirection}");
-					handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
+					handlePaddleInput(playerKey, pressedDirection, delta);
+				}
+				else if (isAiActivated)
+				{
+					var aiDecidedDirection = decideAiDirection();
+					if (aiDecidedDirection != PaddleDirection.Stop)
+					{
+						GD.Print($"decided: {aiDecidedDirection}");
+						handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
+					}
 				}
 			}
 		}
 
-		updateBall((float)delta);
+		if (ball.IsProcessing())
+		{
+			updateBall((float)delta);
+		}
 	}
 
 	private PaddleDirection decideAiDirection()
@@ -204,6 +228,23 @@ public partial class Game : Node2D
 	private void changeBallDirection(Vector2 newDirection)
 	{
 		ballVelocity = newDirection * ballSpeed;
+	}
+
+	private void updatePause(bool isPaused)
+	{
+		this.isPaused = isPaused;
+		foreach (Node pausable in pausables)
+		{
+			pausable.SetProcess(!isPaused);
+		}
+		if (isPaused)
+		{
+			menu.Show();
+		}
+		else
+		{
+			menu.Hide();
+		}
 	}
 
 
