@@ -104,18 +104,6 @@ public partial class Game : Node2D
 		respawnBall();
 	}
 
-	private void onStartClicked()
-	{
-		initGame();
-		updatePause(isPaused: false);
-	}
-
-	private void onQuitClicked()
-	{
-		GetTree().Quit();
-	}
-
-
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
@@ -168,15 +156,23 @@ public partial class Game : Node2D
 		var paddleTop = currentPaddlePosition.Y - currentPaddle.shape.Size.Y / 2;
 		var paddleBottom = currentPaddlePosition.Y + currentPaddle.shape.Size.Y / 2;
 
+		var difference = Mathf.Abs(currentPaddlePosition.Y - currentBallPosition.Y);
+		var percentageOfPaddle = (difference / (float)currentPaddle.shape.Size.Y);
+
+		GD.Print($"size = {currentPaddle.shape.Size.Y} difference = {difference} percentage = {percentageOfPaddle}");
 		var decision = PaddleDirection.Stop;
-		if (currentBallPosition.Y < currentPaddlePosition.Y)
+		if (percentageOfPaddle > 0.75)
 		{
-			decision = PaddleDirection.Up;
+			if (currentBallPosition.Y < currentPaddlePosition.Y)
+			{
+				decision = PaddleDirection.Up;
+			}
+			else if (currentBallPosition.Y > currentPaddlePosition.Y)
+			{
+				decision = PaddleDirection.Down;
+			}
 		}
-		else if (currentBallPosition.Y > currentPaddlePosition.Y)
-		{
-			decision = PaddleDirection.Down;
-		}
+
 
 		return decision;
 	}
@@ -271,6 +267,17 @@ public partial class Game : Node2D
 		{
 			menu.Hide();
 		}
+	}
+
+	private void onStartClicked()
+	{
+		initGame();
+		updatePause(isPaused: false);
+	}
+
+	private void onQuitClicked()
+	{
+		GetTree().Quit();
 	}
 
 
