@@ -41,22 +41,14 @@ public partial class Game : Node2D
 	{
 		gameBounds = GetNode<GameBounds>("GameBounds");
 		menu = GetNode<PauseMenu>("PauseMenu");
-		GD.Print($"LUL MENU: {menu}");
-
-		var leftPlayer = GetNode<Player>("LeftPlayer");
-		leftPlayer.GlobalPosition = new Vector2(paddleOffset, gameBounds.Center().Y);
-
-		var rightPlayer = GetNode<Player>("RightPlayer");
-		rightPlayer.GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBounds.Center().Y);
-
 
 		ball = GetNode<Ball>("Ball");
 		ball.GlobalPosition = gameBounds.Center();
 		respawnBall();
 
 		players = new Dictionary<PlayerKey, Player>() {
-			{ PlayerKey.Left, leftPlayer },
-			{ PlayerKey.Right, rightPlayer }
+			{ PlayerKey.Left, GetNode<Player>("LeftPlayer") },
+			{ PlayerKey.Right, GetNode<Player>("RightPlayer") }
 		};
 
 		scoreViews = new Dictionary<PlayerKey, Score>() {
@@ -84,19 +76,38 @@ public partial class Game : Node2D
 				rightScoreTopLeft.X - scoreViews[PlayerKey.Right].Size.X / 2,
 				rightScoreTopLeft.Y - scoreViews[PlayerKey.Right].Size.Y / 2
 		);
-		scores[PlayerKey.Left] = 0;
-		scores[PlayerKey.Right] = 0;
-		GD.Print($"KEK bounds center = {gameBounds.Center()} scores = {scoreViews[PlayerKey.Left].GlobalPosition} {scoreViews[PlayerKey.Right].GlobalPosition} gameBounds size = {gameBounds.shape.Size}");
+
 		var divider = GetNode<Divider>("Divider");
 		divider.GlobalPosition = gameBounds.Center();
-		GD.Print($"KEK {gameBounds.shape.Size} {GetViewport().GetVisibleRect().Size} {GetViewportRect().Size}");
 
 		pausables.Add(ball);
 		pausables.Add(players[PlayerKey.Left]);
 		pausables.Add(players[PlayerKey.Right]);
 
+		var startGameButton = (Button)FindChild("StartGame");
+		startGameButton.Pressed += onStartClicked;
 		var quitGameButton = (Button)FindChild("QuitGame");
 		quitGameButton.Pressed += onQuitClicked;
+
+		initGame();
+	}
+
+	private void initGame()
+	{
+		players[PlayerKey.Left].GlobalPosition = new Vector2(paddleOffset, gameBounds.Center().Y);
+		players[PlayerKey.Right].GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBounds.Center().Y);
+
+		updateScore(PlayerKey.Left, 0);
+		updateScore(PlayerKey.Right, 0);
+
+		lastBallVelocityXSign = 1;
+		respawnBall();
+	}
+
+	private void onStartClicked()
+	{
+		initGame();
+		updatePause(isPaused: false);
 	}
 
 	private void onQuitClicked()
@@ -223,8 +234,14 @@ public partial class Game : Node2D
 	private void handlePlayerScored(PlayerKey scoredPlayer)
 	{
 		respawnBall();
-		scores[scoredPlayer]++;
-		scoreViews[scoredPlayer].Text = scores[scoredPlayer].ToString();
+		var currentScore = scores[scoredPlayer];
+		updateScore(scoredPlayer, ++currentScore);
+	}
+
+	private void updateScore(PlayerKey player, int newScore)
+	{
+		scores[player] = newScore;
+		scoreViews[player].Text = scores[player].ToString();
 	}
 
 	private void respawnBall()
