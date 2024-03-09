@@ -11,6 +11,7 @@ public partial class Game : Node2D
 
 
 	private bool isAiActivated = true;
+	private AiState currentAiState = AiState.Idle;
 
 	private Dictionary<string, Tuple<PlayerKey, PaddleDirection>> paddleInputs = new Dictionary<string, Tuple<PlayerKey, PaddleDirection>>
 	{
@@ -96,6 +97,7 @@ public partial class Game : Node2D
 	{
 		players[PlayerKey.Left].GlobalPosition = new Vector2(paddleOffset, gameBounds.Center().Y);
 		players[PlayerKey.Right].GlobalPosition = new Vector2(gameBounds.shape.Size.X - paddleOffset, gameBounds.Center().Y);
+		currentAiState = AiState.Idle;
 
 		updateScore(PlayerKey.Left, 0);
 		updateScore(PlayerKey.Right, 0);
@@ -156,12 +158,24 @@ public partial class Game : Node2D
 		var paddleTop = currentPaddlePosition.Y - currentPaddle.shape.Size.Y / 2;
 		var paddleBottom = currentPaddlePosition.Y + currentPaddle.shape.Size.Y / 2;
 
-		var difference = Mathf.Abs(currentPaddlePosition.Y - currentBallPosition.Y);
-		var percentageOfPaddle = (difference / (float)currentPaddle.shape.Size.Y);
+		var difference = new Vector2(
+			Mathf.Abs(currentPaddlePosition.X - currentBallPosition.X),
+			Mathf.Abs(currentPaddlePosition.Y - currentBallPosition.Y)
+		);
+		var percentageOfPaddle = difference.Y / currentPaddle.shape.Size.Y;
+
+		if (percentageOfPaddle > 2)
+		{
+			currentAiState = AiState.Seeking;
+		}
+		else if (ballVelocity.X < 0)
+		{
+			currentAiState = AiState.Idle;
+		}
 
 		GD.Print($"size = {currentPaddle.shape.Size.Y} difference = {difference} percentage = {percentageOfPaddle}");
 		var decision = PaddleDirection.Stop;
-		if (percentageOfPaddle > 0.75)
+		if (currentAiState == AiState.Seeking /*&& percentageOfPaddle > 0.75*/)
 		{
 			if (currentBallPosition.Y < currentPaddlePosition.Y)
 			{
@@ -172,6 +186,45 @@ public partial class Game : Node2D
 				decision = PaddleDirection.Down;
 			}
 		}
+		else if (currentAiState == AiState.Idle)
+		{
+			if (players[PlayerKey.Left].GlobalPosition.Y < currentPaddlePosition.Y)
+			{
+				decision = PaddleDirection.Up;
+			}
+			else if (players[PlayerKey.Left].GlobalPosition.Y > currentPaddlePosition.Y)
+			{
+				decision = PaddleDirection.Down;
+			}
+		}
+		// if (difference.X > gameBounds.shape.Size.X / 4)
+		// {
+		// 	if (percentageOfPaddle > 1)
+		// 	{
+		// 		if (currentBallPosition.Y < currentPaddlePosition.Y)
+		// 		{
+		// 			decision = PaddleDirection.Up;
+		// 		}
+		// 		else if (currentBallPosition.Y > currentPaddlePosition.Y)
+		// 		{
+		// 			decision = PaddleDirection.Down;
+		// 		}
+		// 	}
+		// }
+		// else
+		// {
+		// 	if (percentageOfPaddle > 0.75)
+		// 	{
+		// 		if (currentBallPosition.Y < currentPaddlePosition.Y)
+		// 		{
+		// 			decision = PaddleDirection.Up;
+		// 		}
+		// 		else if (currentBallPosition.Y > currentPaddlePosition.Y)
+		// 		{
+		// 			decision = PaddleDirection.Down;
+		// 		}
+		// 	}
+		// }
 
 
 		return decision;
@@ -292,5 +345,11 @@ public partial class Game : Node2D
 		Up,
 		Down,
 		Stop
+	}
+
+	enum AiState
+	{
+		Idle,
+		Seeking
 	}
 }
