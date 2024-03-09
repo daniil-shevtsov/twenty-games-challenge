@@ -114,7 +114,7 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-
+		GD.Print("PhysicsProcess}");
 		if (Input.IsActionJustPressed("pause"))
 		{
 			updatePause(!isPaused);
@@ -130,15 +130,17 @@ public partial class Game : Node2D
 				{
 					handlePaddleInput(playerKey, pressedDirection, delta);
 				}
-				else if (isAiActivated)
-				{
-					var aiDecidedDirection = decideAiDirection();
-					if (aiDecidedDirection != PaddleDirection.Stop)
-					{
-						GD.Print($"decided: {aiDecidedDirection}");
-						handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
-					}
-				}
+
+			}
+		}
+
+		if (isAiActivated && players[PlayerKey.Right].IsProcessing())
+		{
+			var aiDecidedDirection = decideAiDirection();
+			if (aiDecidedDirection != PaddleDirection.Stop)
+			{
+				GD.Print($"decided: {aiDecidedDirection}");
+				handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
 			}
 		}
 
