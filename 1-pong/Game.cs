@@ -139,7 +139,6 @@ public partial class Game : Node2D
 			var aiDecidedDirection = decideAiDirection();
 			if (aiDecidedDirection != PaddleDirection.Stop)
 			{
-				GD.Print($"decided: {aiDecidedDirection}");
 				handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
 			}
 		}
@@ -175,9 +174,8 @@ public partial class Game : Node2D
 			currentAiState = AiState.Idle;
 		}
 
-		GD.Print($"size = {currentPaddle.shape.Size.Y} difference = {difference} percentage = {percentageOfPaddle}");
 		var decision = PaddleDirection.Stop;
-		if (currentAiState == AiState.Seeking /*&& percentageOfPaddle > 0.75*/)
+		if (currentAiState == AiState.Seeking && Mathf.Abs(currentBallPosition.Y - currentPaddlePosition.Y) > ball.shape.Radius)
 		{
 			if (currentBallPosition.Y < currentPaddlePosition.Y)
 			{
@@ -188,7 +186,7 @@ public partial class Game : Node2D
 				decision = PaddleDirection.Down;
 			}
 		}
-		else if (currentAiState == AiState.Idle)
+		else if (currentAiState == AiState.Idle && Mathf.Abs(players[PlayerKey.Left].GlobalPosition.Y - currentPaddlePosition.Y) > currentPaddle.shape.Size.Y * 0.5)
 		{
 			if (players[PlayerKey.Left].GlobalPosition.Y < currentPaddlePosition.Y)
 			{
@@ -199,6 +197,8 @@ public partial class Game : Node2D
 				decision = PaddleDirection.Down;
 			}
 		}
+		GD.Print($" decided {decision} {currentAiState} ball difference = {difference} percentage = {percentageOfPaddle}");
+
 		// if (difference.X > gameBounds.shape.Size.X / 4)
 		// {
 		// 	if (percentageOfPaddle > 1)
