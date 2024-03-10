@@ -9,6 +9,7 @@ public partial class Game : Node2D
 	private float paddleOffset = 40f;
 	private Vector2 ballDefaultDirection = new Vector2(0.5f, 0.5f);
 
+	private AudioStreamPlayer collisionSound;
 
 	private bool isAiActivated = true;
 	private AiState currentAiState = AiState.Idle;
@@ -44,6 +45,7 @@ public partial class Game : Node2D
 		menu = GetNode<PauseMenu>("PauseMenu");
 
 		ball = GetNode<Ball>("Ball");
+		collisionSound = GetNode<AudioStreamPlayer>("CollisionSound");
 		ball.GlobalPosition = gameBounds.Center();
 		respawnBall();
 
@@ -244,6 +246,7 @@ public partial class Game : Node2D
 			changeBallDirection(normalized);
 			var newDirection = ballVelocity.Normalized();
 			GD.Print($"Collision: {oldDirection} {normal} {bounced} {normalized} {newDirection}");
+			collisionSound.Play();
 		}
 
 		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
