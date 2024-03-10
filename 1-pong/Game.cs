@@ -7,6 +7,8 @@ public partial class Game : Node2D
 	private float playerSpeed = 600f;
 	private float ballSpeed = 650;
 	private float paddleOffset = 40f;
+
+	private float lastPitch = 0f;
 	private Vector2 ballDefaultDirection = new Vector2(0.5f, 0.5f);
 
 	private AudioStreamPlayer collisionSound;
@@ -246,6 +248,12 @@ public partial class Game : Node2D
 			changeBallDirection(normalized);
 			var newDirection = ballVelocity.Normalized();
 			GD.Print($"Collision: {oldDirection} {normal} {bounced} {normalized} {newDirection}");
+			var minPitch = Mathf.Max(25, 100 - (int)(lastPitch * 100));
+			var maxPitch = 100 + (int)(lastPitch * 100);
+			var randomPitch = new Random().Next(minPitch, maxPitch) / 100f;
+			lastPitch = randomPitch;
+			GD.Print($"Pitch KEK LOL: {randomPitch}");
+			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
 		}
 
