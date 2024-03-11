@@ -254,7 +254,7 @@ public partial class Game : Node2D
 			var maxPitch = 100 + (int)(lastPitch * 100);
 			var randomPitch = new Random().Next(minPitch, maxPitch) / 100f;
 			lastPitch = randomPitch;
-			ballVelocity = Vector2.Zero;
+			// ballVelocity = Vector2.Zero;
 			GD.Print($"Pitch KEK LOL: {randomPitch}");
 			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
@@ -343,11 +343,11 @@ public partial class Game : Node2D
 	{
 
 		ballVelocity = newDirection * ballSpeed;
-		ball.Rotation = ballVelocity.Angle();
+		// ball.Rotation = ballVelocity.Angle();
 		// var newScale = new Vector2(1f, 1f) + 0.50f * newDirection.Normalized();
-		var newScale = new Vector2(2f, 1f);
+		// var newScale = new Vector2(2f, 1f);
 		// GD.Print($"SCALE_DEBUG current scale {ball.Scale} new scale {newScale}");
-		ball.Scale = newScale;
+		// ball.Scale = newScale;
 	}
 
 	private void updatePause(bool isPaused)
