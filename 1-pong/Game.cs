@@ -238,7 +238,7 @@ public partial class Game : Node2D
 		return decision;
 	}
 
-	private void updateBall(float delta)
+	private async void updateBall(float delta)
 	{
 		var ballCollision = ball.MoveAndCollide(ballVelocity * delta);
 		if (ballCollision != null)
@@ -254,11 +254,18 @@ public partial class Game : Node2D
 			var maxPitch = 100 + (int)(lastPitch * 100);
 			var randomPitch = new Random().Next(minPitch, maxPitch) / 100f;
 			lastPitch = randomPitch;
+			ballVelocity = Vector2.Zero;
 			GD.Print($"Pitch KEK LOL: {randomPitch}");
 			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
 
-			BallTween();
+			// var tween = CreateTween();
+			// tween.TweenProperty(ball, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
+			// await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
+			// var tween2 = CreateTween();
+			// tween2.TweenProperty(ball, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
+
+			changeBallDirection(normalized);
 		}
 
 		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
@@ -334,7 +341,13 @@ public partial class Game : Node2D
 
 	private void changeBallDirection(Vector2 newDirection)
 	{
+
 		ballVelocity = newDirection * ballSpeed;
+		ball.Rotation = ballVelocity.Angle();
+		// var newScale = new Vector2(1f, 1f) + 0.50f * newDirection.Normalized();
+		var newScale = new Vector2(2f, 1f);
+		// GD.Print($"SCALE_DEBUG current scale {ball.Scale} new scale {newScale}");
+		ball.Scale = newScale;
 	}
 
 	private void updatePause(bool isPaused)
