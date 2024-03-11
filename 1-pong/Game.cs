@@ -274,24 +274,15 @@ public partial class Game : Node2D
 			{
 				newScale = new Vector2(0.5f, 1.5f);
 			}
-
-			var surfaceNormal = new Vector2(-difference.Y, difference.X);
-
-			// if (normalForScale == new Vector2(1, 0))
-			// {
-			// 	newScale = 
-			// }
-
 			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
-			// ball.sprite.Scale = newScale;
-			// ball.sprite.Rotation = normal.Angle();
-			// ball.sprite.Rotate(Mathf.Pi / 2);
+
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
-			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, 0.15f);
-			await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
+			var duration = 0.05f;
+			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration);
+			await ToSignal(GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
 			var tween2 = CreateTween();
-			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
+			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), duration);
 
 			changeBallDirection(normalized);
 		}
