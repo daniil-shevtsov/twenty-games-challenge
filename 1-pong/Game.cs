@@ -266,11 +266,11 @@ public partial class Game : Node2D
 
 			var newScale = new Vector2(1f, 1f) - 0.25f * normalForScale + 0.75f * new Vector2(-normalForScale.Y, normalForScale.X);
 
-			if (normalForScale == new Vector2(0, 1))
+			if ((normalForScale - new Vector2(0, 1)).Abs() < new Vector2(0.0001f, 0.0001f))
 			{
 				newScale = new Vector2(1.5f, 0.5f);
 			}
-			else if (normalForScale == new Vector2(1, 0))
+			else if ((normalForScale - new Vector2(1, 0)).Abs() < new Vector2(0.001f, 0.001f))
 			{
 				newScale = new Vector2(0.5f, 1.5f);
 			}
