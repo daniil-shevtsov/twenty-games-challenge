@@ -254,16 +254,16 @@ public partial class Game : Node2D
 			var maxPitch = 100 + (int)(lastPitch * 100);
 			var randomPitch = new Random().Next(minPitch, maxPitch) / 100f;
 			lastPitch = randomPitch;
-			// ballVelocity = Vector2.Zero;
+
 			GD.Print($"Pitch KEK LOL: {randomPitch}");
 			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
-
-			// var tween = CreateTween();
-			// tween.TweenProperty(ball, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
-			// await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
-			// var tween2 = CreateTween();
-			// tween2.TweenProperty(ball, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
+			ballVelocity = Vector2.Zero;
+			var tween = CreateTween();
+			tween.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
+			await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
+			var tween2 = CreateTween();
+			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
 
 			changeBallDirection(normalized);
 		}
@@ -279,20 +279,6 @@ public partial class Game : Node2D
 		{
 			handlePlayerScored(scoredPlayer: PlayerKey.Left);
 		}
-	}
-
-	private async void BallTween()
-	{
-		var tween = CreateTween();
-		// var squashed = ball.shape.Radius;
-		// tween.interpolate_property(self, "transform", transform, targetTransform, .5, Tween.TRANS_LINEAR, Tween.EASE_IN);
-		tween.TweenProperty(ball, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
-		await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
-		var tween2 = CreateTween();
-		// GD.Print("KEEEEEEEEEEEEEEEK");
-		// await ToSignal(GetTree().CreateTimer(0.3f), SceneTreeTimer.SignalName.Timeout);
-		//AudioManager.respawnSfx.Play();
-		tween2.TweenProperty(ball, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
 	}
 
 	private void handlePaddleInput(PlayerKey key, PaddleDirection pressedDirection, double delta)
@@ -343,11 +329,11 @@ public partial class Game : Node2D
 	{
 
 		ballVelocity = newDirection * ballSpeed;
-		// ball.Rotation = ballVelocity.Angle();
+		ball.sprite.Rotation = ballVelocity.Angle();
 		// var newScale = new Vector2(1f, 1f) + 0.50f * newDirection.Normalized();
-		// var newScale = new Vector2(2f, 1f);
+		var newScale = new Vector2(2f, 1f);
 		// GD.Print($"SCALE_DEBUG current scale {ball.Scale} new scale {newScale}");
-		// ball.Scale = newScale;
+		ball.sprite.Scale = newScale;
 	}
 
 	private void updatePause(bool isPaused)
