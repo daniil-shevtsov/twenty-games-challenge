@@ -5,6 +5,7 @@ public partial class Ball : CharacterBody2D
 {
 	public CollisionShape2D collisionShape = null;
 	public CircleShape2D shape = null;
+	public Node2D sprite = null;
 	private float drawRadius;
 
 	// Called when the node enters the scene tree for the first time.
@@ -12,6 +13,9 @@ public partial class Ball : CharacterBody2D
 	{
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (CircleShape2D)collisionShape.Shape;
+
+		sprite = GetNode<Node2D>("BallSprite");
+
 		drawRadius = shape.Radius;
 	}
 
