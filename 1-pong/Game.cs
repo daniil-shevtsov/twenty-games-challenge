@@ -12,6 +12,7 @@ public partial class Game : Node2D
 	private Vector2 ballDefaultDirection = new Vector2(0.5f, 0.5f);
 
 	private AudioStreamPlayer collisionSound;
+	private AudioStreamPlayer scoredSound;
 
 	private bool isAiActivated = true;
 	private AiState currentAiState = AiState.Idle;
@@ -48,6 +49,7 @@ public partial class Game : Node2D
 
 		ball = GetNode<Ball>("Ball");
 		collisionSound = GetNode<AudioStreamPlayer>("CollisionSound");
+		scoredSound = GetNode<AudioStreamPlayer>("ScoredSound");
 		ball.GlobalPosition = gameBounds.Center();
 		respawnBall();
 
@@ -255,6 +257,8 @@ public partial class Game : Node2D
 			GD.Print($"Pitch KEK LOL: {randomPitch}");
 			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
+
+			BallTween();
 		}
 
 		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
@@ -268,6 +272,20 @@ public partial class Game : Node2D
 		{
 			handlePlayerScored(scoredPlayer: PlayerKey.Left);
 		}
+	}
+
+	private async void BallTween()
+	{
+		var tween = CreateTween();
+		// var squashed = ball.shape.Radius;
+		// tween.interpolate_property(self, "transform", transform, targetTransform, .5, Tween.TRANS_LINEAR, Tween.EASE_IN);
+		tween.TweenProperty(ball, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
+		await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
+		var tween2 = CreateTween();
+		// GD.Print("KEEEEEEEEEEEEEEEK");
+		// await ToSignal(GetTree().CreateTimer(0.3f), SceneTreeTimer.SignalName.Timeout);
+		//AudioManager.respawnSfx.Play();
+		tween2.TweenProperty(ball, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
 	}
 
 	private void handlePaddleInput(PlayerKey key, PaddleDirection pressedDirection, double delta)
@@ -298,6 +316,7 @@ public partial class Game : Node2D
 		respawnBall();
 		var currentScore = scores[scoredPlayer];
 		updateScore(scoredPlayer, ++currentScore);
+		scoredSound.Play();
 	}
 
 	private void updateScore(PlayerKey player, int newScore)

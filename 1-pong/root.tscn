@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://ofjsd85m5g5i"]
+[gd_scene load_steps=12 format=3 uid="uid://ofjsd85m5g5i"]
 
 [ext_resource type="PackedScene" uid="uid://brho6rbkl0uq3" path="res://player.tscn" id="1_276bt"]
 [ext_resource type="Script" path="res://Game.cs" id="1_ioucr"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://c1n7raqbmtqb7" path="res://divider.tscn" id="6_p2tfc"]
 [ext_resource type="Script" path="res://PauseMenu.cs" id="7_ybfan"]
 [ext_resource type="AudioStream" uid="uid://lfwvbb7xg34o" path="res://assets/collision.wav" id="8_dtrjf"]
+[ext_resource type="AudioStream" uid="uid://b7gybq34b0q7m" path="res://assets/scored.wav" id="9_31hlu"]
 
 [sub_resource type="FontFile" id="FontFile_sghtu"]
 cache/0/16/0/ascent = 0.0
@@ -99,3 +100,6 @@ text = "Quit Game"
 
 [node name="CollisionSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_dtrjf")
+
+[node name="ScoredSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_31hlu")
