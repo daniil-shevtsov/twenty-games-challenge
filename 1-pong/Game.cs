@@ -262,17 +262,43 @@ public partial class Game : Node2D
 			var reflected = normal;
 			var vector = ballVelocity;
 			var difference = reflected - vector;
+			var normalForScale = normal.Abs();
+
+			var newScale = new Vector2(1f, 1f) - 0.25f * normalForScale + 0.75f * new Vector2(-normalForScale.Y, normalForScale.X);
+
+			if (normalForScale == new Vector2(0, 1))
+			{
+				newScale = new Vector2(1.5f, 0.5f);
+			}
+			else if (normalForScale == new Vector2(1, 0))
+			{
+				newScale = new Vector2(0.5f, 1.5f);
+			}
+
 			var surfaceNormal = new Vector2(-difference.Y, difference.X);
-			ball.sprite.Rotation = normal.Angle();
-			ball.sprite.Rotate(Mathf.Pi / 2);
+
+			// if (normalForScale == new Vector2(1, 0))
+			// {
+			// 	newScale = 
+			// }
+
+			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
+			// ball.sprite.Scale = newScale;
+			// ball.sprite.Rotation = normal.Angle();
+			// ball.sprite.Rotate(Mathf.Pi / 2);
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
-			tween.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
+			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, 0.15f);
 			await ToSignal(GetTree().CreateTimer(0.15f), SceneTreeTimer.SignalName.Timeout);
 			var tween2 = CreateTween();
 			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), 0.15f);
 
 			changeBallDirection(normalized);
+		}
+		else
+		{
+			ball.sprite.Scale = new Vector2(1.2f, 0.75f);
+			ball.sprite.Rotation = ballVelocity.Angle();
 		}
 
 		var ballLeft = ball.GlobalPosition.X - ball.shape.Radius;
@@ -336,11 +362,6 @@ public partial class Game : Node2D
 	{
 
 		ballVelocity = newDirection * ballSpeed;
-		// ball.sprite.Rotation = ballVelocity.Angle();
-		// var newScale = new Vector2(1f, 1f) + 0.50f * newDirection.Normalized();
-		var newScale = new Vector2(2f, 1f);
-		// GD.Print($"SCALE_DEBUG current scale {ball.Scale} new scale {newScale}");
-		ball.sprite.Scale = newScale;
 	}
 
 	private void updatePause(bool isPaused)
