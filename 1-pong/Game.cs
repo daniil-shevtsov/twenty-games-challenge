@@ -258,6 +258,13 @@ public partial class Game : Node2D
 			GD.Print($"Pitch KEK LOL: {randomPitch}");
 			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
+
+			var reflected = normal;
+			var vector = ballVelocity;
+			var difference = reflected - vector;
+			var surfaceNormal = new Vector2(-difference.Y, difference.X);
+			ball.sprite.Rotation = normal.Angle();
+			ball.sprite.Rotate(Mathf.Pi / 2);
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
 			tween.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1.5f, 0.5f), 0.15f);
@@ -329,7 +336,7 @@ public partial class Game : Node2D
 	{
 
 		ballVelocity = newDirection * ballSpeed;
-		ball.sprite.Rotation = ballVelocity.Angle();
+		// ball.sprite.Rotation = ballVelocity.Angle();
 		// var newScale = new Vector2(1f, 1f) + 0.50f * newDirection.Normalized();
 		var newScale = new Vector2(2f, 1f);
 		// GD.Print($"SCALE_DEBUG current scale {ball.Scale} new scale {newScale}");
