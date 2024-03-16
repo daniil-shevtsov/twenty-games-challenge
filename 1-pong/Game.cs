@@ -279,10 +279,10 @@ public partial class Game : Node2D
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
 			var duration = 0.05f;
-			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration);
+			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration).SetTrans(Tween.TransitionType.Bounce);
 			await ToSignal(GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
 			var tween2 = CreateTween();
-			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), duration);
+			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), duration).SetTrans(Tween.TransitionType.Bounce);
 
 			changeBallDirection(normalized);
 		}
