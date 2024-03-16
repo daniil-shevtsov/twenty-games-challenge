@@ -275,34 +275,34 @@ public partial class Game : Node2D
 
 			var isHorizontalSquash = (normalForScale - new Vector2(0, 1)).Abs() < new Vector2(0.0001f, 0.0001f);
 			var isVerticalSquash = (normalForScale - new Vector2(1, 0)).Abs() < new Vector2(0.001f, 0.001f);
+			var translation = Vector2.Zero;
 			if (isHorizontalSquash)
 			{
 				newScale = new Vector2(1.5f, 0.5f);
+				translation = new Vector2(
+					0,
+					ball.shape.Radius * -Mathf.Sign(normal.Y)
+				);
 			}
 			else if (isVerticalSquash)
 			{
 				newScale = new Vector2(0.5f, 1.5f);
-			}
-			var translation = Vector2.Zero;
-			if (isVerticalSquash)
-			{
 				translation = new Vector2(
 					ball.shape.Radius * -Mathf.Sign(normal.X),
 					0
 				);
 			}
+
 			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
 
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
-			var duration = 0.2f;
+			var duration = 0.1f;
 			shouldUpdatePhysics = false;
 			ball.sprite.Rotation = 0;
 			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration).SetTrans(Tween.TransitionType.Bounce);
 			tween.SetParallel(true);
 			tween.TweenProperty(ball.sprite, new NodePath("position"), translation, duration).SetTrans(Tween.TransitionType.Bounce);
-			await ToSignal(GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
-			// await ToSignal(GetTree().CreateTimer(2f), SceneTreeTimer.SignalName.Timeout);
 			await ToSignal(tween, "finished");
 			var tween2 = CreateTween();
 			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), duration).SetTrans(Tween.TransitionType.Bounce);
