@@ -41,6 +41,8 @@ public partial class Game : Node2D
 
 	private List<Node> pausables = new List<Node>();
 
+	private bool shouldUpdatePhysics = true;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -120,39 +122,44 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		GD.Print("PhysicsProcess}");
-		if (Input.IsActionJustPressed("pause"))
-		{
-			updatePause(!isPaused);
-		}
+		GD.Print($"PhysicsProcess should update:{shouldUpdatePhysics}");
 
-		if (players[PlayerKey.Left].IsProcessing() || players[PlayerKey.Right].IsProcessing())
+		if (shouldUpdatePhysics)
 		{
-			foreach (var entry in paddleInputs)
+			if (Input.IsActionJustPressed("pause"))
 			{
-				var (playerKey, pressedDirection) = entry.Value;
-				var shouldHandlePlayerInput = playerKey != PlayerKey.Right! || !isAiActivated;
-				if (Input.IsActionPressed(entry.Key) && shouldHandlePlayerInput)
+				updatePause(!isPaused);
+			}
+
+			if (players[PlayerKey.Left].IsProcessing() || players[PlayerKey.Right].IsProcessing())
+			{
+				foreach (var entry in paddleInputs)
 				{
-					handlePaddleInput(playerKey, pressedDirection, delta);
+					var (playerKey, pressedDirection) = entry.Value;
+					var shouldHandlePlayerInput = playerKey != PlayerKey.Right! || !isAiActivated;
+					if (Input.IsActionPressed(entry.Key) && shouldHandlePlayerInput)
+					{
+						handlePaddleInput(playerKey, pressedDirection, delta);
+					}
+
 				}
-
 			}
-		}
 
-		if (isAiActivated && players[PlayerKey.Right].IsProcessing())
-		{
-			var aiDecidedDirection = decideAiDirection();
-			if (aiDecidedDirection != PaddleDirection.Stop)
+			if (isAiActivated && players[PlayerKey.Right].IsProcessing())
 			{
-				handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
+				var aiDecidedDirection = decideAiDirection();
+				if (aiDecidedDirection != PaddleDirection.Stop)
+				{
+					handlePaddleInput(PlayerKey.Right, aiDecidedDirection, delta);
+				}
+			}
+
+			if (ball.IsProcessing())
+			{
+				updateBall((float)delta);
 			}
 		}
 
-		if (ball.IsProcessing())
-		{
-			updateBall((float)delta);
-		}
 	}
 
 	private PaddleDirection decideAiDirection()
@@ -266,24 +273,43 @@ public partial class Game : Node2D
 
 			var newScale = new Vector2(1f, 1f) - 0.25f * normalForScale + 0.75f * new Vector2(-normalForScale.Y, normalForScale.X);
 
-			if ((normalForScale - new Vector2(0, 1)).Abs() < new Vector2(0.0001f, 0.0001f))
+			var isHorizontalSquash = (normalForScale - new Vector2(0, 1)).Abs() < new Vector2(0.0001f, 0.0001f);
+			var isVerticalSquash = (normalForScale - new Vector2(1, 0)).Abs() < new Vector2(0.001f, 0.001f);
+			if (isHorizontalSquash)
 			{
 				newScale = new Vector2(1.5f, 0.5f);
 			}
-			else if ((normalForScale - new Vector2(1, 0)).Abs() < new Vector2(0.001f, 0.001f))
+			else if (isVerticalSquash)
 			{
 				newScale = new Vector2(0.5f, 1.5f);
+			}
+			var translation = Vector2.Zero;
+			if (isVerticalSquash)
+			{
+				translation = new Vector2(
+					ball.shape.Radius * -Mathf.Sign(normal.X),
+					0
+				);
 			}
 			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
 
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
-			var duration = 0.05f;
+			var duration = 0.2f;
+			shouldUpdatePhysics = false;
+			ball.sprite.Rotation = 0;
 			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration).SetTrans(Tween.TransitionType.Bounce);
+			tween.SetParallel(true);
+			tween.TweenProperty(ball.sprite, new NodePath("position"), translation, duration).SetTrans(Tween.TransitionType.Bounce);
 			await ToSignal(GetTree().CreateTimer(duration), SceneTreeTimer.SignalName.Timeout);
+			// await ToSignal(GetTree().CreateTimer(2f), SceneTreeTimer.SignalName.Timeout);
+			await ToSignal(tween, "finished");
 			var tween2 = CreateTween();
 			tween2.TweenProperty(ball.sprite, new NodePath("scale"), new Vector2(1f, 1f), duration).SetTrans(Tween.TransitionType.Bounce);
-
+			tween2.SetParallel(true);
+			tween2.TweenProperty(ball.sprite, new NodePath("position"), Vector2.Zero, duration).SetTrans(Tween.TransitionType.Bounce);
+			await ToSignal(tween2, "finished");
+			shouldUpdatePhysics = true;
 			changeBallDirection(normalized);
 		}
 		else
