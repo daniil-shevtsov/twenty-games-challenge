@@ -215,40 +215,10 @@ public partial class Game : Node2D
 		}
 		GD.Print($" decided {decision} {currentAiState} ball difference = {difference} percentage = {percentageOfPaddle}");
 
-		// if (difference.X > gameBounds.shape.Size.X / 4)
-		// {
-		// 	if (percentageOfPaddle > 1)
-		// 	{
-		// 		if (currentBallPosition.Y < currentPaddlePosition.Y)
-		// 		{
-		// 			decision = PaddleDirection.Up;
-		// 		}
-		// 		else if (currentBallPosition.Y > currentPaddlePosition.Y)
-		// 		{
-		// 			decision = PaddleDirection.Down;
-		// 		}
-		// 	}
-		// }
-		// else
-		// {
-		// 	if (percentageOfPaddle > 0.75)
-		// 	{
-		// 		if (currentBallPosition.Y < currentPaddlePosition.Y)
-		// 		{
-		// 			decision = PaddleDirection.Up;
-		// 		}
-		// 		else if (currentBallPosition.Y > currentPaddlePosition.Y)
-		// 		{
-		// 			decision = PaddleDirection.Down;
-		// 		}
-		// 	}
-		// }
-
-
 		return decision;
 	}
 
-	private void screenShake(
+	private async void screenShake(
 		Vector2? offsetPower,
 		Vector2? offsetDirection,
 		float duration = 0.15f,
@@ -274,10 +244,15 @@ public partial class Game : Node2D
 
 		cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 		cameraTween.SetParallel(true);
-		cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-		cameraTween.Chain().TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+		if (anglePower > 0)
+		{
+			cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			cameraTween.Chain().TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+		}
 
 		cameraTween.Chain().TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+		await ToSignal(cameraTween, "finished");
 	}
 
 	private async void updateBall(float delta)
@@ -331,7 +306,6 @@ public partial class Game : Node2D
 			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
 
 			var shakeDuration = 0.15f;
-			var cameraTween = CreateTween();
 			var shakeOffset = new Vector2(5f, 5f);
 			var shakeDirection = oldDirection;
 			camera.IgnoreRotation = false;
@@ -358,7 +332,7 @@ public partial class Game : Node2D
 					duration: shakeDuration,
 					anglePower: shakeAnglePower,
 					angleSign: angleSign
-					);
+				);
 			}
 			else
 			{
@@ -426,18 +400,23 @@ public partial class Game : Node2D
 		}
 	}
 
-	private void handlePlayerScored(PlayerKey scoredPlayer)
+	private async void handlePlayerScored(PlayerKey scoredPlayer)
 	{
-		respawnBall();
 		var currentScore = scores[scoredPlayer];
 		updateScore(scoredPlayer, ++currentScore);
+		screenShake(
+			offsetPower: new Vector2(0f, 30f),
+			offsetDirection: new Vector2(0f, 1f),
+			duration: 0.25f
+		);
 		scoredSound.Play();
+		respawnBall();
+
 	}
 
 	private async void updateScore(PlayerKey player, int newScore)
 	{
 		scores[player] = newScore;
-		// scoreViews[player].Text = scores[player].ToString();
 
 		var tween = CreateTween();
 		var duration = 0.15f;
