@@ -309,7 +309,7 @@ public partial class Game : Node2D
 				cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 
 				var player = (Player)collidedObject;
-				var angleSign = 1;
+				int angleSign;
 				if (oldDirection.X > 0)
 				{
 					angleSign = -MathF.Sign(gameBounds.Center().Y - player.GlobalPosition.Y);
@@ -318,8 +318,10 @@ public partial class Game : Node2D
 				{
 					angleSign = MathF.Sign(gameBounds.Center().Y - player.GlobalPosition.Y);
 				}
+				var distancePercentage = Mathf.Abs(gameBounds.Center().Y - player.GlobalPosition.Y) / (gameBounds.shape.Size.Y / 2f);
+				var shakeAnglePower = 5f * distancePercentage;
 
-				var shakeAngle = 5f * angleSign;
+				var shakeAngle = shakeAnglePower * angleSign;
 				cameraTween.SetParallel(true);
 				cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 				cameraTween.Chain().TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
@@ -403,9 +405,17 @@ public partial class Game : Node2D
 		scoredSound.Play();
 	}
 
-	private void updateScore(PlayerKey player, int newScore)
+	private async void updateScore(PlayerKey player, int newScore)
 	{
 		scores[player] = newScore;
+		// scoreViews[player].Text = scores[player].ToString();
+
+		var tween = CreateTween();
+		var duration = 0.15f;
+		var jumpOffset = new Vector2(0f, -15f);
+		tween.TweenProperty(scoreViews[player], new NodePath("position"), jumpOffset, duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
+		tween.TweenProperty(scoreViews[player], new NodePath("position"), -jumpOffset, duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
+		await ToSignal(tween, "finished");
 		scoreViews[player].Text = scores[player].ToString();
 	}
 
