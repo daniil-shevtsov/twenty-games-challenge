@@ -32,6 +32,7 @@ public partial class Game : Node2D
 	private Dictionary<PlayerKey, int> scores = new Dictionary<PlayerKey, int>();
 
 	private Ball ball;
+	private Camera2D camera;
 	private Vector2 ballVelocity;
 
 	private PauseMenu menu;
@@ -50,6 +51,8 @@ public partial class Game : Node2D
 		menu = GetNode<PauseMenu>("PauseMenu");
 
 		ball = GetNode<Ball>("Ball");
+		camera = GetNode<Camera2D>("Camera2D");
+		camera.GlobalPosition = gameBounds.Center();
 		collisionSound = GetNode<AudioStreamPlayer>("CollisionSound");
 		scoredSound = GetNode<AudioStreamPlayer>("ScoredSound");
 		ball.GlobalPosition = gameBounds.Center();
