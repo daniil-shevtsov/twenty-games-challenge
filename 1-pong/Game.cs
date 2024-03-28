@@ -308,30 +308,15 @@ public partial class Game : Node2D
 			{
 				cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 
-				var angleSign = 1;
-				var kek = 1f;
 				var player = (Player)collidedObject;
+				var angleSign = 1;
 				if (oldDirection.X > 0)
 				{
-					if (player.GlobalPosition.Y < gameBounds.Center().Y)
-					{
-						angleSign = -1;
-					}
-					else if (player.GlobalPosition.Y > gameBounds.Center().Y)
-					{
-						angleSign = 1;
-					}
+					angleSign = -MathF.Sign(gameBounds.Center().Y - player.GlobalPosition.Y);
 				}
-				else if (oldDirection.X < 0)
+				else
 				{
-					if (player.GlobalPosition.Y < gameBounds.Center().Y)
-					{
-						angleSign = 1;
-					}
-					else if (player.GlobalPosition.Y > gameBounds.Center().Y)
-					{
-						angleSign = -1;
-					}
+					angleSign = MathF.Sign(gameBounds.Center().Y - player.GlobalPosition.Y);
 				}
 
 				var shakeAngle = 5f * angleSign;
