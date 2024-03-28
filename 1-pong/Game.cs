@@ -298,11 +298,20 @@ public partial class Game : Node2D
 
 			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
 
+			var shakeDuration = 0.15f;
+			var cameraTween = CreateTween();
+			var shakeOffset = new Vector2(5f, 5f) * oldDirection;
+			cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			cameraTween.TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
 			var duration = 0.05f;
+
 			shouldUpdatePhysics = false;
 			ball.sprite.Rotation = 0;
+
 			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration).SetTrans(Tween.TransitionType.Bounce);
 			tween.SetParallel(true);
 			tween.TweenProperty(ball.sprite, new NodePath("position"), translation, duration).SetTrans(Tween.TransitionType.Bounce);
