@@ -297,7 +297,7 @@ public partial class Game : Node2D
 
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
-			var duration = 0.1f;
+			var duration = 0.05f;
 			shouldUpdatePhysics = false;
 			ball.sprite.Rotation = 0;
 			tween.TweenProperty(ball.sprite, new NodePath("scale"), newScale, duration).SetTrans(Tween.TransitionType.Bounce);
