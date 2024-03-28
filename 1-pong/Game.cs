@@ -248,6 +248,38 @@ public partial class Game : Node2D
 		return decision;
 	}
 
+	private void screenShake(
+		Vector2? offsetPower,
+		Vector2? offsetDirection,
+		float duration = 0.15f,
+		float anglePower = 0f,
+		int angleSign = 1
+	)
+	{
+		if (offsetPower == null)
+		{
+			offsetPower = Vector2.Zero;
+		}
+		if (offsetDirection == null)
+		{
+			offsetDirection = Vector2.Zero;
+		}
+
+		var shakeDuration = duration;
+		var cameraTween = CreateTween();
+		var shakeOffset = (Vector2)offsetPower * (Vector2)offsetDirection;
+		var shakeAngle = anglePower * angleSign;
+
+		camera.IgnoreRotation = false;
+
+		cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+		cameraTween.SetParallel(true);
+		cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+		cameraTween.Chain().TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+
+		cameraTween.Chain().TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+	}
+
 	private async void updateBall(float delta)
 	{
 		var ballCollision = ball.MoveAndCollide(ballVelocity * delta);
@@ -300,14 +332,13 @@ public partial class Game : Node2D
 
 			var shakeDuration = 0.15f;
 			var cameraTween = CreateTween();
-			var shakeOffset = new Vector2(5f, 5f) * oldDirection;
+			var shakeOffset = new Vector2(5f, 5f);
+			var shakeDirection = oldDirection;
 			camera.IgnoreRotation = false;
 
 			var collidedObject = ballCollision.GetCollider();
 			if (collidedObject is Player)
 			{
-				cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-
 				var player = (Player)collidedObject;
 				int angleSign;
 				if (oldDirection.X > 0)
@@ -321,19 +352,17 @@ public partial class Game : Node2D
 				var distancePercentage = Mathf.Abs(gameBounds.Center().Y - player.GlobalPosition.Y) / (gameBounds.shape.Size.Y / 2f);
 				var shakeAnglePower = 5f * distancePercentage;
 
-				var shakeAngle = shakeAnglePower * angleSign;
-				cameraTween.SetParallel(true);
-				cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-				cameraTween.Chain().TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-
-				cameraTween.Chain().TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+				screenShake(
+					offsetPower: shakeOffset,
+					offsetDirection: shakeDirection,
+					duration: shakeDuration,
+					anglePower: shakeAnglePower,
+					angleSign: angleSign
+					);
 			}
 			else
 			{
-				cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-
-				cameraTween.Chain().TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-
+				screenShake(offsetPower: shakeOffset, offsetDirection: shakeDirection, duration: shakeDuration);
 			}
 
 			ballVelocity = Vector2.Zero;
