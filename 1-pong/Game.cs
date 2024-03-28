@@ -301,25 +301,23 @@ public partial class Game : Node2D
 			var shakeDuration = 0.15f;
 			var cameraTween = CreateTween();
 			var shakeOffset = new Vector2(5f, 5f) * oldDirection;
-			var shakeAngle = 45f;
+			var shakeAngle = 5f * -Mathf.Sign(oldDirection.X);
+			camera.IgnoreRotation = false;
 			cameraTween.TweenProperty(camera, new NodePath("offset"), shakeOffset, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 
 			var collidedObject = ballCollision.GetCollider();
 			if (collidedObject is Player)
 			{
-				collidedObject.Free();
-
 				cameraTween.SetParallel(true);
-				cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+				cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			}
+			cameraTween.Chain().TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
+			if (collidedObject is Player)
+			{
+				cameraTween.SetParallel(true);
+				cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
 				cameraTween.SetParallel(false);
 			}
-			cameraTween.TweenProperty(camera, new NodePath("offset"), -shakeOffset, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-			// if (collidedObject is Player)
-			// {
-			// 	cameraTween.SetParallel(true);
-			// 	cameraTween.TweenProperty(camera, new NodePath("rotation_degrees"), -shakeAngle, shakeDuration).AsRelative().SetTrans(Tween.TransitionType.Sine).SetEase(Tween.EaseType.InOut);
-			// 	cameraTween.SetParallel(false);
-			// }
 			ballVelocity = Vector2.Zero;
 			var tween = CreateTween();
 			var duration = 0.05f;
