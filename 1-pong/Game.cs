@@ -100,6 +100,8 @@ public partial class Game : Node2D
 		startGameButton.Pressed += onStartClicked;
 		var quitGameButton = (Button)FindChild("QuitGame");
 		quitGameButton.Pressed += onQuitClicked;
+		var enableAiButton = (CheckButton)FindChild("EnableAiButton");
+		enableAiButton.Pressed += onEnableAiSwitched;
 
 		initGame();
 	}
@@ -468,6 +470,10 @@ public partial class Game : Node2D
 		GetTree().Quit();
 	}
 
+	private void onEnableAiSwitched()
+	{
+		isAiActivated = !isAiActivated;
+	}
 
 	enum PlayerKey
 	{

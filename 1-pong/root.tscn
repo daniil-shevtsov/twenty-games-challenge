@@ -86,13 +86,15 @@ horizontal_alignment = 1
 layout_mode = 2
 size_flags_vertical = 6
 
+[node name="EnableAiButton" type="CheckButton" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Enable AI"
+alignment = 2
+
 [node name="StartGame" type="Button" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
 layout_mode = 2
 text = "Start Game"
-
-[node name="Options" type="Button" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
-layout_mode = 2
-text = "Options"
 
 [node name="QuitGame" type="Button" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
 layout_mode = 2
