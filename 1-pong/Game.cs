@@ -104,6 +104,7 @@ public partial class Game : Node2D
 		enableAiButton.Pressed += onEnableAiSwitched;
 
 		initGame();
+		updatePause(true);
 	}
 
 	private void initGame()
@@ -127,8 +128,6 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		GD.Print($"PhysicsProcess should update:{shouldUpdatePhysics}");
-
 		if (shouldUpdatePhysics)
 		{
 			if (Input.IsActionJustPressed("pause"))
@@ -215,7 +214,6 @@ public partial class Game : Node2D
 				decision = PaddleDirection.Down;
 			}
 		}
-		GD.Print($" decided {decision} {currentAiState} ball difference = {difference} percentage = {percentageOfPaddle}");
 
 		return decision;
 	}
@@ -267,14 +265,11 @@ public partial class Game : Node2D
 			var bounced = ballVelocity.Bounce(normal);
 			var normalized = bounced.Normalized();
 			changeBallDirection(normalized);
-			var newDirection = ballVelocity.Normalized();
-			GD.Print($"Collision: {oldDirection} {normal} {bounced} {normalized} {newDirection}");
 			var minPitch = Mathf.Max(25, 100 - (int)(lastPitch * 100));
 			var maxPitch = 100 + (int)(lastPitch * 100);
 			var randomPitch = new Random().Next(minPitch, maxPitch) / 100f;
 			lastPitch = randomPitch;
 
-			GD.Print($"Pitch KEK LOL: {randomPitch}");
 			collisionSound.PitchScale = randomPitch;
 			collisionSound.Play();
 
@@ -304,8 +299,6 @@ public partial class Game : Node2D
 					0
 				);
 			}
-
-			GD.Print($"NORMAL_DEBUG normal = {normalForScale} new scale = {newScale}");
 
 			var shakeDuration = 0.15f;
 			var shakeOffset = new Vector2(5f, 5f);
