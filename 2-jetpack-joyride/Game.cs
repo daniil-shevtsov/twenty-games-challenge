@@ -8,6 +8,7 @@ public partial class Game : Node2D
 	private Player player;
 
 	private Vector2 playerVelocity;
+	private bool isGrounded = false;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -26,8 +27,17 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		if (Input.IsActionPressed("jetpack"))
+		{
+			playerVelocity += new Vector2(0f, -jetpackForce) * (float)delta;
+		}
+
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
-		playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
+		isGrounded = playerCollision != null;
+		if (!isGrounded)
+		{
+			playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
+		}
 	}
 
 	private void InitGame()
@@ -37,5 +47,6 @@ public partial class Game : Node2D
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
+	private float jetpackForce = 750f;
 
 }
