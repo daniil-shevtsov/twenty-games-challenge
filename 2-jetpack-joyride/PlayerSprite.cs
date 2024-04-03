@@ -21,10 +21,10 @@ public partial class PlayerSprite : Node2D
 		var center = Vector2.Zero;
 		float radius = rectSize.X / 2;
 		var color = new Color(1, 1, 1);
-		DrawCircle(center, radius, color);
 
-		DrawCircle(center - new Vector2(0, rectSize.Y / 2), radius, color);
-		DrawRect(new Rect2(center - rectSize / 2, rectSize), color);
-		DrawCircle(center + new Vector2(0, rectSize.Y / 2), radius, color);
+		var rectPartSize = rectSize - new Vector2(0, radius * 2);
+		DrawCircle(center - new Vector2(0, rectPartSize.Y / 2), radius, color);
+		DrawRect(new Rect2(center - rectPartSize / 2, rectPartSize), color);
+		DrawCircle(center + new Vector2(0, rectPartSize.Y / 2), radius, color);
 	}
 }
