@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://2o6q7688leip"]
+[gd_scene load_steps=4 format=3 uid="uid://2o6q7688leip"]
 
 [ext_resource type="Script" path="res://GameBounds.cs" id="1_hbceu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_w1m1h"]
 size = Vector2(800, 400)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3fc4y"]
+distance = -200.0
 
 [node name="GameBounds" type="Area2D"]
 script = ExtResource("1_hbceu")
@@ -14,3 +17,9 @@ shape = SubResource("RectangleShape2D_w1m1h")
 [node name="Polygon2D" type="Polygon2D" parent="."]
 color = Color(0.0941176, 0.0941176, 0.0941176, 1)
 polygon = PackedVector2Array(-400, -200, 400, -200, 400, 200, -400, 200)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+scale = Vector2(4.2, 1)
+shape = SubResource("WorldBoundaryShape2D_3fc4y")
