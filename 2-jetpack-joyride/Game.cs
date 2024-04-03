@@ -7,6 +7,8 @@ public partial class Game : Node2D
 	private GameBounds gameBounds;
 	private Player player;
 
+	private Vector2 playerVelocity;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -22,10 +24,18 @@ public partial class Game : Node2D
 	{
 	}
 
+	public override void _PhysicsProcess(double delta)
+	{
+		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
+		playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
+	}
+
 	private void InitGame()
 	{
-		GD.Print($"{player.GlobalPosition} {gameBounds.GlobalPosition}");
+		playerVelocity = Vector2.Zero;
 		player.GlobalPosition = gameBounds.GlobalPosition;
-		GD.Print($"{player.GlobalPosition} {gameBounds.GlobalPosition}");
 	}
+
+	private float gravityAcceleration = 9.8f * 20;
+
 }
