@@ -4,11 +4,13 @@
 [ext_resource type="Script" path="res://PlayerSprite.cs" id="2_7l6qr"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_et17s"]
+height = 42.75
 
 [node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_x6i87")
 
 [node name="PlayerCollider" type="CollisionShape2D" parent="."]
+scale = Vector2(1.5, 1)
 shape = SubResource("CapsuleShape2D_et17s")
 
 [node name="PlayerSprite" type="Node2D" parent="."]

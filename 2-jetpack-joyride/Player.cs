@@ -15,7 +15,7 @@ public partial class Player : CharacterBody2D
 
 		sprite = GetNode<PlayerSprite>("PlayerSprite");
 		drawRadius = shape.Radius;
-		sprite.setRadius(drawRadius);
+		sprite.setRectSize(new Vector2(shape.Radius, shape.Height));
 	}
 
 	public override void _PhysicsProcess(double delta)
