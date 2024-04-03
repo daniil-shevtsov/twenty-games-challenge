@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://dhnav7p1v2cw3"]
+
+[ext_resource type="Script" path="res://Player.cs" id="1_x6i87"]
+[ext_resource type="Script" path="res://PlayerSprite.cs" id="2_7l6qr"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_et17s"]
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_x6i87")
+
+[node name="PlayerCollider" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_et17s")
+
+[node name="PlayerSprite" type="Node2D" parent="."]
+script = ExtResource("2_7l6qr")
