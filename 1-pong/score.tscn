@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://qphwnx7aitwp"]
+
+[ext_resource type="Script" path="res://Score.cs" id="1_7x386"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_51mv7"]
+font_size = 128
+
+[node name="Score" type="Label"]
+offset_left = 228.0
+offset_top = 128.0
+offset_right = 268.0
+offset_bottom = 151.0
+text = "0"
+label_settings = SubResource("LabelSettings_51mv7")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1_7x386")

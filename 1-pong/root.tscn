@@ -1,0 +1,113 @@
+[gd_scene load_steps=12 format=3 uid="uid://ofjsd85m5g5i"]
+
+[ext_resource type="PackedScene" uid="uid://brho6rbkl0uq3" path="res://player.tscn" id="1_276bt"]
+[ext_resource type="Script" path="res://Game.cs" id="1_ioucr"]
+[ext_resource type="PackedScene" uid="uid://fjexrn0pd2ep" path="res://game_bounds.tscn" id="2_r251j"]
+[ext_resource type="PackedScene" uid="uid://d3pd3q57q8yr0" path="res://ball.tscn" id="4_fb6ws"]
+[ext_resource type="PackedScene" uid="uid://qphwnx7aitwp" path="res://score.tscn" id="5_gmei8"]
+[ext_resource type="PackedScene" uid="uid://c1n7raqbmtqb7" path="res://divider.tscn" id="6_p2tfc"]
+[ext_resource type="Script" path="res://PauseMenu.cs" id="7_ybfan"]
+[ext_resource type="AudioStream" uid="uid://lfwvbb7xg34o" path="res://assets/collision.wav" id="8_dtrjf"]
+[ext_resource type="AudioStream" uid="uid://b7gybq34b0q7m" path="res://assets/scored.wav" id="9_31hlu"]
+
+[sub_resource type="FontFile" id="FontFile_sghtu"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/48/0 = Vector2(0, 0)
+cache/0/48/0/ascent = 0.0
+cache/0/48/0/descent = 0.0
+cache/0/48/0/underline_position = 0.0
+cache/0/48/0/underline_thickness = 0.0
+cache/0/48/0/scale = 1.0
+cache/0/48/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/48/0/kerning_overrides/48/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1h4i3"]
+font = SubResource("FontFile_sghtu")
+font_size = 48
+
+[node name="Root" type="Node2D"]
+script = ExtResource("1_ioucr")
+
+[node name="GameBounds" parent="." instance=ExtResource("2_r251j")]
+
+[node name="LeftPlayer" parent="." instance=ExtResource("1_276bt")]
+
+[node name="RightPlayer" parent="." instance=ExtResource("1_276bt")]
+
+[node name="Ball" parent="." instance=ExtResource("4_fb6ws")]
+
+[node name="LeftScore" parent="." instance=ExtResource("5_gmei8")]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -36.5
+offset_top = -87.5
+offset_right = 36.5
+offset_bottom = 87.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RightScore" parent="." instance=ExtResource("5_gmei8")]
+offset_left = 404.0
+offset_top = -740.0
+offset_right = 477.0
+offset_bottom = -565.0
+
+[node name="Divider" parent="." instance=ExtResource("6_p2tfc")]
+collision_layer = 2048
+collision_mask = 2048
+
+[node name="PauseMenu" type="CanvasLayer" parent="."]
+script = ExtResource("7_ybfan")
+
+[node name="Panel" type="PanelContainer" parent="PauseMenu"]
+offset_right = 800.0
+offset_bottom = 600.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Panel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PauseMenu/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "PONG"
+label_settings = SubResource("LabelSettings_1h4i3")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="EnableAiButton" type="CheckButton" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Enable AI"
+alignment = 2
+
+[node name="StartGame" type="Button" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start Game"
+
+[node name="QuitGame" type="Button" parent="PauseMenu/Panel/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit Game"
+
+[node name="Version" type="Label" parent="PauseMenu/Panel/VBoxContainer"]
+layout_mode = 2
+text = "1.0.0"
+
+[node name="CollisionSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_dtrjf")
+
+[node name="ScoredSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_31hlu")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(100, 100)
