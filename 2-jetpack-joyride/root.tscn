@@ -1,11 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=4 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
 [ext_resource type="PackedScene" uid="uid://dhnav7p1v2cw3" path="res://player.tscn" id="2_aqxcm"]
+[ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_1usdg")
 
+[node name="Background" type="Node2D" parent="."]
+
 [node name="Camera2D" type="Camera2D" parent="."]
 
+[node name="GameBounds" parent="." instance=ExtResource("3_p253t")]
+
 [node name="Player" parent="." instance=ExtResource("2_aqxcm")]
+position = Vector2(0, -280)
