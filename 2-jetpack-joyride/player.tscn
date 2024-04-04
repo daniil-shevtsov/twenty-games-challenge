@@ -1,7 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://dhnav7p1v2cw3"]
+[gd_scene load_steps=10 format=3 uid="uid://dhnav7p1v2cw3"]
 
 [ext_resource type="Script" path="res://Player.cs" id="1_x6i87"]
 [ext_resource type="Script" path="res://PlayerSprite.cs" id="2_7l6qr"]
+[ext_resource type="Texture2D" uid="uid://cw0khlwxuatrh" path="res://sprites/head.png" id="3_31gk2"]
+[ext_resource type="Texture2D" uid="uid://1lq6sdl25i00" path="res://sprites/neck.png" id="4_72sdx"]
+[ext_resource type="Texture2D" uid="uid://ci7h3ffmbt2te" path="res://sprites/body.png" id="5_nlsj3"]
+[ext_resource type="Texture2D" uid="uid://0m3mtpcoae5q" path="res://sprites/hip.png" id="6_nx60e"]
+[ext_resource type="Texture2D" uid="uid://sfplchy28ds" path="res://sprites/leg.png" id="7_x76xk"]
+[ext_resource type="Texture2D" uid="uid://c3sini00dv1wf" path="res://sprites/wheel.png" id="8_jr3xe"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_et17s"]
 height = 42.75
@@ -10,8 +16,37 @@ height = 42.75
 script = ExtResource("1_x6i87")
 
 [node name="PlayerCollider" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
 scale = Vector2(1.5, 1)
 shape = SubResource("CapsuleShape2D_et17s")
 
 [node name="PlayerSprite" type="Node2D" parent="."]
 script = ExtResource("2_7l6qr")
+
+[node name="PlayerSpriteContainer" type="Node2D" parent="."]
+scale = Vector2(0.05, 0.05)
+
+[node name="Head" type="Sprite2D" parent="PlayerSpriteContainer"]
+position = Vector2(206.5, -1170)
+texture = ExtResource("3_31gk2")
+
+[node name="Neck" type="Sprite2D" parent="PlayerSpriteContainer"]
+position = Vector2(21.5, -650)
+texture = ExtResource("4_72sdx")
+
+[node name="Body" type="Sprite2D" parent="PlayerSpriteContainer"]
+position = Vector2(-56.5, -334)
+texture = ExtResource("5_nlsj3")
+
+[node name="Hip" type="Sprite2D" parent="PlayerSpriteContainer"]
+position = Vector2(-19.5, 258)
+texture = ExtResource("6_nx60e")
+
+[node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer"]
+position = Vector2(-237.5, 1109)
+texture = ExtResource("8_jr3xe")
+
+[node name="Leg" type="Sprite2D" parent="PlayerSpriteContainer"]
+position = Vector2(-158.5, 738)
+rotation = 0.271039
+texture = ExtResource("7_x76xk")

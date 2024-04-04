@@ -16,7 +16,8 @@ script = ExtResource("1_hbceu")
 shape = SubResource("RectangleShape2D_w1m1h")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
-color = Color(0.0941176, 0.0941176, 0.0941176, 1)
+visible = false
+color = Color(0.286275, 0.286275, 0.286275, 1)
 polygon = PackedVector2Array(-400, -200, 400, -200, 400, 200, -400, 200)
 
 [node name="Floor" type="StaticBody2D" parent="."]
