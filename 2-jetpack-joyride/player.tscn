@@ -24,7 +24,7 @@ shape = SubResource("CapsuleShape2D_et17s")
 script = ExtResource("2_7l6qr")
 
 [node name="PlayerSpriteContainer" type="Node2D" parent="."]
-scale = Vector2(0.05, 0.05)
+scale = Vector2(0.1, 0.1)
 
 [node name="Head" type="Sprite2D" parent="PlayerSpriteContainer"]
 position = Vector2(206.5, -1170)

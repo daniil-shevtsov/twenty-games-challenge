@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=7 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
+[ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
 [ext_resource type="PackedScene" uid="uid://dhnav7p1v2cw3" path="res://player.tscn" id="2_aqxcm"]
 [ext_resource type="Texture2D" uid="uid://wh0vdm0x3dx0" path="res://sprites/background.png" id="2_g0lwh"]
 [ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
@@ -11,16 +12,20 @@ scale = Vector2(1.00323, 1)
 script = ExtResource("1_1usdg")
 
 [node name="Background" type="Node2D" parent="."]
+script = ExtResource("2_8tmoa")
 
-[node name="Sprite2D" type="Sprite2D" parent="Background"]
-position = Vector2(1.02487, 1.05321)
-scale = Vector2(0.558752, -0.668615)
+[node name="Main" type="Sprite2D" parent="Background"]
+scale = Vector2(0.392, 0.404)
+texture = ExtResource("2_g0lwh")
+
+[node name="Backup" type="Sprite2D" parent="Background"]
+position = Vector2(805.399, 0)
+scale = Vector2(0.391921, 0.404321)
 texture = ExtResource("2_g0lwh")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="GameBounds" parent="." instance=ExtResource("3_p253t")]
-scale = Vector2(1.4231, 1.59647)
 
 [node name="Player" parent="." instance=ExtResource("2_aqxcm")]
 position = Vector2(0, -280)

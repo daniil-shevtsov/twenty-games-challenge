@@ -7,6 +7,7 @@ public partial class Game : Node2D
 {
 
 	private GameBounds gameBounds;
+	private Background background;
 	private Player player;
 	private List<Obstacle> obstacles = new List<Obstacle>();
 
@@ -18,6 +19,7 @@ public partial class Game : Node2D
 	{
 		GD.Print("Hello World");
 		gameBounds = GetNode<GameBounds>("GameBounds");
+		background = GetNode<Background>("Background");
 		player = GetNode<Player>("Player");
 		obstacles.Add(GetNode<Obstacle>("Obstacle"));
 
@@ -72,6 +74,19 @@ public partial class Game : Node2D
 				RespawnObstacle(obstacle);
 			}
 		});
+		background.MoveBy(-obstacleSpeed * (float)delta);
+		GD.Print($"texture: {background.main.Texture.GetSize().X} multiplied by scale: {background.main.Texture.GetSize().X * background.main.Scale.X} gameBounds: {gameBounds.shape.Size.X}");
+		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+		{
+			var backupPosition = background.backup.GlobalPosition;
+			background.backup.GlobalPosition = background.main.GlobalPosition;
+			background.main.GlobalPosition = backupPosition;
+
+			background.backup.GlobalPosition = new Vector2(
+				gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + background.backup.Texture.GetSize().X * background.backup.Scale.X / 2,
+				background.backup.GlobalPosition.Y
+			);
+		}
 	}
 
 	private void InitGame()
