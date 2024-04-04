@@ -86,8 +86,20 @@ public partial class Game : Node2D
 
 	private void RespawnObstacle(Obstacle obstacle)
 	{
-		obstacle.SetSize(new Vector2(100f, 50f));
-		obstacle.GlobalPosition = new Vector2(gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + obstacle.shape.Size.X / 2, gameBounds.GlobalPosition.Y);
+		var random = new Random();
+		var randomSize = new Vector2(
+			random.Next(50, 100),
+			random.Next(50, 100)
+		);
+		var randomY = random.Next(
+			(int)(gameBounds.GlobalPosition.Y + randomSize.Y / 2),
+			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - randomSize.Y / 2)
+			);
+		obstacle.SetSize(randomSize);
+		obstacle.GlobalPosition = new Vector2(
+			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + obstacle.shape.Size.X / 2,
+			randomY
+		);
 
 	}
 
