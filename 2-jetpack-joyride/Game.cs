@@ -65,14 +65,12 @@ public partial class Game : Node2D
 									obstacle.GlobalPosition.X - obstacleSpeed * (float)delta,
 									obstacle.GlobalPosition.Y
 								);
-			// if (obstacle.GlobalPosition.X > gameBounds.GlobalPosition.X + gameBounds.shape.Size.X)
-			// {
-			// 	obstacle.GlobalPosition = new Vector2(
-			// 						obstacle.GlobalPosition.X - obstacleSpeed * (float)delta,
-			// 						obstacle.GlobalPosition.Y
-			// 					);
-			// }
 			GD.Print($"obstacle: {obstacle.GlobalPosition}");
+
+			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+			{
+				RespawnObstacle(obstacle);
+			}
 		});
 	}
 
@@ -82,9 +80,15 @@ public partial class Game : Node2D
 		player.GlobalPosition = gameBounds.GlobalPosition;
 		obstacles.ForEach((obstacle) =>
 		{
-			obstacle.SetSize(new Vector2(100f, 50f));
-			obstacle.GlobalPosition = new Vector2(gameBounds.GlobalPosition.X + gameBounds.shape.Size.X + 100, gameBounds.GlobalPosition.Y);
+			RespawnObstacle(obstacle);
 		});
+	}
+
+	private void RespawnObstacle(Obstacle obstacle)
+	{
+		obstacle.SetSize(new Vector2(100f, 50f));
+		obstacle.GlobalPosition = new Vector2(gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + obstacle.shape.Size.X / 2, gameBounds.GlobalPosition.Y);
+
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
