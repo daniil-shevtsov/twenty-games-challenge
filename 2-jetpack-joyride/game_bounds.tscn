@@ -5,8 +5,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_w1m1h"]
 size = Vector2(800, 400)
 
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3fc4y"]
-distance = -200.0
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_3v851"]
+a = Vector2(-400, 0)
+b = Vector2(400, 0)
 
 [node name="GameBounds" type="Area2D"]
 script = ExtResource("1_hbceu")
@@ -18,8 +19,14 @@ shape = SubResource("RectangleShape2D_w1m1h")
 color = Color(0.0941176, 0.0941176, 0.0941176, 1)
 polygon = PackedVector2Array(-400, -200, 400, -200, 400, 200, -400, 200)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(0, 200)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-scale = Vector2(4.2, 1)
-shape = SubResource("WorldBoundaryShape2D_3fc4y")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("SegmentShape2D_3v851")
+
+[node name="Ceiling" type="StaticBody2D" parent="."]
+position = Vector2(0, -200)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling"]
+shape = SubResource("SegmentShape2D_3v851")

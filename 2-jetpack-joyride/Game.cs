@@ -33,11 +33,27 @@ public partial class Game : Node2D
 		}
 
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
-		isGrounded = playerCollision != null;
+		if (playerCollision != null)
+		{
+
+			var collidedObject = (Node2D)playerCollision.GetCollider();
+			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
+
+			isGrounded = collidedWithFloor;
+			GD.Print($"collision position: {collidedObject.GlobalPosition} isGrounded: {isGrounded}");
+			playerVelocity.Y = 0f;
+		}
+		else
+		{
+			isGrounded = false;
+		}
+
+
 		if (!isGrounded)
 		{
 			playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
 		}
+		GD.Print($"player velocity: {playerVelocity} player position: {player.GlobalPosition}");
 	}
 
 	private void InitGame()

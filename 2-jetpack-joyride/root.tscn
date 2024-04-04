@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
 
 [node name="Root" type="Node2D"]
+scale = Vector2(1.00323, 1)
 script = ExtResource("1_1usdg")
 
 [node name="Background" type="Node2D" parent="."]
