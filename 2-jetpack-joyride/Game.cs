@@ -79,14 +79,15 @@ public partial class Game : Node2D
 			wheel.RotationDegrees += obstacleSpeed * (float)delta;
 		}
 
+		var groundedDuration = 4f;
+		var airDuration = 2f;
 		if (isGrounded && !isGroundedPrevious)
 		{
 			GD.Print($"KEK LAUNCH 45 Tween");
 			var legBody = ((Node2D)player.FindChild("LegBody"));
 			// legBody.RotationDegrees += obstacleSpeed * (float)delta;
 			var tween = CreateTween();
-			var duration = 0.3f;
-			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 45f, duration).SetTrans(Tween.TransitionType.Spring);
+			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
 		}
 		else if (!isGrounded && isGroundedPrevious)
 		{
@@ -94,8 +95,8 @@ public partial class Game : Node2D
 			var legBody = ((Node2D)player.FindChild("LegBody"));
 			// legBody.RotationDegrees += obstacleSpeed * (float)delta;
 			var tween = CreateTween();
-			var duration = 0.3f;
-			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, duration).SetTrans(Tween.TransitionType.Spring);
+
+			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 		}
 
 		GD.Print($"player velocity: {playerVelocity} player position: {player.GlobalPosition}");
