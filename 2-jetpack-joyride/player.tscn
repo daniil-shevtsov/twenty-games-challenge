@@ -28,27 +28,44 @@ script = ExtResource("2_7l6qr")
 [node name="PlayerSpriteContainer" type="Node2D" parent="."]
 scale = Vector2(0.1, 0.1)
 
-[node name="Head" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(206.5, -1170)
-texture = ExtResource("3_31gk2")
-
-[node name="Neck" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(21.5, -650)
-texture = ExtResource("4_72sdx")
-
-[node name="Body" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(-56.5, -334)
-texture = ExtResource("5_nlsj3")
-
-[node name="Hip" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(-19.5, 258)
-texture = ExtResource("6_nx60e")
-
 [node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(-237.5, 1109)
+position = Vector2(14.4999, 1037)
 texture = ExtResource("8_jr3xe")
 
-[node name="Leg" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(-158.5, 738)
-rotation = 0.271039
+[node name="LegBody" type="Node2D" parent="PlayerSpriteContainer"]
+position = Vector2(10, 1060)
+scale = Vector2(1, 1)
+
+[node name="Hip" type="Sprite2D" parent="PlayerSpriteContainer/LegBody"]
+position = Vector2(-20, -930)
+scale = Vector2(1, 1)
+texture = ExtResource("6_nx60e")
+
+[node name="Node2D" type="Node2D" parent="PlayerSpriteContainer/LegBody"]
+position = Vector2(1.90735e-06, 0.00012207)
+
+[node name="Leg" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/Node2D"]
+position = Vector2(-21.5, -418)
 texture = ExtResource("7_x76xk")
+
+[node name="BodyContainer" type="Node2D" parent="PlayerSpriteContainer/LegBody"]
+position = Vector2(-10, -1420)
+
+[node name="Neck" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/BodyContainer"]
+position = Vector2(4.00001, -380)
+scale = Vector2(1, 1)
+texture = ExtResource("4_72sdx")
+
+[node name="Body" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/BodyContainer"]
+position = Vector2(-68, -68.0002)
+scale = Vector2(1, 1)
+texture = ExtResource("5_nlsj3")
+
+[node name="HeadContainer" type="Node2D" parent="PlayerSpriteContainer/LegBody"]
+position = Vector2(-10, -1800)
+scale = Vector2(1, 1)
+
+[node name="Head" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/HeadContainer"]
+position = Vector2(130, -560)
+scale = Vector2(1, 1)
+texture = ExtResource("3_31gk2")
