@@ -59,21 +59,29 @@ public partial class Game : Node2D
 		{
 			playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
 		}
+
+		if (isGrounded)
+		{
+			var wheel = player.GetNode<Node2D>("PlayerSpriteContainer").GetNode<Sprite2D>("Wheel");
+			GD.Print($"WHEEL: {wheel}");
+			wheel.RotationDegrees += obstacleSpeed * (float)delta;
+		}
+
 		GD.Print($"player velocity: {playerVelocity} player position: {player.GlobalPosition}");
 
-		obstacles.ForEach((obstacle) =>
-		{
-			obstacle.GlobalPosition = new Vector2(
-									obstacle.GlobalPosition.X - obstacleSpeed * (float)delta,
-									obstacle.GlobalPosition.Y
-								);
-			GD.Print($"obstacle: {obstacle.GlobalPosition}");
+		// obstacles.ForEach((obstacle) =>
+		// {
+		// 	obstacle.GlobalPosition = new Vector2(
+		// 							obstacle.GlobalPosition.X - obstacleSpeed * (float)delta,
+		// 							obstacle.GlobalPosition.Y
+		// 						);
+		// 	GD.Print($"obstacle: {obstacle.GlobalPosition}");
 
-			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
-			{
-				RespawnObstacle(obstacle);
-			}
-		});
+		// 	if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+		// 	{
+		// 		RespawnObstacle(obstacle);
+		// 	}
+		// });
 		background.MoveBy(-obstacleSpeed * (float)delta);
 		GD.Print($"texture: {background.main.Texture.GetSize().X} multiplied by scale: {background.main.Texture.GetSize().X * background.main.Scale.X} gameBounds: {gameBounds.shape.Size.X}");
 		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
