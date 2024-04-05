@@ -13,6 +13,7 @@ public partial class Game : Node2D
 
 	private Vector2 playerVelocity;
 	private bool isGrounded = false;
+	private bool isGroundedPrevious = false;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -33,11 +34,13 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		isGroundedPrevious = isGrounded;
 		if (Input.IsActionPressed("jetpack"))
 		{
 			playerVelocity += new Vector2(0f, -jetpackForce) * (float)delta;
 		}
 
+		GD.Print($"velocity ${playerVelocity}");
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
 		if (playerCollision != null)
 		{
@@ -46,12 +49,21 @@ public partial class Game : Node2D
 			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
 
 			isGrounded = collidedWithFloor;
-			GD.Print($"collision position: {collidedObject.GlobalPosition} isGrounded: {isGrounded}");
+			GD.Print($"collision position: {collidedObject.GlobalPosition} {player.GlobalPosition.Y + player.shape.Height / 2} isGrounded: {isGrounded}");
+			GD.Print($"KEK collision set grounded to {isGrounded}");
 			playerVelocity.Y = 0f;
 		}
 		else
 		{
-			isGrounded = false;
+			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
+			var gameBoundsBottom = gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2;
+			var distance = Mathf.Abs(playerBottom - gameBoundsBottom);
+			GD.Print($"ELSE {playerBottom} - {gameBoundsBottom} = {distance}");
+			if (distance > 3f)
+			{
+				isGrounded = false;
+				GD.Print($"KEK else set grounded to {false}");
+			}
 		}
 
 
@@ -65,6 +77,25 @@ public partial class Game : Node2D
 			var wheel = player.GetNode<Node2D>("PlayerSpriteContainer").GetNode<Sprite2D>("Wheel");
 			GD.Print($"WHEEL: {wheel}");
 			wheel.RotationDegrees += obstacleSpeed * (float)delta;
+		}
+
+		if (isGrounded && !isGroundedPrevious)
+		{
+			GD.Print($"KEK LAUNCH 45 Tween");
+			var legBody = ((Node2D)player.FindChild("LegBody"));
+			// legBody.RotationDegrees += obstacleSpeed * (float)delta;
+			var tween = CreateTween();
+			var duration = 0.3f;
+			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 45f, duration).SetTrans(Tween.TransitionType.Spring);
+		}
+		else if (!isGrounded && isGroundedPrevious)
+		{
+			GD.Print($"KEK LAUNCH 0 Tween");
+			var legBody = ((Node2D)player.FindChild("LegBody"));
+			// legBody.RotationDegrees += obstacleSpeed * (float)delta;
+			var tween = CreateTween();
+			var duration = 0.3f;
+			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, duration).SetTrans(Tween.TransitionType.Spring);
 		}
 
 		GD.Print($"player velocity: {playerVelocity} player position: {player.GlobalPosition}");
