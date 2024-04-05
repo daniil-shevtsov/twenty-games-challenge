@@ -62,7 +62,6 @@ public partial class Game : Node2D
 			if (distance > 3f)
 			{
 				isGrounded = false;
-				GD.Print($"KEK else set grounded to {false}");
 			}
 		}
 
@@ -74,7 +73,7 @@ public partial class Game : Node2D
 
 		if (isGrounded)
 		{
-			var wheel = player.GetNode<Node2D>("PlayerSpriteContainer").GetNode<Sprite2D>("Wheel");
+			var wheel = (Node2D)player.FindChild("Wheel");
 			GD.Print($"WHEEL: {wheel}");
 			wheel.RotationDegrees += obstacleSpeed * (float)delta;
 		}
@@ -83,24 +82,21 @@ public partial class Game : Node2D
 		var airDuration = 2f;
 		if (isGrounded && !isGroundedPrevious)
 		{
-			GD.Print($"KEK LAUNCH 45 Tween");
 			var legBody = ((Node2D)player.FindChild("LegBody"));
-			// legBody.RotationDegrees += obstacleSpeed * (float)delta;
 			var tween = CreateTween();
 			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
+
+
+			TweenWheelBounce();
+
 		}
 		else if (!isGrounded && isGroundedPrevious)
 		{
-			GD.Print($"KEK LAUNCH 0 Tween");
 			var legBody = ((Node2D)player.FindChild("LegBody"));
-			// legBody.RotationDegrees += obstacleSpeed * (float)delta;
 			var tween = CreateTween();
 
 			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 		}
-
-		GD.Print($"player velocity: {playerVelocity} player position: {player.GlobalPosition}");
-
 		// obstacles.ForEach((obstacle) =>
 		// {
 		// 	obstacle.GlobalPosition = new Vector2(
@@ -127,6 +123,18 @@ public partial class Game : Node2D
 				background.backup.GlobalPosition.Y
 			);
 		}
+	}
+
+	private async void TweenWheelBounce()
+	{
+		var wheelContainer = (Node2D)player.FindChild("WheelContainer");
+		var wheelTween = CreateTween();
+		var duration = 0.5f;
+		var offset = 0.1f;
+		wheelTween.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f) + new Vector2(offset, -offset * 2), duration).SetTrans(Tween.TransitionType.Bounce);
+		await ToSignal(wheelTween, "finished");
+		var wheelTween2 = CreateTween();
+		wheelTween2.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f), duration).SetTrans(Tween.TransitionType.Bounce);
 	}
 
 	private void InitGame()

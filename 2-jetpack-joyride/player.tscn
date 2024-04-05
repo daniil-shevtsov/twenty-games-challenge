@@ -28,8 +28,13 @@ script = ExtResource("2_7l6qr")
 [node name="PlayerSpriteContainer" type="Node2D" parent="."]
 scale = Vector2(0.1, 0.1)
 
-[node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer"]
-position = Vector2(14.4999, 1037)
+[node name="WheelContainer" type="Node2D" parent="PlayerSpriteContainer"]
+position = Vector2(20, 1360)
+scale = Vector2(1, 1)
+
+[node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer/WheelContainer"]
+position = Vector2(-14.5, -307)
+scale = Vector2(1, 1)
 texture = ExtResource("8_jr3xe")
 
 [node name="LegBody" type="Node2D" parent="PlayerSpriteContainer"]
