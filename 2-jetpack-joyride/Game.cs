@@ -9,6 +9,9 @@ public partial class Game : Node2D
 	private GameBounds gameBounds;
 	private Background background;
 	private Player player;
+	private Node2D legBody;
+	private Node2D wheel;
+	private Node2D wheelContainer;
 	private List<Obstacle> obstacles = new List<Obstacle>();
 
 	private Vector2 playerVelocity;
@@ -22,6 +25,9 @@ public partial class Game : Node2D
 		gameBounds = GetNode<GameBounds>("GameBounds");
 		background = GetNode<Background>("Background");
 		player = GetNode<Player>("Player");
+		legBody = (Node2D)player.FindChild("LegBody");
+		wheel = (Node2D)player.FindChild("Wheel");
+		wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		obstacles.Add(GetNode<Obstacle>("Obstacle"));
 
 		InitGame();
@@ -73,7 +79,6 @@ public partial class Game : Node2D
 
 		if (isGrounded)
 		{
-			var wheel = (Node2D)player.FindChild("Wheel");
 			GD.Print($"WHEEL: {wheel}");
 			wheel.RotationDegrees += obstacleSpeed * (float)delta;
 		}
@@ -82,7 +87,6 @@ public partial class Game : Node2D
 		var airDuration = 2f;
 		if (isGrounded && !isGroundedPrevious)
 		{
-			var legBody = ((Node2D)player.FindChild("LegBody"));
 			var tween = CreateTween();
 			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
 
@@ -92,7 +96,6 @@ public partial class Game : Node2D
 		}
 		else if (!isGrounded && isGroundedPrevious)
 		{
-			var legBody = ((Node2D)player.FindChild("LegBody"));
 			var tween = CreateTween();
 
 			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
@@ -127,14 +130,20 @@ public partial class Game : Node2D
 
 	private async void TweenWheelBounce()
 	{
-		var wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		var wheelTween = CreateTween();
 		var duration = 0.5f;
 		var offset = 0.1f;
 		wheelTween.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f) + new Vector2(offset, -offset * 2), duration).SetTrans(Tween.TransitionType.Bounce);
+		wheelTween.SetParallel(true);
+		var legBodyOffset = 75;
+		wheelTween.TweenProperty(legBody, new NodePath("position"), new Vector2(0f, legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
+
 		await ToSignal(wheelTween, "finished");
 		var wheelTween2 = CreateTween();
 		wheelTween2.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f), duration).SetTrans(Tween.TransitionType.Bounce);
+		wheelTween2.SetParallel(true);
+		wheelTween2.TweenProperty(legBody, new NodePath("position"), new Vector2(0f, -legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
+
 	}
 
 	private void InitGame()
