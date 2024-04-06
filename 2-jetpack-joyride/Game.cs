@@ -15,6 +15,7 @@ public partial class Game : Node2D
 	private List<Obstacle> obstacles = new List<Obstacle>();
 
 	private Vector2 playerVelocity;
+	private float wheelAngularVelocity = 0f;
 	private bool isGrounded = false;
 	private bool isGroundedPrevious = false;
 
@@ -46,7 +47,7 @@ public partial class Game : Node2D
 			playerVelocity += new Vector2(0f, -jetpackForce) * (float)delta;
 		}
 
-		GD.Print($"velocity ${playerVelocity}");
+		GD.Print($"velocity ${playerVelocity} grounded={isGrounded}");
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
 		if (playerCollision != null)
 		{
@@ -57,7 +58,11 @@ public partial class Game : Node2D
 			isGrounded = collidedWithFloor;
 			GD.Print($"collision position: {collidedObject.GlobalPosition} {player.GlobalPosition.Y + player.shape.Height / 2} isGrounded: {isGrounded}");
 			GD.Print($"KEK collision set grounded to {isGrounded}");
-			playerVelocity.Y = 0f;
+			if (collidedWithFloor)
+			{
+				playerVelocity.Y = 0f;
+				wheelAngularVelocity = obstacleSpeed;
+			}
 		}
 		else
 		{
@@ -75,13 +80,15 @@ public partial class Game : Node2D
 		if (!isGrounded)
 		{
 			playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
+			wheelAngularVelocity = wheelAngularVelocity - (obstacleSpeed * 0.5f) * (float)delta;
+			if (wheelAngularVelocity < 0)
+			{
+				wheelAngularVelocity = 0f;
+			}
 		}
+		GD.Print($"wheel angularVelocity = {wheelAngularVelocity}");
+		wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 
-		if (isGrounded)
-		{
-			GD.Print($"WHEEL: {wheel}");
-			wheel.RotationDegrees += obstacleSpeed * (float)delta;
-		}
 
 		var groundedDuration = 4f;
 		var airDuration = 2f;
