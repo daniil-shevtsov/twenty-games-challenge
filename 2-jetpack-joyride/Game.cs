@@ -13,6 +13,8 @@ public partial class Game : Node2D
 	private Node2D wheel;
 	private Node2D wheelContainer;
 	private List<Obstacle> obstacles = new List<Obstacle>();
+	private List<Coin> coins = new List<Coin>();
+	private float score = 0;
 
 	private Vector2 playerVelocity;
 	private float wheelAngularVelocity = 0f;
@@ -20,7 +22,7 @@ public partial class Game : Node2D
 	private bool isGroundedPrevious = false;
 
 	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+	public override async void _Ready()
 	{
 		GD.Print("Hello World");
 		gameBounds = GetNode<GameBounds>("GameBounds");
@@ -30,6 +32,17 @@ public partial class Game : Node2D
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		obstacles.Add(GetNode<Obstacle>("Obstacle"));
+
+		var coinScene = GD.Load<PackedScene>("res://coin.tscn");
+		GD.Print($"KEK {coinScene}");
+		var coinInstance = (Coin)coinScene.Instantiate();
+		GD.Print($"KEK {coinScene} {coinInstance}");
+		var scene = GetTree().CurrentScene;
+		GD.Print($"KEK {coinScene} {coinInstance}");
+		scene.CallDeferred("add_child", coinInstance);
+		await ToSignal(GetTree(), "process_frame");
+		coinInstance.GlobalPosition = new Vector2(gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 50f, gameBounds.GlobalPosition.Y);
+		coins.Add(coinInstance);
 
 		InitGame();
 	}
@@ -53,15 +66,22 @@ public partial class Game : Node2D
 		{
 
 			var collidedObject = (Node2D)playerCollision.GetCollider();
-			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
-
-			isGrounded = collidedWithFloor;
-			GD.Print($"collision position: {collidedObject.GlobalPosition} {player.GlobalPosition.Y + player.shape.Height / 2} isGrounded: {isGrounded}");
-			GD.Print($"KEK collision set grounded to {isGrounded}");
-			if (collidedWithFloor)
+			if (collidedObject is Coin)
 			{
-				playerVelocity.Y = 0f;
-				wheelAngularVelocity = obstacleSpeed;
+				RemoveCoin((Coin)collidedObject);
+			}
+			else
+			{
+				var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
+
+				isGrounded = collidedWithFloor;
+				GD.Print($"collision position: {collidedObject.GlobalPosition} {player.GlobalPosition.Y + player.shape.Height / 2} isGrounded: {isGrounded}");
+				GD.Print($"KEK collision set grounded to {isGrounded}");
+				if (collidedWithFloor)
+				{
+					playerVelocity.Y = 0f;
+					wheelAngularVelocity = obstacleSpeed;
+				}
 			}
 		}
 		else
@@ -133,6 +153,19 @@ public partial class Game : Node2D
 				background.backup.GlobalPosition.Y
 			);
 		}
+
+		coins.ForEach((coin) =>
+		{
+			GD.Print($"KEK Iterationg over coin={coin} shape={coin.shape}");
+			coin.GlobalPosition = new Vector2(
+				coin.GlobalPosition.X - obstacleSpeed * (float)delta,
+				coin.GlobalPosition.Y
+			);
+			if (coin.GlobalPosition.X + coin.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+			{
+				RemoveCoin(coin);
+			}
+		});
 	}
 
 	private async void TweenWheelBounce()
@@ -180,6 +213,12 @@ public partial class Game : Node2D
 			randomY
 		);
 
+	}
+
+	private void RemoveCoin(Coin coin)
+	{
+		coins.Remove(coin);
+		coin.Free();
 	}
 
 	private float gravityAcceleration = 9.8f * 20;

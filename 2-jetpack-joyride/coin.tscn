@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3x23ai3g11jv"]
+
+[ext_resource type="Script" path="res://Coin.cs" id="1_t3808"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d8oem"]
+size = Vector2(100, 100)
+
+[node name="Coin" type="StaticBody2D"]
+script = ExtResource("1_t3808")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_d8oem")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(0.345098, 0.635294, 0.356863, 1)
+polygon = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
