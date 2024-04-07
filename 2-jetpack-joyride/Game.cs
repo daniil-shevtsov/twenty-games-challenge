@@ -62,6 +62,8 @@ public partial class Game : Node2D
 
 		GD.Print($"velocity ${playerVelocity} grounded={isGrounded}");
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
+		var groundedDuration = 4f;
+		var airDuration = 2f;
 		if (playerCollision != null)
 		{
 
@@ -81,6 +83,15 @@ public partial class Game : Node2D
 				{
 					playerVelocity.Y = 0f;
 					wheelAngularVelocity = obstacleSpeed;
+
+					if (isGrounded && !isGroundedPrevious)
+					{
+						var tween = CreateTween();
+						tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
+
+
+						TweenWheelBounce();
+					}
 				}
 			}
 		}
@@ -93,6 +104,12 @@ public partial class Game : Node2D
 			if (distance > 3f)
 			{
 				isGrounded = false;
+				if (!isGrounded && isGroundedPrevious)
+				{
+					var tween = CreateTween();
+
+					tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
+				}
 			}
 		}
 
@@ -100,7 +117,7 @@ public partial class Game : Node2D
 		if (!isGrounded)
 		{
 			playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
-			wheelAngularVelocity = wheelAngularVelocity - (obstacleSpeed * 0.5f) * (float)delta;
+			wheelAngularVelocity = wheelAngularVelocity - (obstacleSpeed * 0.25f) * (float)delta;
 			if (wheelAngularVelocity < 0)
 			{
 				wheelAngularVelocity = 0f;
@@ -110,22 +127,17 @@ public partial class Game : Node2D
 		wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 
 
-		var groundedDuration = 4f;
-		var airDuration = 2f;
+
 		if (isGrounded && !isGroundedPrevious)
 		{
-			var tween = CreateTween();
-			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
 
-
-			TweenWheelBounce();
 
 		}
 		else if (!isGrounded && isGroundedPrevious)
 		{
-			var tween = CreateTween();
+			// var tween = CreateTween();
 
-			tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
+			// tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 		}
 		// obstacles.ForEach((obstacle) =>
 		// {
