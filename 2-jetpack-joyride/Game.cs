@@ -15,6 +15,7 @@ public partial class Game : Node2D
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
 	private float currentScore = 0;
+	private Label scoreLabel;
 
 	private Vector2 playerVelocity;
 	private float wheelAngularVelocity = 0f;
@@ -32,6 +33,11 @@ public partial class Game : Node2D
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		obstacles.Add(GetNode<Obstacle>("Obstacle"));
+		scoreLabel = GetNode<Label>("ScoreLabel");
+		scoreLabel.GlobalPosition = new Vector2(
+			gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2,
+			gameBounds.GlobalPosition.Y - gameBounds.shape.Size.Y / 2
+		);
 
 		coinScene = GD.Load<PackedScene>("res://coin.tscn");
 		SpawnCoin();
@@ -152,7 +158,8 @@ public partial class Game : Node2D
 		}
 
 		currentScore += travelledDistance * 0.005f;
-		GD.Print($"current score: {currentScore}");
+		scoreLabel.Text = currentScore.ToString();
+
 	}
 
 	private async void TweenWheelBounce()
