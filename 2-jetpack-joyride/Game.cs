@@ -14,7 +14,7 @@ public partial class Game : Node2D
 	private Node2D wheelContainer;
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
-	private float score = 0;
+	private float currentScore = 0;
 
 	private Vector2 playerVelocity;
 	private float wheelAngularVelocity = 0f;
@@ -25,7 +25,6 @@ public partial class Game : Node2D
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
 	{
-		GD.Print("Hello World");
 		gameBounds = GetNode<GameBounds>("GameBounds");
 		background = GetNode<Background>("Background");
 		player = GetNode<Player>("Player");
@@ -47,13 +46,14 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		var travelledDistance = obstacleSpeed * (float)delta;
+
 		isGroundedPrevious = isGrounded;
 		if (Input.IsActionPressed("jetpack"))
 		{
 			playerVelocity += new Vector2(0f, -jetpackForce) * (float)delta;
 		}
 
-		GD.Print($"velocity ${playerVelocity} grounded={isGrounded}");
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
 		var groundedDuration = 4f;
 		var airDuration = 2f;
@@ -63,7 +63,6 @@ public partial class Game : Node2D
 			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
 
 			isGrounded = collidedWithFloor;
-			GD.Print($"collision position: {collidedObject.GlobalPosition} {player.GlobalPosition.Y + player.shape.Height / 2} isGrounded: {isGrounded}");
 			if (collidedWithFloor)
 			{
 				playerVelocity.Y = 0f;
@@ -84,7 +83,6 @@ public partial class Game : Node2D
 			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
 			var gameBoundsBottom = gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2;
 			var distance = Mathf.Abs(playerBottom - gameBoundsBottom);
-			GD.Print($"ELSE {playerBottom} - {gameBoundsBottom} = {distance}");
 			if (distance > 3f)
 			{
 				isGrounded = false;
@@ -107,24 +105,21 @@ public partial class Game : Node2D
 				wheelAngularVelocity = 0f;
 			}
 		}
-		GD.Print($"wheel angularVelocity = {wheelAngularVelocity}");
 		wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 
 		obstacles.ForEach((obstacle) =>
 		{
 			obstacle.GlobalPosition = new Vector2(
-									obstacle.GlobalPosition.X - obstacleSpeed * (float)delta,
+									obstacle.GlobalPosition.X - travelledDistance,
 									obstacle.GlobalPosition.Y
 								);
-			GD.Print($"obstacle: {obstacle.GlobalPosition}");
 
 			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
 			{
 				RespawnObstacle(obstacle);
 			}
 		});
-		background.MoveBy(-obstacleSpeed * (float)delta);
-		GD.Print($"texture: {background.main.Texture.GetSize().X} multiplied by scale: {background.main.Texture.GetSize().X * background.main.Scale.X} gameBounds: {gameBounds.shape.Size.X}");
+		background.MoveBy(-travelledDistance);
 		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
 		{
 			var backupPosition = background.backup.GlobalPosition;
@@ -141,7 +136,7 @@ public partial class Game : Node2D
 		coins.ForEach((coin) =>
 		{
 			coin.GlobalPosition = new Vector2(
-				coin.GlobalPosition.X - obstacleSpeed * (float)delta,
+				coin.GlobalPosition.X - travelledDistance,
 				coin.GlobalPosition.Y
 			);
 			if (coin.GlobalPosition.X + coin.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
@@ -155,6 +150,9 @@ public partial class Game : Node2D
 		{
 			SpawnCoin();
 		}
+
+		currentScore += travelledDistance * 0.005f;
+		GD.Print($"current score: {currentScore}");
 	}
 
 	private async void TweenWheelBounce()
@@ -221,23 +219,20 @@ public partial class Game : Node2D
 			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 50f,
 			randomY
 		);
-		GD.Print($"KEK Spawn coin {coinInstance} at {coinInstance.GlobalPosition} and player is at {player.GlobalPosition}");
 
 		coins.Add(coinInstance);
 
-		// For some reason if I don't do this bodyentered is being triggered by player the moment coin is spawned.
+		// For some reason if I don't do this, bodyentered is being triggered by the player the moment coin is spawned.
 		coinInstance.Monitoring = false;
 		coinInstance.BodyEntered += (Node2D body) =>
 		{
 			OnCoinOverlap(coinInstance, body);
 		};
-		await ToSignal(GetTree(), "process_frame");
 		coinInstance.Monitoring = true;
 	}
 
 	private void RemoveCoin(Coin coin)
 	{
-		GD.Print($"KEK Remove coin {coin}");
 		coins.Remove(coin);
 		coin.QueueFree();
 	}
@@ -246,7 +241,6 @@ public partial class Game : Node2D
 	{
 		if (body == player)
 		{
-			GD.Print("KEK overlap of player");
 			RemoveCoin(coin);
 		}
 	}
