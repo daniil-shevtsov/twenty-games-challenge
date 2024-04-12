@@ -225,10 +225,14 @@ public partial class Game : Node2D
 
 		coins.Add(coinInstance);
 
+		// For some reason if I don't do this bodyentered is being triggered by player the moment coin is spawned.
+		coinInstance.Monitoring = false;
 		coinInstance.BodyEntered += (Node2D body) =>
 		{
 			OnCoinOverlap(coinInstance, body);
 		};
+		await ToSignal(GetTree(), "process_frame");
+		coinInstance.Monitoring = true;
 	}
 
 	private void RemoveCoin(Coin coin)
