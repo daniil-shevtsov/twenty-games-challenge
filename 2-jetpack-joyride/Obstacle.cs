@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Obstacle : StaticBody2D
+public partial class Obstacle : Area2D
 {
 	public CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
