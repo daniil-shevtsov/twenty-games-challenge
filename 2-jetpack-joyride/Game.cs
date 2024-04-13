@@ -255,7 +255,7 @@ public partial class Game : Node2D
 	private void IncreaseScore(float value)
 	{
 		currentScore += value;
-		scoreLabel.Text = currentScore.ToString();
+		scoreLabel.Text = Math.Round(currentScore, 0).ToString();
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
