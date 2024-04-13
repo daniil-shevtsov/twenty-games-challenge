@@ -262,13 +262,16 @@ public partial class Game : Node2D
 		var scene = GetTree().CurrentScene;
 		scene.CallDeferred("add_child", instance);
 		await ToSignal(GetTree(), "process_frame");
-		var randomSize = instance.shape.Size;
+
+		var randomSize = random.Next(25, 50);
+		var size = new Vector2(randomSize, randomSize);
+		instance.SetSize(size);
 		var randomY = random.Next(
-			(int)(gameBounds.GlobalPosition.Y + randomSize.Y / 2),
-			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - randomSize.Y / 2)
+			(int)(gameBounds.GlobalPosition.Y + size.Y / 2),
+			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - size.Y / 2)
 			);
 		instance.GlobalPosition = new Vector2(
-			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 1050f,
+			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 100f,
 			randomY
 		);
 
