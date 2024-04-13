@@ -55,6 +55,7 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		GD.Print($"velocity {playerVelocity}");
 		var travelledDistance = obstacleSpeed * (float)delta;
 
 		isGroundedPrevious = isGrounded;
@@ -70,6 +71,7 @@ public partial class Game : Node2D
 		{
 			var collidedObject = (Node2D)playerCollision.GetCollider();
 			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
+			var collidedWithCeiling = playerCollision != null && collidedObject == gameBounds.ceiling;
 
 			isGrounded = collidedWithFloor;
 			if (collidedWithFloor)
@@ -85,6 +87,10 @@ public partial class Game : Node2D
 
 					TweenWheelBounce();
 				}
+			}
+			else if (collidedWithCeiling)
+			{
+				playerVelocity.Y = 0f;
 			}
 		}
 		else
@@ -164,10 +170,10 @@ public partial class Game : Node2D
 
 		if (obstacles.Count < 1)
 		{
-			// SpawnObstacle();
+			SpawnObstacle();
 		}
 
-		// IncreaseScore(travelledDistance * 0.005f);
+		IncreaseScore(travelledDistance * 0.005f);
 	}
 
 	private async void TweenWheelBounce()

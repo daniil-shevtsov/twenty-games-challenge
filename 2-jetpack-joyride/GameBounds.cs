@@ -4,10 +4,12 @@ using System;
 public partial class GameBounds : Area2D
 {
 	public RectangleShape2D shape;
+	public StaticBody2D ceiling;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		shape = (RectangleShape2D)GetNode<CollisionShape2D>("CollisionShape2D").Shape;
+		ceiling = GetNode<StaticBody2D>("Ceiling");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
