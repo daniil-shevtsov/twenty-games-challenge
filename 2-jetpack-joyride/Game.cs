@@ -164,10 +164,10 @@ public partial class Game : Node2D
 
 		if (obstacles.Count < 1)
 		{
-			SpawnObstacle();
+			// SpawnObstacle();
 		}
 
-		IncreaseScore(travelledDistance * 0.005f);
+		// IncreaseScore(travelledDistance * 0.005f);
 	}
 
 	private async void TweenWheelBounce()
@@ -191,7 +191,10 @@ public partial class Game : Node2D
 	private void InitGame()
 	{
 		playerVelocity = Vector2.Zero;
-		player.GlobalPosition = gameBounds.GlobalPosition;
+		player.GlobalPosition = new Vector2(
+			gameBounds.GlobalPosition.X,
+			gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - player.shape.Height / 2
+		);
 
 		var obstaclesToRemove = new List<Obstacle>(obstacles);
 		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
@@ -259,7 +262,7 @@ public partial class Game : Node2D
 			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - randomSize.Y / 2)
 			);
 		instance.GlobalPosition = new Vector2(
-			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 50f,
+			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 1050f,
 			randomY
 		);
 
