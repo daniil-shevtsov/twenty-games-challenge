@@ -192,14 +192,13 @@ public partial class Game : Node2D
 	{
 		playerVelocity = Vector2.Zero;
 		player.GlobalPosition = gameBounds.GlobalPosition;
-		obstacles.ForEach((obstacle) =>
-		{
-			RemoveObstacle(obstacle);
-		});
-		coins.ForEach((coin) =>
-		{
-			RemoveCoin(coin);
-		});
+
+		var obstaclesToRemove = new List<Obstacle>(obstacles);
+		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
+		var coinsToRemove = new List<Coin>(coins);
+		coinsToRemove.ForEach((coin) => RemoveCoin(coin));
+
+		SetScore(0);
 	}
 
 	private async void SpawnCoin()
@@ -235,6 +234,15 @@ public partial class Game : Node2D
 	{
 		coins.Remove(coin);
 		coin.QueueFree();
+	}
+
+	private void OnCoinOverlap(Coin coin, Node2D body)
+	{
+		if (body == player)
+		{
+			IncreaseScore(5);
+			RemoveCoin(coin);
+		}
 	}
 
 	private async void SpawnObstacle()
@@ -273,15 +281,6 @@ public partial class Game : Node2D
 		obstacle.QueueFree();
 	}
 
-	private void OnCoinOverlap(Coin coin, Node2D body)
-	{
-		if (body == player)
-		{
-			IncreaseScore(5);
-			RemoveCoin(coin);
-		}
-	}
-
 	private void OnObstacleOverlap(Obstacle obstacle, Node2D body)
 	{
 		if (body == player)
@@ -290,16 +289,22 @@ public partial class Game : Node2D
 			if (currentScore > bestScore)
 			{
 				bestScore = currentScore;
-				InitGame();
 			}
-
+			InitGame();
 		}
 	}
 
 	private void IncreaseScore(float value)
 	{
-		currentScore += value;
+		SetScore(currentScore + value);
+	}
+
+
+	private void SetScore(float score)
+	{
+		currentScore = score;
 		scoreLabel.Text = Math.Round(currentScore, 0).ToString();
+		GD.Print($"SCORE: {currentScore}");
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
