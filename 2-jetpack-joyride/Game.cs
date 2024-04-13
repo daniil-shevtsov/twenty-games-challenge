@@ -15,9 +15,11 @@ public partial class Game : Node2D
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
 	private float currentScore = 0;
-	private float previousScore = 0;
-	private float bestScore = 0;
 	private Label scoreLabel;
+	private float bestScore = 0;
+	private Label bestScoreLabel;
+	private float previousScore = 0;
+	private Label previousSCoreLabel;
 
 	private Vector2 playerVelocity;
 	private float wheelAngularVelocity = 0f;
@@ -36,6 +38,8 @@ public partial class Game : Node2D
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		scoreLabel = GetNode<Label>("ScoreLabel");
+		bestScoreLabel = GetNode<Label>("BestScoreLabel");
+		previousSCoreLabel = GetNode<Label>("PreviousScoreLabel");
 		scoreLabel.GlobalPosition = new Vector2(
 			gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2,
 			gameBounds.GlobalPosition.Y - gameBounds.shape.Size.Y / 2
@@ -298,9 +302,11 @@ public partial class Game : Node2D
 		if (body == player)
 		{
 			previousScore = currentScore;
+			previousSCoreLabel.Text = FormatScore(previousScore, "PREVIOUS");
 			if (currentScore > bestScore)
 			{
 				bestScore = currentScore;
+				bestScoreLabel.Text = FormatScore(bestScore, "BEST");
 			}
 			InitGame();
 		}
@@ -315,8 +321,12 @@ public partial class Game : Node2D
 	private void SetScore(float score)
 	{
 		currentScore = score;
-		scoreLabel.Text = Math.Round(currentScore, 0).ToString();
-		GD.Print($"SCORE: {currentScore}");
+		scoreLabel.Text = FormatScore(currentScore, "SCORE");
+	}
+
+	private string FormatScore(float value, string title)
+	{
+		return $"{title}: {Math.Round(value, 0)}";
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
