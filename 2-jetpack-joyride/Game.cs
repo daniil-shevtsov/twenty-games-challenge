@@ -157,8 +157,7 @@ public partial class Game : Node2D
 			SpawnCoin();
 		}
 
-		currentScore += travelledDistance * 0.005f;
-		scoreLabel.Text = currentScore.ToString();
+		IncreaseScore(travelledDistance * 0.005f);
 
 	}
 
@@ -248,8 +247,15 @@ public partial class Game : Node2D
 	{
 		if (body == player)
 		{
+			IncreaseScore(5);
 			RemoveCoin(coin);
 		}
+	}
+
+	private void IncreaseScore(float value)
+	{
+		currentScore += value;
+		scoreLabel.Text = currentScore.ToString();
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
