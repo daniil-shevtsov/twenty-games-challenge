@@ -15,6 +15,8 @@ public partial class Game : Node2D
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
 	private float currentScore = 0;
+	private float previousScore = 0;
+	private float bestScore = 0;
 	private Label scoreLabel;
 
 	private Vector2 playerVelocity;
@@ -22,6 +24,7 @@ public partial class Game : Node2D
 	private bool isGrounded = false;
 	private bool isGroundedPrevious = false;
 	private PackedScene coinScene = null;
+	private PackedScene obstacleScene = null;
 
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
@@ -32,7 +35,6 @@ public partial class Game : Node2D
 		legBody = (Node2D)player.FindChild("LegBody");
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
-		obstacles.Add(GetNode<Obstacle>("Obstacle"));
 		scoreLabel = GetNode<Label>("ScoreLabel");
 		scoreLabel.GlobalPosition = new Vector2(
 			gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2,
@@ -40,6 +42,7 @@ public partial class Game : Node2D
 		);
 
 		coinScene = GD.Load<PackedScene>("res://coin.tscn");
+		obstacleScene = GD.Load<PackedScene>("res://obstacle.tscn");
 		SpawnCoin();
 
 		InitGame();
@@ -113,18 +116,6 @@ public partial class Game : Node2D
 		}
 		wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 
-		obstacles.ForEach((obstacle) =>
-		{
-			obstacle.GlobalPosition = new Vector2(
-									obstacle.GlobalPosition.X - travelledDistance,
-									obstacle.GlobalPosition.Y
-								);
-
-			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
-			{
-				RespawnObstacle(obstacle);
-			}
-		});
 		background.MoveBy(-travelledDistance);
 		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
 		{
@@ -157,8 +148,26 @@ public partial class Game : Node2D
 			SpawnCoin();
 		}
 
-		IncreaseScore(travelledDistance * 0.005f);
+		var obstaclesToRemove = new List<Obstacle>();
+		obstacles.ForEach((obstacle) =>
+		{
+			obstacle.GlobalPosition = new Vector2(
+				obstacle.GlobalPosition.X - travelledDistance,
+				obstacle.GlobalPosition.Y
+			);
+			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+			{
+				obstaclesToRemove.Add(obstacle);
+			}
+		});
+		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
 
+		if (obstacles.Count < 1)
+		{
+			SpawnObstacle();
+		}
+
+		IncreaseScore(travelledDistance * 0.005f);
 	}
 
 	private async void TweenWheelBounce()
@@ -185,27 +194,12 @@ public partial class Game : Node2D
 		player.GlobalPosition = gameBounds.GlobalPosition;
 		obstacles.ForEach((obstacle) =>
 		{
-			RespawnObstacle(obstacle);
+			RemoveObstacle(obstacle);
 		});
-	}
-
-	private void RespawnObstacle(Obstacle obstacle)
-	{
-		var random = new Random();
-		var randomSize = new Vector2(
-			random.Next(50, 100),
-			random.Next(50, 100)
-		);
-		var randomY = random.Next(
-			(int)(gameBounds.GlobalPosition.Y + randomSize.Y / 2),
-			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - randomSize.Y / 2)
-			);
-		obstacle.SetSize(randomSize);
-		obstacle.GlobalPosition = new Vector2(
-			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + obstacle.shape.Size.X / 2,
-			randomY
-		);
-
+		coins.ForEach((coin) =>
+		{
+			RemoveCoin(coin);
+		});
 	}
 
 	private async void SpawnCoin()
@@ -243,12 +237,62 @@ public partial class Game : Node2D
 		coin.QueueFree();
 	}
 
+	private async void SpawnObstacle()
+	{
+		var random = new Random();
+		var instance = (Obstacle)obstacleScene.Instantiate();
+
+		var scene = GetTree().CurrentScene;
+		scene.CallDeferred("add_child", instance);
+		await ToSignal(GetTree(), "process_frame");
+		var randomSize = instance.shape.Size;
+		var randomY = random.Next(
+			(int)(gameBounds.GlobalPosition.Y + randomSize.Y / 2),
+			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - randomSize.Y / 2)
+			);
+		instance.GlobalPosition = new Vector2(
+			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 50f,
+			randomY
+		);
+
+		obstacles.Add(instance);
+
+		// For some reason if I don't do this, bodyentered is being triggered by the player the moment obstacle is spawned.
+		instance.Monitoring = false;
+		instance.BodyEntered += (Node2D body) =>
+		{
+			OnObstacleOverlap(instance, body);
+		};
+		instance.Monitoring = true;
+	}
+
+
+	private void RemoveObstacle(Obstacle obstacle)
+	{
+		obstacles.Remove(obstacle);
+		obstacle.QueueFree();
+	}
+
 	private void OnCoinOverlap(Coin coin, Node2D body)
 	{
 		if (body == player)
 		{
 			IncreaseScore(5);
 			RemoveCoin(coin);
+		}
+	}
+
+	private void OnObstacleOverlap(Obstacle obstacle, Node2D body)
+	{
+		if (body == player)
+		{
+			previousScore = currentScore;
+			if (currentScore > bestScore)
+			{
+				bestScore = currentScore;
+				InitGame();
+			}
+
 		}
 	}
 
