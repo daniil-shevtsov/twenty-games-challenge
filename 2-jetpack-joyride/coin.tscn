@@ -4,12 +4,13 @@
 [ext_resource type="Texture2D" uid="uid://cb1maxfbybaxg" path="res://sprites/coin.png" id="2_yyt3e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qvi16"]
-size = Vector2(100, 100)
+size = Vector2(78.6595, 63.6682)
 
 [node name="Coin" type="Area2D"]
 script = ExtResource("1_t3808")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.499999, 0.499999)
 scale = Vector2(0.978903, 0.989505)
 shape = SubResource("RectangleShape2D_qvi16")
 

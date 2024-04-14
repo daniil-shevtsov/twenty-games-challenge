@@ -269,11 +269,16 @@ public partial class Game : Node2D
 		coin.QueueFree();
 	}
 
-	private void OnCoinOverlap(Coin coin, Node2D body)
+	private async void OnCoinOverlap(Coin coin, Node2D body)
 	{
 		if (body == player)
 		{
 			IncreaseScore(5);
+			var tween = CreateTween();
+			var duration = 0.5f;
+			tween.TweenProperty(coin.sprite, new NodePath("scale"), new Vector2(0.0f, 0.0f), duration);
+
+			await ToSignal(tween, "finished");
 			RemoveCoin(coin);
 		}
 	}

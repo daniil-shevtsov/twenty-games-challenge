@@ -5,7 +5,7 @@ public partial class Coin : Area2D
 {
 	public CollisionShape2D collisionShape = null;
 	public RectangleShape2D shape = null;
-	private Sprite2D sprite = null;
+	public Sprite2D sprite = null;
 
 	private float rotationSpeed = 0f;
 	private int rotationDirection = 1;
