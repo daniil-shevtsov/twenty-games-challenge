@@ -9,12 +9,6 @@ public partial class Obstacle : Area2D
 	private Node2D sprite;
 	private Vector2 obstacleSize;
 
-	public void SetSize(Vector2 size)
-	{
-		obstacleSize = size;
-		shape.Size = obstacleSize;
-	}
-
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{

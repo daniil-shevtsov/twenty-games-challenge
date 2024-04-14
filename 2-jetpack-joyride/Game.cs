@@ -275,9 +275,7 @@ public partial class Game : Node2D
 		scene.CallDeferred("add_child", instance);
 		await ToSignal(GetTree(), "process_frame");
 
-		var randomSize = random.Next(25, 50);
-		var size = new Vector2(randomSize, randomSize);
-		instance.SetSize(size);
+		var size = instance.shape.Size;
 		var randomY = random.Next(
 			(int)(gameBounds.GlobalPosition.Y + size.Y / 2),
 			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - size.Y / 2)
