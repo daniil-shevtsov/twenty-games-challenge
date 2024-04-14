@@ -147,6 +147,8 @@ public partial class Game : Node2D
 				coin.GlobalPosition.X - travelledDistance,
 				coin.GlobalPosition.Y
 			);
+			coin.RotateBy(obstacleSpeed * 0.25f * (float)delta);
+
 			if (coin.GlobalPosition.X + coin.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
 			{
 				coinsToRemove.Add(coin);

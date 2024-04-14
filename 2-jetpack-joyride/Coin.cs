@@ -14,6 +14,11 @@ public partial class Coin : Area2D
 		sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
+	public void RotateBy(float angle)
+	{
+		sprite.RotationDegrees += angle * 1.25f;
+	}
+
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
