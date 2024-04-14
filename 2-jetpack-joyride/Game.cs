@@ -84,6 +84,11 @@ public partial class Game : Node2D
 			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
 			var collidedWithCeiling = playerCollision != null && collidedObject == gameBounds.ceiling;
 			headParticles.Emitting = collidedWithCeiling;
+			if (headParticles.Lifetime > 10f)
+			{
+				headParticles.Lifetime -= 100f * delta;
+			}
+			GD.Print($"lifetime: {headParticles.Lifetime}");
 			isGrounded = collidedWithFloor;
 			if (collidedWithFloor)
 			{
@@ -107,6 +112,7 @@ public partial class Game : Node2D
 		else
 		{
 			headParticles.Emitting = false;
+			headParticles.Lifetime = 170f;
 			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
 			var gameBoundsBottom = gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2;
 			var distance = Mathf.Abs(playerBottom - gameBoundsBottom);

@@ -21,8 +21,8 @@ initial_velocity_max = 128.65
 gravity = Vector3(0, 98, 0)
 linear_accel_min = 87.72
 linear_accel_max = 97.08
-scale_min = 0.25
-scale_max = 0.6
+scale_min = 0.05
+scale_max = 0.15
 
 [node name="Root" type="Node2D"]
 scale = Vector2(1.00323, 1)
@@ -83,7 +83,7 @@ emitting = false
 amount = 1000
 process_material = SubResource("ParticleProcessMaterial_tm5se")
 texture = ExtResource("7_daok4")
-lifetime = 12.93
+lifetime = 141.25
 speed_scale = 11.91
 explosiveness = 0.07
 randomness = 0.11
