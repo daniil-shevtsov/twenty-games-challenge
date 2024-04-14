@@ -1,15 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://yeqmjcvx8qd4"]
+[gd_scene load_steps=5 format=3 uid="uid://yeqmjcvx8qd4"]
 
 [ext_resource type="Script" path="res://Obstacle.cs" id="1_qa4gr"]
+[ext_resource type="Texture2D" uid="uid://cugir75vl6h13" path="res://sprites/obstacle.png" id="2_n7s4b"]
+[ext_resource type="Texture2D" uid="uid://bo1ma6aqjvye0" path="res://sprites/pupil.png" id="3_ursvt"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_33o1q"]
-size = Vector2(200, 100)
+size = Vector2(52, 51)
 
 [node name="Obstacle" type="Area2D"]
 script = ExtResource("1_qa4gr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3.5)
 shape = SubResource("RectangleShape2D_33o1q")
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-100, -50, 100, -50, 100, 50, -100, 50)
+[node name="SpriteContainer" type="Node2D" parent="."]
+scale = Vector2(0.075, 0.075)
+
+[node name="Body" type="Sprite2D" parent="SpriteContainer"]
+texture = ExtResource("2_n7s4b")
+
+[node name="pupil" type="Sprite2D" parent="SpriteContainer"]
+position = Vector2(2, 11)
+texture = ExtResource("3_ursvt")

@@ -348,6 +348,6 @@ public partial class Game : Node2D
 
 	private float gravityAcceleration = 9.8f * 20;
 	private float jetpackForce = 750f;
-	private float obstacleSpeed = 400f;
+	private float obstacleSpeed = 200f;
 
 }
