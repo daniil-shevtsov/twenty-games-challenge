@@ -245,6 +245,12 @@ public partial class Game : Node2D
 			newX,
 			randomY
 		);
+		var direction = 1;
+		if (random.Next(1, 2) == 2)
+		{
+			direction = -1;
+		}
+		coinInstance.setConfig(random.Next(25, 75) / 100f, direction);
 
 		coins.Add(coinInstance);
 
@@ -299,6 +305,13 @@ public partial class Game : Node2D
 			newX,
 			randomY
 		);
+
+		var direction = 1;
+		if (random.Next(1, 2) == 2)
+		{
+			direction = -1;
+		}
+		instance.setConfig(random.Next(25, 75) / 100f, direction);
 
 		obstacles.Add(instance);
 

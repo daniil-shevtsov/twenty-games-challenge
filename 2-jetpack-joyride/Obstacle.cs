@@ -14,6 +14,9 @@ public partial class Obstacle : Area2D
 	private CircleShape2D eyeballShape;
 	private Sprite2D pupil;
 
+	private float rotationSpeed = 0f;
+	private int rotationDirection = 1;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -29,10 +32,16 @@ public partial class Obstacle : Area2D
 		pupil = sprite.GetNode<Sprite2D>("Pupil");
 	}
 
+	public void setConfig(float rotationSpeed, int rotationDirection)
+	{
+		this.rotationSpeed = rotationSpeed * 2;
+		this.rotationDirection = rotationDirection;
+	}
+
 	public void RotateBy(float angle)
 	{
-		body.RotationDegrees += angle * 1.25f;
-		spikes.RotationDegrees -= angle;
+		body.RotationDegrees += rotationDirection * angle * rotationSpeed * 1.25f;
+		spikes.RotationDegrees -= rotationDirection * angle * rotationSpeed * 1.25f;
 	}
 
 	public void LookAtPlayer(Vector2 playerPosition)
