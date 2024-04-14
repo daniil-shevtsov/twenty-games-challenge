@@ -163,7 +163,7 @@ public partial class Game : Node2D
 		obstacles.ForEach((obstacle) =>
 		{
 			obstacle.GlobalPosition = new Vector2(
-				player.GlobalPosition.X + 150f,
+				obstacle.GlobalPosition.X - travelledDistance,
 				obstacle.GlobalPosition.Y
 			);
 			obstacle.RotateBy(obstacleSpeed * 0.25f * (float)delta);
@@ -177,7 +177,7 @@ public partial class Game : Node2D
 		});
 		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
 
-		if (obstacles.Count == 0)
+		if (obstacles.Count < 1)
 		{
 			SpawnObstacle();
 		}
@@ -350,6 +350,6 @@ public partial class Game : Node2D
 
 	private float gravityAcceleration = 9.8f * 20;
 	private float jetpackForce = 750f;
-	private float obstacleSpeed = 50f;
+	private float obstacleSpeed = 150f;
 
 }

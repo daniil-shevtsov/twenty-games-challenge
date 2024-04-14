@@ -1,17 +1,16 @@
-[gd_scene load_steps=9 format=3 uid="uid://yeqmjcvx8qd4"]
+[gd_scene load_steps=8 format=3 uid="uid://yeqmjcvx8qd4"]
 
 [ext_resource type="Script" path="res://Obstacle.cs" id="1_qa4gr"]
 [ext_resource type="Texture2D" uid="uid://btocchuwscayo" path="res://sprites/obstacle_body.png" id="2_oewtv"]
 [ext_resource type="Texture2D" uid="uid://bo1ma6aqjvye0" path="res://sprites/pupil.png" id="3_ursvt"]
 [ext_resource type="Texture2D" uid="uid://c6ssf1k7bpgsk" path="res://sprites/obstacle_spikes.png" id="4_uetw3"]
 [ext_resource type="Texture2D" uid="uid://dvp3xeh3hhshc" path="res://sprites/obstacle_eyeball.png" id="5_lmb0q"]
-[ext_resource type="Texture2D" uid="uid://0m3mtpcoae5q" path="res://sprites/hip.png" id="6_jwhxo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_33o1q"]
 size = Vector2(52, 51)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pqrla"]
-radius = 27.07
+radius = 24.07
 
 [node name="Obstacle" type="Area2D"]
 script = ExtResource("1_qa4gr")
@@ -24,25 +23,24 @@ shape = SubResource("RectangleShape2D_33o1q")
 scale = Vector2(0.075, 0.075)
 
 [node name="Eyeball" type="Sprite2D" parent="SpriteContainer"]
-position = Vector2(-13.3333, -13.3333)
+position = Vector2(0, -13.3333)
 texture = ExtResource("5_lmb0q")
 
 [node name="Body" type="Sprite2D" parent="SpriteContainer"]
 texture = ExtResource("2_oewtv")
+offset = Vector2(10, 0)
 
 [node name="Spikes" type="Sprite2D" parent="SpriteContainer"]
+position = Vector2(5, 0)
 texture = ExtResource("4_uetw3")
 
 [node name="Pupil" type="Sprite2D" parent="SpriteContainer"]
-position = Vector2(-13.3333, 0)
+position = Vector2(9.53674e-07, 0)
+scale = Vector2(1.25, 1.25)
 texture = ExtResource("3_ursvt")
 
 [node name="EyeballArea" type="Area2D" parent="SpriteContainer"]
-position = Vector2(-13.3333, 0)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteContainer/EyeballArea"]
+position = Vector2(0, -3)
 shape = SubResource("CircleShape2D_pqrla")
-
-[node name="TestSprite" type="Sprite2D" parent="SpriteContainer"]
-position = Vector2(-373.333, -146.667)
-texture = ExtResource("6_jwhxo")

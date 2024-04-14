@@ -10,9 +10,9 @@ public partial class Obstacle : Area2D
 	private Sprite2D body;
 	private Sprite2D spikes;
 	private Sprite2D eyeball;
-	private CircleShape2D eyeballArea;
+	private Area2D eyeballArea;
+	private CircleShape2D eyeballShape;
 	private Sprite2D pupil;
-	private Sprite2D testSprite;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -24,9 +24,9 @@ public partial class Obstacle : Area2D
 		body = sprite.GetNode<Sprite2D>("Body");
 		spikes = sprite.GetNode<Sprite2D>("Spikes");
 		eyeball = sprite.GetNode<Sprite2D>("Eyeball");
-		eyeballArea = (CircleShape2D)sprite.GetNode<Area2D>("EyeballArea").GetNode<CollisionShape2D>("CollisionShape2D").Shape;
+		eyeballArea = sprite.GetNode<Area2D>("EyeballArea");
+		eyeballShape = (CircleShape2D)eyeballArea.GetNode<CollisionShape2D>("CollisionShape2D").Shape;
 		pupil = sprite.GetNode<Sprite2D>("Pupil");
-		testSprite = sprite.GetNode<Sprite2D>("TestSprite");
 	}
 
 	public void RotateBy(float angle)
@@ -37,14 +37,14 @@ public partial class Obstacle : Area2D
 
 	public void LookAtPlayer(Vector2 playerPosition)
 	{
-		GD.Print($"eyeball texture size = {eyeball.Texture.GetSize().X} scaled: {eyeball.Texture.GetSize().X * sprite.Scale.X} area radius = {eyeballArea.Radius} scaled = {eyeballArea.Radius * sprite.Scale.X}");
-		var direction = (playerPosition - GlobalPosition).Normalized();
-		var scaledRadius = eyeballArea.Radius * sprite.Scale;
-		var offset = 0.25f;
+		var eyeCenter = eyeballArea.GlobalPosition;
+		var direction = (playerPosition - eyeCenter).Normalized();
+		var scaledRadius = eyeballShape.Radius * sprite.Scale;
+		var offset = 0.35f;
 		var kek = scaledRadius * offset;
 		var newCenter = new Vector2(
-			GlobalPosition.X + scaledRadius.X * direction.X - kek.X * direction.X,
-			GlobalPosition.Y + scaledRadius.Y * direction.Y - kek.Y * direction.Y
+			eyeCenter.X + scaledRadius.X * direction.X - kek.X * direction.X,
+			eyeCenter.Y + scaledRadius.Y * direction.Y - kek.Y * direction.Y
 		);
 		pupil.GlobalPosition = newCenter;
 	}
