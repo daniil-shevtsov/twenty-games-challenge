@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public partial class Game : Node2D
 {
@@ -227,8 +228,15 @@ public partial class Game : Node2D
 			(int)(gameBounds.GlobalPosition.Y + randomSize.Y / 2),
 			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - randomSize.Y / 2)
 			);
+		var allObjects = new List<Node2D>(obstacles).Concat(coins);
+		var furtherstX = gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 100f;
+		if (allObjects.Count() > 1)
+		{
+			furtherstX = allObjects.Max(node => node.GlobalPosition.X);
+		}
+		var newX = furtherstX + 100f + randomSize.X;
 		coinInstance.GlobalPosition = new Vector2(
-			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 50f,
+			newX,
 			randomY
 		);
 
@@ -274,8 +282,17 @@ public partial class Game : Node2D
 			(int)(gameBounds.GlobalPosition.Y + size.Y / 2),
 			(int)(gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2 - size.Y / 2)
 			);
+		var allObjects = new List<Node2D>(obstacles).Concat(coins);
+		var furtherstX = gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 100f;
+		if (allObjects.Count() > 1)
+		{
+			furtherstX = allObjects.Max(node => node.GlobalPosition.X);
+		}
+
+		var newX = furtherstX + 100f + size.X;
+
 		instance.GlobalPosition = new Vector2(
-			gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + 100f,
+			newX,
 			randomY
 		);
 
