@@ -6,7 +6,7 @@ public partial class Obstacle : Area2D
 {
 	public CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
-	private Node2D sprite;
+	public Node2D sprite;
 	private Sprite2D body;
 	private Sprite2D spikes;
 	private Sprite2D eyeball;

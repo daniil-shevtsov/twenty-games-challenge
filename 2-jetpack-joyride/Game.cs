@@ -336,7 +336,7 @@ public partial class Game : Node2D
 		obstacle.QueueFree();
 	}
 
-	private void OnObstacleOverlap(Obstacle obstacle, Node2D body)
+	private async void OnObstacleOverlap(Obstacle obstacle, Node2D body)
 	{
 		if (body == player)
 		{
@@ -347,6 +347,11 @@ public partial class Game : Node2D
 				bestScore = currentScore;
 				bestScoreLabel.Text = FormatScore(bestScore, "BEST");
 			}
+			var tween = CreateTween();
+			var duration = 0.5f;
+			tween.TweenProperty(obstacle.sprite, new NodePath("scale"), new Vector2(1.5f, 1.5f), duration).SetTrans(Tween.TransitionType.Back);
+
+			await ToSignal(tween, "finished");
 			InitGame();
 		}
 	}
