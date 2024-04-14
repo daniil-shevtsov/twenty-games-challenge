@@ -30,6 +30,8 @@ public partial class Game : Node2D
 	private PackedScene coinScene = null;
 	private PackedScene obstacleScene = null;
 
+	private Tween rotationTween = null;
+
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
 	{
@@ -97,8 +99,13 @@ public partial class Game : Node2D
 
 				if (isGrounded && !isGroundedPrevious)
 				{
-					var tween = CreateTween();
-					tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
+					if (rotationTween != null)
+					{
+						rotationTween.Stop();
+					}
+					rotationTween = CreateTween();
+					GD.Print("KEK launch rotated tween");
+					rotationTween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
 
 
 					TweenWheelBounce();
@@ -121,9 +128,14 @@ public partial class Game : Node2D
 				isGrounded = false;
 				if (!isGrounded && isGroundedPrevious)
 				{
-					var tween = CreateTween();
+					if (rotationTween != null)
+					{
+						rotationTween.Stop();
+					}
+					rotationTween = CreateTween();
 
-					tween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
+					GD.Print("KEK launch straight tween");
+					rotationTween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 				}
 			}
 		}
