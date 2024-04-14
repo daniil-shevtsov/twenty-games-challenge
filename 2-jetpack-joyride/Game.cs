@@ -234,7 +234,7 @@ public partial class Game : Node2D
 		{
 			furtherstX = allObjects.Max(node => node.GlobalPosition.X);
 		}
-		var newX = furtherstX + 100f + randomSize.X;
+		var newX = furtherstX + 150f + randomSize.X;
 		coinInstance.GlobalPosition = new Vector2(
 			newX,
 			randomY

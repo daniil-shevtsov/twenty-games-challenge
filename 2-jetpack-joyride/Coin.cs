@@ -5,13 +5,13 @@ public partial class Coin : Area2D
 {
 	public CollisionShape2D collisionShape = null;
 	public RectangleShape2D shape = null;
-	private Polygon2D sprite = null;
+	private Sprite2D sprite = null;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape;
-		sprite = GetNode<Polygon2D>("Polygon2D");
+		sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
