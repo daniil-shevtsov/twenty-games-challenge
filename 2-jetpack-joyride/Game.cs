@@ -13,6 +13,7 @@ public partial class Game : Node2D
 	private Node2D legBody;
 	private Node2D wheel;
 	private Node2D wheelContainer;
+	private GpuParticles2D headParticles;
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
 	private float currentScore = 0;
@@ -38,6 +39,8 @@ public partial class Game : Node2D
 		legBody = (Node2D)player.FindChild("LegBody");
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
+		headParticles = GetNode<GpuParticles2D>("HeadParticles");
+		headParticles.Emitting = false;
 		scoreLabel = GetNode<Label>("ScoreLabel");
 		bestScoreLabel = GetNode<Label>("BestScoreLabel");
 		previousSCoreLabel = GetNode<Label>("PreviousScoreLabel");
@@ -62,7 +65,10 @@ public partial class Game : Node2D
 	public override void _PhysicsProcess(double delta)
 	{
 		var travelledDistance = obstacleSpeed * (float)delta;
-
+		headParticles.GlobalPosition = new Vector2(
+			player.GlobalPosition.X,
+			player.GlobalPosition.Y - player.shape.Height / 2
+		);
 		isGroundedPrevious = isGrounded;
 		if (Input.IsActionPressed("jetpack"))
 		{
@@ -77,7 +83,7 @@ public partial class Game : Node2D
 			var collidedObject = (Node2D)playerCollision.GetCollider();
 			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
 			var collidedWithCeiling = playerCollision != null && collidedObject == gameBounds.ceiling;
-
+			headParticles.Emitting = collidedWithCeiling;
 			isGrounded = collidedWithFloor;
 			if (collidedWithFloor)
 			{
@@ -100,6 +106,7 @@ public partial class Game : Node2D
 		}
 		else
 		{
+			headParticles.Emitting = false;
 			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
 			var gameBoundsBottom = gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2;
 			var distance = Mathf.Abs(playerBottom - gameBoundsBottom);
@@ -423,7 +430,7 @@ public partial class Game : Node2D
 
 	private float gravityAcceleration = 9.8f * 20;
 	private float jetpackForce = 750f;
-	private float obstacleSpeed = 150f;
+	private float obstacleSpeed = 450f;
 
 	private string saveFilePath = "user://savegame.save";
 	private string bestScoreKey = "best_score";

@@ -15,12 +15,14 @@ particle_flag_disable_z = true
 angle_min = -214.7
 angle_max = 16.8
 direction = Vector3(-1, 0, 0)
-spread = 36.053
+spread = 13.421
 initial_velocity_min = 20.47
 initial_velocity_max = 128.65
 gravity = Vector3(0, 98, 0)
 linear_accel_min = 87.72
 linear_accel_max = 97.08
+scale_min = 0.25
+scale_max = 0.6
 
 [node name="Root" type="Node2D"]
 scale = Vector2(1.00323, 1)
@@ -75,7 +77,7 @@ horizontal_alignment = 2
 [node name="SaveData" type="Node2D" parent="."]
 script = ExtResource("6_mpfc1")
 
-[node name="JetpackParticles" type="GPUParticles2D" parent="."]
+[node name="HeadParticles" type="GPUParticles2D" parent="."]
 position = Vector2(255.176, -375)
 emitting = false
 amount = 1000
