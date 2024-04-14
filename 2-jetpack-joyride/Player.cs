@@ -7,6 +7,7 @@ public partial class Player : CharacterBody2D
 	public CapsuleShape2D shape = null;
 	public PlayerSprite sprite = null;
 	public Node2D headContainer = null;
+	public Node2D legBodyContainer = null;
 	private float drawRadius;
 
 	public override void _Ready()
@@ -17,7 +18,8 @@ public partial class Player : CharacterBody2D
 		sprite = GetNode<PlayerSprite>("PlayerSprite");
 		drawRadius = shape.Radius;
 		sprite.setRectSize(new Vector2(shape.Radius, shape.Height));
-		headContainer = GetNode<Node2D>("PlayerSpriteContainer").GetNode<Node2D>("LegBody").GetNode<Node2D>("HeadContainer");
+		legBodyContainer = GetNode<Node2D>("PlayerSpriteContainer").GetNode<Node2D>("LegBody");
+		headContainer = legBodyContainer.GetNode<Node2D>("HeadContainer");
 	}
 
 	public override void _PhysicsProcess(double delta)

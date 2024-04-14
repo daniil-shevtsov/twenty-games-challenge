@@ -89,12 +89,20 @@ public partial class Game : Node2D
 			headParticles.Emitting = collidedWithCeiling;
 			if (collidedWithCeiling && headParticles.Lifetime > 10f)
 			{
-				headParticles.Lifetime -= 100f * delta;
+				headParticles.Lifetime -= 150f * delta;
 			}
 			if (collidedWithCeiling && player.headContainer.RotationDegrees > -45f)
 			{
 				headTween?.Stop();
 				player.headContainer.RotationDegrees -= 100f * (float)delta;
+				// player.headContainer.GlobalPosition = new Vector2(
+				// 	player.headContainer.GlobalPosition.X,
+				// 	player.headContainer.GlobalPosition.Y - 100f * (float)delta
+				// );
+				// player.legBodyContainer.GlobalPosition = new Vector2(
+				// 	player.legBodyContainer.GlobalPosition.X,
+				// 	player.legBodyContainer.GlobalPosition.Y - 100f * (float)delta
+				// );
 			}
 
 			GD.Print($"lifetime: {headParticles.Lifetime}");
