@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=8 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
 [ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
 [ext_resource type="PackedScene" uid="uid://dhnav7p1v2cw3" path="res://player.tscn" id="2_aqxcm"]
 [ext_resource type="Texture2D" uid="uid://wh0vdm0x3dx0" path="res://sprites/background.png" id="2_g0lwh"]
 [ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
+[ext_resource type="Script" path="res://SaveData.cs" id="6_mpfc1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4h7u5"]
 
@@ -58,3 +59,6 @@ offset_right = 396.847
 offset_bottom = -150.0
 grow_horizontal = 0
 horizontal_alignment = 2
+
+[node name="SaveData" type="Node2D" parent="."]
+script = ExtResource("6_mpfc1")

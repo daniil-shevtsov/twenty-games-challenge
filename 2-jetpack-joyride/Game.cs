@@ -51,6 +51,7 @@ public partial class Game : Node2D
 		SpawnCoin();
 
 		InitGame();
+		LoadGame();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -60,7 +61,6 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		GD.Print($"velocity {playerVelocity}");
 		var travelledDistance = obstacleSpeed * (float)delta;
 
 		isGroundedPrevious = isGrounded;
@@ -340,13 +340,13 @@ public partial class Game : Node2D
 	{
 		if (body == player)
 		{
-			previousScore = currentScore;
-			previousSCoreLabel.Text = FormatScore(previousScore, "PREVIOUS");
+			UpdatePreviousScore(currentScore);
 			if (currentScore > bestScore)
 			{
-				bestScore = currentScore;
-				bestScoreLabel.Text = FormatScore(bestScore, "BEST");
+				UpdateBestScore(currentScore);
 			}
+
+			SaveGame();
 			var tween = CreateTween();
 			var duration = 0.5f;
 			tween.TweenProperty(obstacle.sprite, new NodePath("scale"), new Vector2(1.5f, 1.5f), duration).SetTrans(Tween.TransitionType.Back);
@@ -354,6 +354,18 @@ public partial class Game : Node2D
 			await ToSignal(tween, "finished");
 			InitGame();
 		}
+	}
+
+	private void UpdateBestScore(float value)
+	{
+		bestScore = value;
+		bestScoreLabel.Text = FormatScore(bestScore, "BEST");
+	}
+
+	private void UpdatePreviousScore(float value)
+	{
+		previousScore = value;
+		previousSCoreLabel.Text = FormatScore(previousScore, "PREVIOUS");
 	}
 
 	private void IncreaseScore(float value)
@@ -373,8 +385,48 @@ public partial class Game : Node2D
 		return $"{title}: {Math.Round(value, 0)}";
 	}
 
+	private void SaveGame()
+	{
+		using var saveGameFile = FileAccess.Open(saveFilePath, FileAccess.ModeFlags.Write);
+		var jsonString = Json.Stringify(new Godot.Collections.Dictionary<string, Variant>() {
+			{bestScoreKey, bestScore},
+			{previousScoreKey, previousScore}
+		});
+		saveGameFile.StoreLine(jsonString);
+		GD.Print($"SAVE: SaveGame stored {bestScore} and {previousScore}");
+	}
+
+	private void LoadGame()
+	{
+		if (!FileAccess.FileExists(saveFilePath))
+		{
+			GD.PrintErr("can't load save game because save does not exist");
+			return;
+		}
+
+		using var saveGameFile = FileAccess.Open(saveFilePath, FileAccess.ModeFlags.Read);
+		var jsonString = saveGameFile.GetLine();
+		var json = new Json();
+		var parsedResult = json.Parse(jsonString);
+		if (parsedResult != Error.Ok)
+		{
+			GD.PrintErr($"JSON Parse Error: {json.GetErrorMessage()} in {jsonString} at line {json.GetErrorLine()}");
+			return;
+		}
+
+		var savedData = new Godot.Collections.Dictionary<string, Variant>((Godot.Collections.Dictionary)json.Data);
+
+		UpdateBestScore((float)savedData[bestScoreKey]);
+		UpdatePreviousScore((float)savedData[previousScoreKey]);
+		GD.Print($"SAVE: LoadGame restored {bestScore} and {previousScore}");
+	}
+
 	private float gravityAcceleration = 9.8f * 20;
 	private float jetpackForce = 750f;
 	private float obstacleSpeed = 150f;
+
+	private string saveFilePath = "user://savegame.save";
+	private string bestScoreKey = "best_score";
+	private string previousScoreKey = "previous_score";
 
 }
