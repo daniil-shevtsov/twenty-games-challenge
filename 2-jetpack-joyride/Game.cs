@@ -163,7 +163,7 @@ public partial class Game : Node2D
 		obstacles.ForEach((obstacle) =>
 		{
 			obstacle.GlobalPosition = new Vector2(
-				obstacle.GlobalPosition.X - travelledDistance,
+				player.GlobalPosition.X + 150f,
 				obstacle.GlobalPosition.Y
 			);
 			obstacle.RotateBy(obstacleSpeed * 0.25f * (float)delta);
@@ -177,7 +177,7 @@ public partial class Game : Node2D
 		});
 		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
 
-		if (obstacles.Count < 1)
+		if (obstacles.Count == 0)
 		{
 			SpawnObstacle();
 		}

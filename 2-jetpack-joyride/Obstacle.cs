@@ -12,6 +12,7 @@ public partial class Obstacle : Area2D
 	private Sprite2D eyeball;
 	private CircleShape2D eyeballArea;
 	private Sprite2D pupil;
+	private Sprite2D testSprite;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -25,6 +26,7 @@ public partial class Obstacle : Area2D
 		eyeball = sprite.GetNode<Sprite2D>("Eyeball");
 		eyeballArea = (CircleShape2D)sprite.GetNode<Area2D>("EyeballArea").GetNode<CollisionShape2D>("CollisionShape2D").Shape;
 		pupil = sprite.GetNode<Sprite2D>("Pupil");
+		testSprite = sprite.GetNode<Sprite2D>("TestSprite");
 	}
 
 	public void RotateBy(float angle)
@@ -35,10 +37,14 @@ public partial class Obstacle : Area2D
 
 	public void LookAtPlayer(Vector2 playerPosition)
 	{
+		GD.Print($"eyeball texture size = {eyeball.Texture.GetSize().X} scaled: {eyeball.Texture.GetSize().X * sprite.Scale.X} area radius = {eyeballArea.Radius} scaled = {eyeballArea.Radius * sprite.Scale.X}");
 		var direction = (playerPosition - GlobalPosition).Normalized();
+		var scaledRadius = eyeballArea.Radius * sprite.Scale;
+		var offset = 0.25f;
+		var kek = scaledRadius * offset;
 		var newCenter = new Vector2(
-			GlobalPosition.X + eyeballArea.Radius * direction.X,
-			GlobalPosition.Y + eyeballArea.Radius * direction.Y
+			GlobalPosition.X + scaledRadius.X * direction.X - kek.X * direction.X,
+			GlobalPosition.Y + scaledRadius.Y * direction.Y - kek.Y * direction.Y
 		);
 		pupil.GlobalPosition = newCenter;
 	}
