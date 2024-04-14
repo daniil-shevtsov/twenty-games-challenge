@@ -166,6 +166,10 @@ public partial class Game : Node2D
 				obstacle.GlobalPosition.X - travelledDistance,
 				obstacle.GlobalPosition.Y
 			);
+			obstacle.RotateBy(obstacleSpeed * 0.25f * (float)delta);
+
+			obstacle.LookAtPlayer(player.GlobalPosition);
+
 			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
 			{
 				obstaclesToRemove.Add(obstacle);
@@ -346,6 +350,6 @@ public partial class Game : Node2D
 
 	private float gravityAcceleration = 9.8f * 20;
 	private float jetpackForce = 750f;
-	private float obstacleSpeed = 200f;
+	private float obstacleSpeed = 50f;
 
 }
