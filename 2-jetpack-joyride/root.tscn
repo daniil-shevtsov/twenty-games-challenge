@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=10 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
 [ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
@@ -6,8 +6,21 @@
 [ext_resource type="Texture2D" uid="uid://wh0vdm0x3dx0" path="res://sprites/background.png" id="2_g0lwh"]
 [ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
 [ext_resource type="Script" path="res://SaveData.cs" id="6_mpfc1"]
+[ext_resource type="Texture2D" uid="uid://bo1ma6aqjvye0" path="res://sprites/pupil.png" id="7_daok4"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4h7u5"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tm5se"]
+particle_flag_disable_z = true
+angle_min = -214.7
+angle_max = 16.8
+direction = Vector3(-1, 0, 0)
+spread = 36.053
+initial_velocity_min = 20.47
+initial_velocity_max = 128.65
+gravity = Vector3(0, 98, 0)
+linear_accel_min = 87.72
+linear_accel_max = 97.08
 
 [node name="Root" type="Node2D"]
 scale = Vector2(1.00323, 1)
@@ -61,3 +74,15 @@ horizontal_alignment = 2
 
 [node name="SaveData" type="Node2D" parent="."]
 script = ExtResource("6_mpfc1")
+
+[node name="JetpackParticles" type="GPUParticles2D" parent="."]
+position = Vector2(255.176, -375)
+emitting = false
+amount = 1000
+process_material = SubResource("ParticleProcessMaterial_tm5se")
+texture = ExtResource("7_daok4")
+lifetime = 12.93
+speed_scale = 11.91
+explosiveness = 0.07
+randomness = 0.11
+trail_lifetime = 0.1
