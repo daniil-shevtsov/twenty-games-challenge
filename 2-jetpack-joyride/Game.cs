@@ -31,6 +31,7 @@ public partial class Game : Node2D
 	private PackedScene obstacleScene = null;
 
 	private Tween rotationTween = null;
+	private Tween headTween = null;
 
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
@@ -86,10 +87,16 @@ public partial class Game : Node2D
 			var collidedWithFloor = playerCollision != null && collidedObject.GlobalPosition.Y >= (player.GlobalPosition.Y + player.shape.Height / 2);
 			var collidedWithCeiling = playerCollision != null && collidedObject == gameBounds.ceiling;
 			headParticles.Emitting = collidedWithCeiling;
-			if (headParticles.Lifetime > 10f)
+			if (collidedWithCeiling && headParticles.Lifetime > 10f)
 			{
 				headParticles.Lifetime -= 100f * delta;
 			}
+			if (collidedWithCeiling && player.headContainer.RotationDegrees > -45f)
+			{
+				headTween?.Stop();
+				player.headContainer.RotationDegrees -= 100f * (float)delta;
+			}
+
 			GD.Print($"lifetime: {headParticles.Lifetime}");
 			isGrounded = collidedWithFloor;
 			if (collidedWithFloor)
@@ -120,6 +127,11 @@ public partial class Game : Node2D
 		{
 			headParticles.Emitting = false;
 			headParticles.Lifetime = 170f;
+			headTween?.Stop();
+			headTween = CreateTween();
+			GD.Print("KEK START TWEEN");
+			headTween.TweenProperty(player.headContainer, new NodePath("rotation_degrees"), 0f, 0.25f);
+
 			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
 			var gameBoundsBottom = gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2;
 			var distance = Mathf.Abs(playerBottom - gameBoundsBottom);

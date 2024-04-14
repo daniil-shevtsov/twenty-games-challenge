@@ -78,7 +78,7 @@ horizontal_alignment = 2
 script = ExtResource("6_mpfc1")
 
 [node name="HeadParticles" type="GPUParticles2D" parent="."]
-position = Vector2(255.176, -375)
+position = Vector2(255.176, -383)
 emitting = false
 amount = 1000
 process_material = SubResource("ParticleProcessMaterial_tm5se")
