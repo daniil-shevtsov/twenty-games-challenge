@@ -96,9 +96,7 @@ public partial class Game : Node2D
 			{
 				headTween?.Stop();
 				// player.headContainer.RotationDegrees -= 100f * (float)delta;
-				var notSpentWeight = 100f / (notSpentJetpackAcceleration / 100f);
-				GD.Print($"KEK not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight}");
-				player.headContainer.RotationDegrees = Mathf.LerpAngle(0, -45f, notSpentJetpackAcceleration);
+
 			}
 
 			GD.Print($"lifetime: {headParticles.Lifetime}");
@@ -127,18 +125,28 @@ public partial class Game : Node2D
 				notSpentJetpackAcceleration += jetpackForce * (float)delta;
 				playerVelocity.Y = 0f;
 			}
-			if (!collidedWithCeiling)
+			if (collidedWithCeiling)
 			{
+				var maxSpentJetpackAcceleration = 1600f;
+				var notSpentWeight = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
+				var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight));
+				GD.Print($"KEK not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
+				player.headContainer.RotationDegrees = degrees;
+			}
+			else
+			{
+				GD.Print("KEK clear jetpack acceleration inside collision");
 				notSpentJetpackAcceleration = 0;
 			}
 		}
 		else
 		{
+			GD.Print("KEK clear jetpack acceleration outside collision");
+			notSpentJetpackAcceleration = 0;
 			headParticles.Emitting = false;
 			headParticles.Lifetime = 170f;
 			headTween?.Stop();
 			headTween = CreateTween();
-			GD.Print("KEK START TWEEN");
 			headTween.TweenProperty(player.headContainer, new NodePath("rotation_degrees"), 0f, 0.25f);
 
 			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
