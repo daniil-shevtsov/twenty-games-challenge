@@ -24,6 +24,7 @@ public partial class Game : Node2D
 	private Label previousSCoreLabel;
 
 	private Vector2 playerVelocity;
+	private float notSpentJetpackAcceleration = 0f;
 	private float wheelAngularVelocity = 0f;
 	private bool isGrounded = false;
 	private bool isGroundedPrevious = false;
@@ -94,15 +95,10 @@ public partial class Game : Node2D
 			if (collidedWithCeiling && player.headContainer.RotationDegrees > -45f)
 			{
 				headTween?.Stop();
-				player.headContainer.RotationDegrees -= 100f * (float)delta;
-				// player.headContainer.GlobalPosition = new Vector2(
-				// 	player.headContainer.GlobalPosition.X,
-				// 	player.headContainer.GlobalPosition.Y - 100f * (float)delta
-				// );
-				// player.legBodyContainer.GlobalPosition = new Vector2(
-				// 	player.legBodyContainer.GlobalPosition.X,
-				// 	player.legBodyContainer.GlobalPosition.Y - 100f * (float)delta
-				// );
+				// player.headContainer.RotationDegrees -= 100f * (float)delta;
+				var notSpentWeight = 100f / (notSpentJetpackAcceleration / 100f);
+				GD.Print($"KEK not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight}");
+				player.headContainer.RotationDegrees = Mathf.LerpAngle(0, -45f, notSpentJetpackAcceleration);
 			}
 
 			GD.Print($"lifetime: {headParticles.Lifetime}");
@@ -128,7 +124,12 @@ public partial class Game : Node2D
 			}
 			else if (collidedWithCeiling)
 			{
+				notSpentJetpackAcceleration += jetpackForce * (float)delta;
 				playerVelocity.Y = 0f;
+			}
+			if (!collidedWithCeiling)
+			{
+				notSpentJetpackAcceleration = 0;
 			}
 		}
 		else
