@@ -128,29 +128,54 @@ public partial class Game : Node2D
 			}
 			if (collidedWithCeiling)
 			{
+				var maxSpentJetpackAcceleration = 1000f;
+
 				if (Mathf.Abs(jetpackForce) > 0)
 				{
-					GD.Print($"KEK final force={jetpackForce}");
 					notSpentJetpackAcceleration = Mathf.Abs(jetpackForce);
 					jetpackForce = 0f;
+
+					var notSpentWeight2 = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
+
+					// var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight2));
+					// player.headContainer.RotationDegrees = degrees;
+					var offsetMin = 150f;
+					var offsetMax = 150f;
+					// player.legBody.Position = new Vector2(
+					// 	player.legBody.Position.X,
+					// 	Mathf.Lerp(defaultLegBodyLocalPosition.Y - offsetMin, defaultLegBodyLocalPosition.Y - offsetMax, notSpentWeight)
+					// );
+					// player.wheelContainer.Position = new Vector2(
+					// 	player.wheelContainer.Position.X,
+					// 	Mathf.Lerp(defaultWheelLocalPosition.Y - offsetMin, defaultWheelLocalPosition.Y - offsetMax, notSpentWeight)
+					// );
+
+					var finalOffset = offsetMin + (offsetMax - offsetMin) * notSpentWeight2;
+
+
+					var duration = 0.25f;
+					headTween?.Stop();
+					headTween = CreateTween();
+					var finalLegBodyPosition = new Vector2(
+						player.legBody.Position.X,
+						defaultLegBodyLocalPosition.Y - finalOffset
+					);
+					var transition = Tween.TransitionType.Bounce;
+					headTween.TweenProperty(player.legBody, new NodePath("position"), finalLegBodyPosition, duration).SetTrans(transition);
+					headTween.SetParallel();
+					var finalWheelPosition = new Vector2(
+						player.wheelContainer.Position.X,
+						defaultWheelLocalPosition.Y - finalOffset
+					);
+					headTween.TweenProperty(player.wheelContainer, new NodePath("position"), finalWheelPosition, duration).SetTrans(transition);
+					GD.Print($"KEK final force={notSpentJetpackAcceleration} launch tween with weight {notSpentWeight2} offset {finalOffset} {finalLegBodyPosition} {finalWheelPosition}");
 				}
 
-				var maxSpentJetpackAcceleration = 1000f;
 				var notSpentWeight = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
 
 				var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight));
 				GD.Print($"not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
 				player.headContainer.RotationDegrees = degrees;
-				var offsetMin = 50f;
-				var offsetMax = 150f;
-				player.legBody.Position = new Vector2(
-					player.legBody.Position.X,
-					Mathf.Lerp(defaultLegBodyLocalPosition.Y - offsetMin, defaultLegBodyLocalPosition.Y - offsetMax, notSpentWeight)
-				);
-				player.wheelContainer.Position = new Vector2(
-					player.wheelContainer.Position.X,
-					Mathf.Lerp(defaultWheelLocalPosition.Y - offsetMin, defaultWheelLocalPosition.Y - offsetMax, notSpentWeight)
-				);
 			}
 			else
 			{
@@ -185,6 +210,11 @@ public partial class Game : Node2D
 					rotationTween.TweenProperty(player.legBodyHead, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 				}
 			}
+
+			var lastAcceleration = Mathf.Abs(playerVelocity.Y - previousVelocty.Y);
+			jetpackForce += playerMass * lastAcceleration * (float)delta;
+			GD.Print($"LOL add {lastAcceleration} for {(float)delta}");
+			GD.Print($"{jetpackForce} {lastAcceleration} {playerVelocity.Y} {previousVelocty.Y}");
 		}
 
 
@@ -199,10 +229,7 @@ public partial class Game : Node2D
 		}
 		player.wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 
-		var lastAcceleration = playerVelocity - previousVelocty;
-		jetpackForce += playerMass * lastAcceleration.Y * (float)delta;
-		GD.Print($"LOL add {lastAcceleration.Y} for {(float)delta}");
-		GD.Print($"{jetpackForce} {lastAcceleration.Y} {playerVelocity.Y} {previousVelocty.Y}");
+
 
 		background.MoveBy(-travelledDistance);
 		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
