@@ -11,8 +11,7 @@ public partial class Game : Node2D
 	private Background background;
 	private Player player;
 	private Vector2 defaultLegBodyLocalPosition;
-	private Node2D wheel;
-	private Node2D wheelContainer;
+	private Vector2 defaultWheelLocalPosition;
 	private GpuParticles2D headParticles;
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
@@ -42,8 +41,7 @@ public partial class Game : Node2D
 		background = GetNode<Background>("Background");
 		player = GetNode<Player>("Player");
 		defaultLegBodyLocalPosition = player.legBody.Position;
-		wheel = (Node2D)player.FindChild("Wheel");
-		wheelContainer = (Node2D)player.FindChild("WheelContainer");
+		defaultWheelLocalPosition = player.wheelContainer.Position;
 		headParticles = GetNode<GpuParticles2D>("HeadParticles");
 		headParticles.Emitting = false;
 		scoreLabel = GetNode<Label>("ScoreLabel");
@@ -193,7 +191,7 @@ public partial class Game : Node2D
 				wheelAngularVelocity = 0f;
 			}
 		}
-		wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
+		player.wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 
 		var lastAcceleration = playerVelocity - previousVelocty;
 		jetpackForce += playerMass * lastAcceleration.Y * (float)delta;
@@ -275,14 +273,14 @@ public partial class Game : Node2D
 		var wheelTween = CreateTween();
 		var duration = 0.5f;
 		var offset = 0.1f;
-		wheelTween.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f) + new Vector2(offset, -offset * 2), duration).SetTrans(Tween.TransitionType.Bounce);
+		wheelTween.TweenProperty(player.wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f) + new Vector2(offset, -offset * 2), duration).SetTrans(Tween.TransitionType.Bounce);
 		wheelTween.SetParallel(true);
 		var legBodyOffset = 75;
 		wheelTween.TweenProperty(player.legBodyHead, new NodePath("position"), new Vector2(0f, legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
 
 		await ToSignal(wheelTween, "finished");
 		var wheelTween2 = CreateTween();
-		wheelTween2.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f), duration).SetTrans(Tween.TransitionType.Bounce);
+		wheelTween2.TweenProperty(player.wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f), duration).SetTrans(Tween.TransitionType.Bounce);
 		wheelTween2.SetParallel(true);
 		wheelTween2.TweenProperty(player.legBodyHead, new NodePath("position"), new Vector2(0f, -legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
 
