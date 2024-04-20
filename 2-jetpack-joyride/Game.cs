@@ -125,13 +125,17 @@ public partial class Game : Node2D
 			}
 			else if (collidedWithCeiling)
 			{
-				notSpentJetpackAcceleration += jetpackAcceleration * (float)delta;
+				//notSpentJetpackAcceleration += jetpackAcceleration * (float)delta;
 				playerVelocity.Y = 0f;
 			}
 			if (collidedWithCeiling)
 			{
-				GD.Print($"KEK final force={jetpackForce}");
-				jetpackForce = 0f;
+				if (Mathf.Abs(jetpackForce) > 0)
+				{
+					GD.Print($"KEK final force={jetpackForce}");
+					notSpentJetpackAcceleration = Mathf.Abs(jetpackForce);
+					jetpackForce = 0f;
+				}
 
 				var maxSpentJetpackAcceleration = 1000f;
 				var notSpentWeight = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
