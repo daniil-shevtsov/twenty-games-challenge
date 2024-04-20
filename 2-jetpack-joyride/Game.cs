@@ -10,7 +10,6 @@ public partial class Game : Node2D
 	private GameBounds gameBounds;
 	private Background background;
 	private Player player;
-	private Node2D legBody;
 	private Vector2 defaultLegBodyLocalPosition;
 	private Node2D wheel;
 	private Node2D wheelContainer;
@@ -42,8 +41,7 @@ public partial class Game : Node2D
 		gameBounds = GetNode<GameBounds>("GameBounds");
 		background = GetNode<Background>("Background");
 		player = GetNode<Player>("Player");
-		legBody = (Node2D)player.FindChild("LegBody");
-		defaultLegBodyLocalPosition = legBody.Position;
+		defaultLegBodyLocalPosition = player.legBody.Position;
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		headParticles = GetNode<GpuParticles2D>("HeadParticles");
@@ -119,7 +117,7 @@ public partial class Game : Node2D
 					}
 					rotationTween = CreateTween();
 					GD.Print("KEK launch rotated tween");
-					rotationTween.TweenProperty(legBody, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
+					rotationTween.TweenProperty(player.legBodyHead, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
 
 
 					TweenWheelBounce();
@@ -145,8 +143,8 @@ public partial class Game : Node2D
 				var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight));
 				GD.Print($"not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
 				player.headContainer.RotationDegrees = degrees;
-				player.legBodyContainer.Position = new Vector2(
-					player.legBodyContainer.Position.X,
+				player.legBody.Position = new Vector2(
+					player.legBody.Position.X,
 					Mathf.Lerp(defaultLegBodyLocalPosition.Y, defaultLegBodyLocalPosition.Y - 1000f, notSpentWeight)
 				);
 			}
@@ -180,7 +178,7 @@ public partial class Game : Node2D
 					rotationTween = CreateTween();
 
 					GD.Print("launch straight tween");
-					rotationTween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
+					rotationTween.TweenProperty(player.legBodyHead, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 				}
 			}
 		}
@@ -269,7 +267,7 @@ public partial class Game : Node2D
 		headTween = CreateTween();
 		headTween.TweenProperty(player.headContainer, new NodePath("rotation_degrees"), 0f, duration);
 		headTween.SetParallel();
-		headTween.TweenProperty(player.legBodyContainer, new NodePath("position"), defaultLegBodyLocalPosition, duration);
+		headTween.TweenProperty(player.legBody, new NodePath("position"), defaultLegBodyLocalPosition, duration);
 	}
 
 	private async void TweenWheelBounce()
@@ -280,13 +278,13 @@ public partial class Game : Node2D
 		wheelTween.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f) + new Vector2(offset, -offset * 2), duration).SetTrans(Tween.TransitionType.Bounce);
 		wheelTween.SetParallel(true);
 		var legBodyOffset = 75;
-		wheelTween.TweenProperty(legBody, new NodePath("position"), new Vector2(0f, legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
+		wheelTween.TweenProperty(player.legBodyHead, new NodePath("position"), new Vector2(0f, legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
 
 		await ToSignal(wheelTween, "finished");
 		var wheelTween2 = CreateTween();
 		wheelTween2.TweenProperty(wheelContainer, new NodePath("scale"), new Vector2(1.0f, 1.0f), duration).SetTrans(Tween.TransitionType.Bounce);
 		wheelTween2.SetParallel(true);
-		wheelTween2.TweenProperty(legBody, new NodePath("position"), new Vector2(0f, -legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
+		wheelTween2.TweenProperty(player.legBodyHead, new NodePath("position"), new Vector2(0f, -legBodyOffset), duration).AsRelative().SetTrans(Tween.TransitionType.Bounce);
 
 	}
 

@@ -30,39 +30,44 @@ scale = Vector2(0.05, 0.05)
 
 [node name="WheelContainer" type="Node2D" parent="PlayerSpriteContainer"]
 position = Vector2(20, 1360)
+scale = Vector2(1, 1)
 
 [node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer/WheelContainer"]
 position = Vector2(-14.5, -307)
 texture = ExtResource("8_jr3xe")
 
-[node name="LegBody" type="Node2D" parent="PlayerSpriteContainer"]
-position = Vector2(10, 1060)
+[node name="LegBodyHead" type="Node2D" parent="PlayerSpriteContainer"]
+position = Vector2(1.13687e-13, 1080)
 
-[node name="Hip" type="Sprite2D" parent="PlayerSpriteContainer/LegBody"]
+[node name="LegBody" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead"]
+position = Vector2(-1.90735e-06, -3.05176e-05)
+
+[node name="Hip" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody"]
 position = Vector2(-20, -930)
 texture = ExtResource("6_nx60e")
 
-[node name="Node2D" type="Node2D" parent="PlayerSpriteContainer/LegBody"]
+[node name="LegContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody"]
 position = Vector2(1.90735e-06, 0.00012207)
 
-[node name="Leg" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/Node2D"]
+[node name="Leg" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody/LegContainer"]
 position = Vector2(-21.5, -418)
 texture = ExtResource("7_x76xk")
 
-[node name="BodyContainer" type="Node2D" parent="PlayerSpriteContainer/LegBody"]
+[node name="BodyContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody"]
 position = Vector2(-10, -1420)
 
-[node name="Neck" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/BodyContainer"]
+[node name="Neck" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody/BodyContainer"]
 position = Vector2(4.00001, -380)
 texture = ExtResource("4_72sdx")
 
-[node name="Body" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/BodyContainer"]
+[node name="Body" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody/BodyContainer"]
 position = Vector2(-68, -68.0002)
 texture = ExtResource("5_nlsj3")
 
-[node name="HeadContainer" type="Node2D" parent="PlayerSpriteContainer/LegBody"]
-position = Vector2(-10, -1800)
+[node name="HeadContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead"]
+position = Vector2(-1.13687e-13, -1800)
+scale = Vector2(1, 1)
 
-[node name="Head" type="Sprite2D" parent="PlayerSpriteContainer/LegBody/HeadContainer"]
+[node name="Head" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/HeadContainer"]
 position = Vector2(130, -560)
 texture = ExtResource("3_31gk2")
