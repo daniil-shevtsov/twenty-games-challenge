@@ -141,9 +141,15 @@ public partial class Game : Node2D
 				var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight));
 				GD.Print($"not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
 				player.headContainer.RotationDegrees = degrees;
+				var offsetMin = 50f;
+				var offsetMax = 150f;
 				player.legBody.Position = new Vector2(
 					player.legBody.Position.X,
-					Mathf.Lerp(defaultLegBodyLocalPosition.Y, defaultLegBodyLocalPosition.Y - 1000f, notSpentWeight)
+					Mathf.Lerp(defaultLegBodyLocalPosition.Y - offsetMin, defaultLegBodyLocalPosition.Y - offsetMax, notSpentWeight)
+				);
+				player.wheelContainer.Position = new Vector2(
+					player.wheelContainer.Position.X,
+					Mathf.Lerp(defaultWheelLocalPosition.Y - offsetMin, defaultWheelLocalPosition.Y - offsetMax, notSpentWeight)
 				);
 			}
 			else
@@ -266,6 +272,7 @@ public partial class Game : Node2D
 		headTween.TweenProperty(player.headContainer, new NodePath("rotation_degrees"), 0f, duration);
 		headTween.SetParallel();
 		headTween.TweenProperty(player.legBody, new NodePath("position"), defaultLegBodyLocalPosition, duration);
+		headTween.TweenProperty(player.wheelContainer, new NodePath("position"), defaultWheelLocalPosition, duration);
 	}
 
 	private async void TweenWheelBounce()
