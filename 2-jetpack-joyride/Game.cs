@@ -11,6 +11,7 @@ public partial class Game : Node2D
 	private Background background;
 	private Player player;
 	private Node2D legBody;
+	private Vector2 defaultLegBodyLocalPosition;
 	private Node2D wheel;
 	private Node2D wheelContainer;
 	private GpuParticles2D headParticles;
@@ -42,6 +43,7 @@ public partial class Game : Node2D
 		background = GetNode<Background>("Background");
 		player = GetNode<Player>("Player");
 		legBody = (Node2D)player.FindChild("LegBody");
+		defaultLegBodyLocalPosition = legBody.Position;
 		wheel = (Node2D)player.FindChild("Wheel");
 		wheelContainer = (Node2D)player.FindChild("WheelContainer");
 		headParticles = GetNode<GpuParticles2D>("HeadParticles");
@@ -139,9 +141,14 @@ public partial class Game : Node2D
 
 				var maxSpentJetpackAcceleration = 1000f;
 				var notSpentWeight = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
+
 				var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight));
 				GD.Print($"not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
 				player.headContainer.RotationDegrees = degrees;
+				player.legBodyContainer.Position = new Vector2(
+					player.legBodyContainer.Position.X,
+					Mathf.Lerp(defaultLegBodyLocalPosition.Y, defaultLegBodyLocalPosition.Y - 1000f, notSpentWeight)
+				);
 			}
 			else
 			{
@@ -155,9 +162,8 @@ public partial class Game : Node2D
 			notSpentJetpackAcceleration = 0;
 			headParticles.Emitting = false;
 			headParticles.Lifetime = 170f;
-			headTween?.Stop();
-			headTween = CreateTween();
-			headTween.TweenProperty(player.headContainer, new NodePath("rotation_degrees"), 0f, 0.25f);
+
+			launchStraighteningTween();
 
 			var playerBottom = player.GlobalPosition.Y + player.shape.Height / 2;
 			var gameBoundsBottom = gameBounds.GlobalPosition.Y + gameBounds.shape.Size.Y / 2;
@@ -254,6 +260,16 @@ public partial class Game : Node2D
 		}
 
 		IncreaseScore(travelledDistance * 0.005f);
+	}
+
+	private void launchStraighteningTween()
+	{
+		var duration = 0.25f;
+		headTween?.Stop();
+		headTween = CreateTween();
+		headTween.TweenProperty(player.headContainer, new NodePath("rotation_degrees"), 0f, duration);
+		headTween.SetParallel();
+		headTween.TweenProperty(player.legBodyContainer, new NodePath("position"), defaultLegBodyLocalPosition, duration);
 	}
 
 	private async void TweenWheelBounce()
