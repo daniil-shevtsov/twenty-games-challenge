@@ -25,6 +25,7 @@ public partial class Game : Node2D
 
 	private Vector2 playerVelocity;
 	private float notSpentJetpackAcceleration = 0f;
+	private float jetpackForce = 0f;
 	private float wheelAngularVelocity = 0f;
 	private bool isGrounded = false;
 	private bool isGroundedPrevious = false;
@@ -68,6 +69,7 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		var previousVelocty = playerVelocity;
 		var travelledDistance = obstacleSpeed * (float)delta;
 		headParticles.GlobalPosition = new Vector2(
 			player.GlobalPosition.X,
@@ -76,12 +78,13 @@ public partial class Game : Node2D
 		isGroundedPrevious = isGrounded;
 		if (Input.IsActionPressed("jetpack"))
 		{
-			playerVelocity += new Vector2(0f, -jetpackForce) * (float)delta;
+			playerVelocity += new Vector2(0f, -jetpackAcceleration) * (float)delta;
 		}
 
 		var playerCollision = player.MoveAndCollide(playerVelocity * (float)delta);
 		var groundedDuration = 4f;
 		var airDuration = 2f;
+
 		if (playerCollision != null)
 		{
 			var collidedObject = (Node2D)playerCollision.GetCollider();
@@ -122,26 +125,29 @@ public partial class Game : Node2D
 			}
 			else if (collidedWithCeiling)
 			{
-				notSpentJetpackAcceleration += jetpackForce * (float)delta;
+				notSpentJetpackAcceleration += jetpackAcceleration * (float)delta;
 				playerVelocity.Y = 0f;
 			}
 			if (collidedWithCeiling)
 			{
-				var maxSpentJetpackAcceleration = 1600f;
+				GD.Print($"KEK final force={jetpackForce}");
+				jetpackForce = 0f;
+
+				var maxSpentJetpackAcceleration = 1000f;
 				var notSpentWeight = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
 				var degrees = Mathf.RadToDeg(Mathf.LerpAngle(Mathf.DegToRad(0), Mathf.DegToRad(-45), notSpentWeight));
-				GD.Print($"KEK not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
+				GD.Print($"not spent jetpack={notSpentJetpackAcceleration} weight={notSpentWeight} degrees={degrees}");
 				player.headContainer.RotationDegrees = degrees;
 			}
 			else
 			{
-				GD.Print("KEK clear jetpack acceleration inside collision");
+				GD.Print("clear jetpack acceleration inside collision");
 				notSpentJetpackAcceleration = 0;
 			}
 		}
 		else
 		{
-			GD.Print("KEK clear jetpack acceleration outside collision");
+			GD.Print("clear jetpack acceleration outside collision");
 			notSpentJetpackAcceleration = 0;
 			headParticles.Emitting = false;
 			headParticles.Lifetime = 170f;
@@ -163,7 +169,7 @@ public partial class Game : Node2D
 					}
 					rotationTween = CreateTween();
 
-					GD.Print("KEK launch straight tween");
+					GD.Print("launch straight tween");
 					rotationTween.TweenProperty(legBody, new NodePath("rotation_degrees"), 0f, airDuration).SetTrans(Tween.TransitionType.Spring);
 				}
 			}
@@ -180,6 +186,11 @@ public partial class Game : Node2D
 			}
 		}
 		wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
+
+		var lastAcceleration = playerVelocity - previousVelocty;
+		jetpackForce += playerMass * lastAcceleration.Y * (float)delta;
+		GD.Print($"LOL add {lastAcceleration.Y} for {(float)delta}");
+		GD.Print($"{jetpackForce} {lastAcceleration.Y} {playerVelocity.Y} {previousVelocty.Y}");
 
 		background.MoveBy(-travelledDistance);
 		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
@@ -476,8 +487,9 @@ public partial class Game : Node2D
 	}
 
 	private float gravityAcceleration = 9.8f * 20;
-	private float jetpackForce = 750f;
+	private float jetpackAcceleration = 750f;
 	private float obstacleSpeed = 450f;
+	private float playerMass = 100f;
 
 	private string saveFilePath = "user://savegame.save";
 	private string bestScoreKey = "best_score";
