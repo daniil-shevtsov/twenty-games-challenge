@@ -37,6 +37,7 @@ public partial class Game : Node2D
 
 	private AudioStreamPlayer2D hitSound;
 	private AudioStreamPlayer2D grindSound;
+	private AudioStreamPlayer2D wheelSound;
 
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
@@ -46,6 +47,7 @@ public partial class Game : Node2D
 
 		hitSound = GetNode<AudioStreamPlayer2D>("HitSound");
 		grindSound = GetNode<AudioStreamPlayer2D>("GrindSound");
+		wheelSound = GetNode<AudioStreamPlayer2D>("WheelHitSound");
 
 		player = GetNode<Player>("Player");
 		defaultLegBodyLocalPosition = player.legBody.Position;
@@ -124,6 +126,10 @@ public partial class Game : Node2D
 					rotationTween = CreateTween();
 					GD.Print("KEK launch rotated tween");
 					rotationTween.TweenProperty(player.legBodyHead, new NodePath("rotation_degrees"), 15f, groundedDuration).SetTrans(Tween.TransitionType.Spring);
+					if (!wheelSound.Playing)
+					{
+						wheelSound.Play();
+					}
 
 
 					TweenWheelBounce();
@@ -253,10 +259,15 @@ public partial class Game : Node2D
 		if (!isGrounded)
 		{
 			playerVelocity += new Vector2(0f, gravityAcceleration) * (float)delta;
-			wheelAngularVelocity = wheelAngularVelocity - (obstacleSpeed * 0.25f) * (float)delta;
-			if (wheelAngularVelocity < 0)
+			var min = obstacleSpeed * 0.15f;
+			var newVelocity = wheelAngularVelocity - (obstacleSpeed * 0.25f) * (float)delta;
+			if (newVelocity > min)
 			{
-				wheelAngularVelocity = 0f;
+				wheelAngularVelocity = newVelocity;
+			}
+			else
+			{
+				wheelAngularVelocity = min;
 			}
 		}
 		player.wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
