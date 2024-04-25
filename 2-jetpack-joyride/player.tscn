@@ -30,7 +30,6 @@ scale = Vector2(0.05, 0.05)
 
 [node name="WheelContainer" type="Node2D" parent="PlayerSpriteContainer"]
 position = Vector2(0, 1420)
-scale = Vector2(1, 1)
 
 [node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer/WheelContainer"]
 position = Vector2(0, -380)
@@ -66,7 +65,6 @@ texture = ExtResource("5_nlsj3")
 
 [node name="HeadContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead"]
 position = Vector2(-1.13687e-13, -1800)
-scale = Vector2(1, 1)
 
 [node name="Head" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/HeadContainer"]
 position = Vector2(130, -560)
