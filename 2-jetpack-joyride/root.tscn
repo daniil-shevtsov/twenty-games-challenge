@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=12 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
 [ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
 [ext_resource type="Script" path="res://SaveData.cs" id="6_mpfc1"]
 [ext_resource type="Texture2D" uid="uid://bo1ma6aqjvye0" path="res://sprites/pupil.png" id="7_daok4"]
+[ext_resource type="AudioStream" uid="uid://yi4ddvc3amxe" path="res://audio/concrete_hit.mp3" id="8_ecv4j"]
+[ext_resource type="AudioStream" uid="uid://bavdnkxqqdou3" path="res://audio/grind.mp3" id="9_nq5ds"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4h7u5"]
 
@@ -88,3 +90,9 @@ speed_scale = 11.91
 explosiveness = 0.07
 randomness = 0.11
 trail_lifetime = 0.1
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_ecv4j")
+
+[node name="GrindSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_nq5ds")

@@ -28,17 +28,25 @@ public partial class Game : Node2D
 	private float wheelAngularVelocity = 0f;
 	private bool isGrounded = false;
 	private bool isGroundedPrevious = false;
+	private bool isCollidedWithCeilingPrevious = false;
 	private PackedScene coinScene = null;
 	private PackedScene obstacleScene = null;
 
 	private Tween rotationTween = null;
 	private Tween headTween = null;
 
+	private AudioStreamPlayer2D hitSound;
+	private AudioStreamPlayer2D grindSound;
+
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
 	{
 		gameBounds = GetNode<GameBounds>("GameBounds");
 		background = GetNode<Background>("Background");
+
+		hitSound = GetNode<AudioStreamPlayer2D>("HitSound");
+		grindSound = GetNode<AudioStreamPlayer2D>("GrindSound");
+
 		player = GetNode<Player>("Player");
 		defaultLegBodyLocalPosition = player.legBody.Position;
 		defaultWheelLocalPosition = player.wheelContainer.Position;
@@ -98,6 +106,11 @@ public partial class Game : Node2D
 				headTween?.Stop();
 				// player.headContainer.RotationDegrees -= 100f * (float)delta;
 
+			}
+
+			if (collidedWithCeiling && !isCollidedWithCeilingPrevious)
+			{
+				hitSound.Play();
 			}
 
 			GD.Print($"lifetime: {headParticles.Lifetime}");
@@ -182,6 +195,8 @@ public partial class Game : Node2D
 				GD.Print("clear jetpack acceleration inside collision");
 				notSpentJetpackAcceleration = 0;
 			}
+
+			isCollidedWithCeilingPrevious = collidedWithCeiling;
 		}
 		else
 		{
