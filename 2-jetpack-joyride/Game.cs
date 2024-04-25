@@ -138,6 +138,13 @@ public partial class Game : Node2D
 			{
 				var maxSpentJetpackAcceleration = 1000f;
 
+				if (!grindSound.Playing)
+				{
+					var randomPitch = new Random().Next(45, 100) / 100f;
+					grindSound.PitchScale = randomPitch;
+					grindSound.Play();
+				}
+
 				if (Mathf.Abs(jetpackForce) > 0)
 				{
 					notSpentJetpackAcceleration = Mathf.Abs(jetpackForce);
@@ -235,6 +242,11 @@ public partial class Game : Node2D
 			GD.Print($"LOL add {lastAcceleration} for {(float)delta}");
 			GD.Print($"{jetpackForce} {lastAcceleration} {playerVelocity.Y} {previousVelocty.Y}");
 			isCollidedWithCeilingPrevious = false;
+		}
+
+		if (!isCollidedWithCeilingPrevious)
+		{
+			grindSound.Stop();
 		}
 
 
