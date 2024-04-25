@@ -39,6 +39,7 @@ public partial class Game : Node2D
 	private AudioStreamPlayer2D grindSound;
 	private AudioStreamPlayer2D wheelSound;
 	private AudioStreamPlayer2D wheelRotationSound;
+	private AudioStreamPlayer2D enemySound;
 
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
@@ -50,6 +51,7 @@ public partial class Game : Node2D
 		grindSound = GetNode<AudioStreamPlayer2D>("GrindSound");
 		wheelSound = GetNode<AudioStreamPlayer2D>("WheelHitSound");
 		wheelRotationSound = GetNode<AudioStreamPlayer2D>("WheelRotationSound");
+		enemySound = GetNode<AudioStreamPlayer2D>("EnemySound");
 
 		player = GetNode<Player>("Player");
 		defaultLegBodyLocalPosition = player.legBody.Position;
@@ -514,6 +516,15 @@ public partial class Game : Node2D
 			}
 
 			SaveGame();
+			if (!enemySound.Playing)
+			{
+				enemySound.Play();
+				var soundTween = CreateTween();
+				soundTween.TweenProperty(enemySound, "volume_db", -80f, 5f);
+				// await ToSignal(soundTween, "finished");
+				// enemySound.Stop();
+				// enemySound.VolumeDb = 0f;
+			}
 			var tween = CreateTween();
 			var duration = 0.5f;
 			tween.TweenProperty(obstacle.sprite, new NodePath("scale"), new Vector2(1.5f, 1.5f), duration).SetTrans(Tween.TransitionType.Back);
