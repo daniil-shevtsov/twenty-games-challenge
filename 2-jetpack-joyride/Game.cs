@@ -108,11 +108,6 @@ public partial class Game : Node2D
 
 			}
 
-			if (collidedWithCeiling && !isCollidedWithCeilingPrevious)
-			{
-				hitSound.Play();
-			}
-
 			GD.Print($"lifetime: {headParticles.Lifetime}");
 			isGrounded = collidedWithFloor;
 			if (collidedWithFloor)
@@ -182,6 +177,15 @@ public partial class Game : Node2D
 					);
 					headTween.TweenProperty(player.wheelContainer, new NodePath("position"), finalWheelPosition, duration).SetTrans(transition);
 					GD.Print($"KEK final force={notSpentJetpackAcceleration} launch tween with weight {notSpentWeight2} offset {finalOffset} {finalLegBodyPosition} {finalWheelPosition}");
+
+					if (collidedWithCeiling && !isCollidedWithCeilingPrevious)
+					{
+						var pitchMin = 1f;
+						var pitchMax = 10f;
+						var hitPitch = pitchMin + (pitchMax - pitchMin) * (1 - notSpentWeight2);
+						hitSound.PitchScale = hitPitch;
+						hitSound.Play();
+					}
 				}
 
 				var notSpentWeight = Mathf.Clamp(notSpentJetpackAcceleration / maxSpentJetpackAcceleration, 0, 1);
@@ -230,6 +234,7 @@ public partial class Game : Node2D
 			jetpackForce += playerMass * lastAcceleration * (float)delta;
 			GD.Print($"LOL add {lastAcceleration} for {(float)delta}");
 			GD.Print($"{jetpackForce} {lastAcceleration} {playerVelocity.Y} {previousVelocty.Y}");
+			isCollidedWithCeilingPrevious = false;
 		}
 
 
