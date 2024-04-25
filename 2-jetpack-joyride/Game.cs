@@ -38,6 +38,7 @@ public partial class Game : Node2D
 	private AudioStreamPlayer2D hitSound;
 	private AudioStreamPlayer2D grindSound;
 	private AudioStreamPlayer2D wheelSound;
+	private AudioStreamPlayer2D wheelRotationSound;
 
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
@@ -48,6 +49,7 @@ public partial class Game : Node2D
 		hitSound = GetNode<AudioStreamPlayer2D>("HitSound");
 		grindSound = GetNode<AudioStreamPlayer2D>("GrindSound");
 		wheelSound = GetNode<AudioStreamPlayer2D>("WheelHitSound");
+		wheelRotationSound = GetNode<AudioStreamPlayer2D>("WheelRotationSound");
 
 		player = GetNode<Player>("Player");
 		defaultLegBodyLocalPosition = player.legBody.Position;
@@ -269,6 +271,13 @@ public partial class Game : Node2D
 			{
 				wheelAngularVelocity = min;
 			}
+			//TODO: Can enable if I will figure out how to slow down and speed up the sound
+			// if (!wheelRotationSound.Playing)
+			// {
+			// 	var weight = obstacleSpeed / wheelAngularVelocity;
+			// 	wheelRotationSound.PitchScale = 0.3f;
+			// 	wheelRotationSound.Play();
+			// }
 		}
 		player.wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
 

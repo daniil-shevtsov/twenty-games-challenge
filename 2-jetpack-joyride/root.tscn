@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=14 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
 [ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
@@ -10,6 +10,7 @@
 [ext_resource type="AudioStream" uid="uid://yi4ddvc3amxe" path="res://audio/concrete_hit.mp3" id="8_ecv4j"]
 [ext_resource type="AudioStream" uid="uid://bavdnkxqqdou3" path="res://audio/grind.mp3" id="9_nq5ds"]
 [ext_resource type="AudioStream" uid="uid://j0jmc8cgpp6v" path="res://audio/wheel_hit.mp3" id="10_wewcg"]
+[ext_resource type="AudioStream" uid="uid://bndt2wakl54xm" path="res://audio/wheel_rotation.mp3" id="11_ya77k"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4h7u5"]
 
@@ -100,3 +101,6 @@ stream = ExtResource("9_nq5ds")
 
 [node name="WheelHitSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("10_wewcg")
+
+[node name="WheelRotationSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_ya77k")
