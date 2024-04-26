@@ -1,0 +1,71 @@
+[gd_scene load_steps=10 format=3 uid="uid://dhnav7p1v2cw3"]
+
+[ext_resource type="Script" path="res://Player.cs" id="1_x6i87"]
+[ext_resource type="Script" path="res://PlayerSprite.cs" id="2_7l6qr"]
+[ext_resource type="Texture2D" uid="uid://cw0khlwxuatrh" path="res://sprites/head.png" id="3_31gk2"]
+[ext_resource type="Texture2D" uid="uid://1lq6sdl25i00" path="res://sprites/neck.png" id="4_72sdx"]
+[ext_resource type="Texture2D" uid="uid://ci7h3ffmbt2te" path="res://sprites/body.png" id="5_nlsj3"]
+[ext_resource type="Texture2D" uid="uid://0m3mtpcoae5q" path="res://sprites/hip.png" id="6_nx60e"]
+[ext_resource type="Texture2D" uid="uid://sfplchy28ds" path="res://sprites/leg.png" id="7_x76xk"]
+[ext_resource type="Texture2D" uid="uid://c3sini00dv1wf" path="res://sprites/wheel.png" id="8_jr3xe"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_et17s"]
+radius = 20.45
+height = 141.47
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_x6i87")
+
+[node name="PlayerCollider" type="CollisionShape2D" parent="."]
+position = Vector2(0, 2)
+scale = Vector2(1.5, 1)
+shape = SubResource("CapsuleShape2D_et17s")
+
+[node name="PlayerSprite" type="Node2D" parent="."]
+visible = false
+script = ExtResource("2_7l6qr")
+
+[node name="PlayerSpriteContainer" type="Node2D" parent="."]
+scale = Vector2(0.05, 0.05)
+
+[node name="WheelContainer" type="Node2D" parent="PlayerSpriteContainer"]
+position = Vector2(0, 1420)
+
+[node name="Wheel" type="Sprite2D" parent="PlayerSpriteContainer/WheelContainer"]
+position = Vector2(0, -380)
+texture = ExtResource("8_jr3xe")
+
+[node name="LegBodyHead" type="Node2D" parent="PlayerSpriteContainer"]
+position = Vector2(1.13687e-13, 1080)
+
+[node name="LegBody" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead"]
+position = Vector2(-1.90735e-06, -3.05176e-05)
+
+[node name="Hip" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody"]
+position = Vector2(-20, -930)
+texture = ExtResource("6_nx60e")
+
+[node name="LegContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody"]
+position = Vector2(1.90735e-06, 0.00012207)
+
+[node name="Leg" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody/LegContainer"]
+position = Vector2(-21.5, -418)
+texture = ExtResource("7_x76xk")
+
+[node name="BodyContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody"]
+position = Vector2(-10, -1420)
+
+[node name="Neck" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody/BodyContainer"]
+position = Vector2(4.00001, -380)
+texture = ExtResource("4_72sdx")
+
+[node name="Body" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/LegBody/BodyContainer"]
+position = Vector2(-68, -68.0002)
+texture = ExtResource("5_nlsj3")
+
+[node name="HeadContainer" type="Node2D" parent="PlayerSpriteContainer/LegBodyHead"]
+position = Vector2(-1.13687e-13, -1800)
+
+[node name="Head" type="Sprite2D" parent="PlayerSpriteContainer/LegBodyHead/HeadContainer"]
+position = Vector2(130, -560)
+texture = ExtResource("3_31gk2")

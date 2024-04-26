@@ -1,13 +1,14 @@
 using Godot;
 using System;
 
-public partial class GameBounds : Area2D
+public partial class SaveData : Node2D
 {
-	public RectangleShape2D shape;
+	public float bestScore = 0f;
+	public float previousScore = 0f;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		shape = (RectangleShape2D)GetNode<CollisionShape2D>("CollisionShape2D").Shape;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

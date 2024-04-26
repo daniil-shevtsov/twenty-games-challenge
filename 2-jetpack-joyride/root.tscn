@@ -1,0 +1,167 @@
+[gd_scene load_steps=18 format=3 uid="uid://w1dkmq1e7res"]
+
+[ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
+[ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
+[ext_resource type="PackedScene" uid="uid://dhnav7p1v2cw3" path="res://player.tscn" id="2_aqxcm"]
+[ext_resource type="Texture2D" uid="uid://wh0vdm0x3dx0" path="res://sprites/background.png" id="2_g0lwh"]
+[ext_resource type="PackedScene" uid="uid://2o6q7688leip" path="res://game_bounds.tscn" id="3_p253t"]
+[ext_resource type="Script" path="res://SaveData.cs" id="6_mpfc1"]
+[ext_resource type="Texture2D" uid="uid://bo1ma6aqjvye0" path="res://sprites/pupil.png" id="7_daok4"]
+[ext_resource type="AudioStream" uid="uid://yi4ddvc3amxe" path="res://audio/concrete_hit.mp3" id="8_ecv4j"]
+[ext_resource type="AudioStream" uid="uid://bavdnkxqqdou3" path="res://audio/grind.mp3" id="9_nq5ds"]
+[ext_resource type="AudioStream" uid="uid://j0jmc8cgpp6v" path="res://audio/wheel_hit.mp3" id="10_wewcg"]
+[ext_resource type="AudioStream" uid="uid://bndt2wakl54xm" path="res://audio/wheel_rotation.mp3" id="11_ya77k"]
+[ext_resource type="AudioStream" uid="uid://cgbsgttqrqovg" path="res://audio/enemy.mp3" id="12_rqp1b"]
+[ext_resource type="AudioStream" uid="uid://p71hasw3pyoh" path="res://audio/reward.wav" id="13_nyxll"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_4h7u5"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tm5se"]
+particle_flag_disable_z = true
+angle_min = -214.7
+angle_max = 16.8
+direction = Vector3(-1, -0.25, 0)
+spread = 0.263
+initial_velocity_min = 20.47
+initial_velocity_max = 128.65
+gravity = Vector3(0, 98, 0)
+linear_accel_min = 87.72
+linear_accel_max = 97.08
+scale_min = 0.05
+scale_max = 0.15
+
+[sub_resource type="FontFile" id="FontFile_0oujv"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/64/0 = Vector2(0, 0)
+cache/0/64/0/ascent = 0.0
+cache/0/64/0/descent = 0.0
+cache/0/64/0/underline_position = 0.0
+cache/0/64/0/underline_thickness = 0.0
+cache/0/64/0/scale = 1.0
+cache/0/64/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/64/0/kerning_overrides/64/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_f018w"]
+font = SubResource("FontFile_0oujv")
+font_size = 64
+
+[node name="Root" type="Node2D"]
+scale = Vector2(1.00323, 1)
+script = ExtResource("1_1usdg")
+
+[node name="Background" type="Node2D" parent="."]
+script = ExtResource("2_8tmoa")
+
+[node name="Main" type="Sprite2D" parent="Background"]
+scale = Vector2(0.392, 0.404)
+texture = ExtResource("2_g0lwh")
+
+[node name="Backup" type="Sprite2D" parent="Background"]
+position = Vector2(805.399, 0)
+scale = Vector2(0.391921, 0.404321)
+texture = ExtResource("2_g0lwh")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="GameBounds" parent="." instance=ExtResource("3_p253t")]
+
+[node name="Player" parent="." instance=ExtResource("2_aqxcm")]
+position = Vector2(0, -280)
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+label_settings = SubResource("LabelSettings_4h7u5")
+
+[node name="BestScoreLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 356.847
+offset_top = -196.0
+offset_right = 396.847
+offset_bottom = -173.0
+grow_horizontal = 0
+horizontal_alignment = 2
+
+[node name="PreviousScoreLabel" type="Label" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = 356.847
+offset_top = -173.0
+offset_right = 396.847
+offset_bottom = -150.0
+grow_horizontal = 0
+horizontal_alignment = 2
+
+[node name="SaveData" type="Node2D" parent="."]
+script = ExtResource("6_mpfc1")
+
+[node name="HeadParticles" type="GPUParticles2D" parent="."]
+position = Vector2(255.176, -383)
+emitting = false
+amount = 1000
+process_material = SubResource("ParticleProcessMaterial_tm5se")
+texture = ExtResource("7_daok4")
+lifetime = 30.46
+speed_scale = 11.91
+explosiveness = 0.07
+randomness = 0.11
+trail_lifetime = 0.1
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("8_ecv4j")
+
+[node name="GrindSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("9_nq5ds")
+
+[node name="WheelHitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("10_wewcg")
+
+[node name="WheelRotationSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("11_ya77k")
+
+[node name="EnemySound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("12_rqp1b")
+
+[node name="RewardSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("13_nyxll")
+
+[node name="GameMenu" type="CanvasLayer" parent="."]
+
+[node name="PanelContainer" type="PanelContainer" parent="GameMenu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameTitle" type="Label" parent="GameMenu/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Jetpack Joyride"
+label_settings = SubResource("LabelSettings_f018w")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameMenu/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DifficultySwitch" type="CheckButton" parent="GameMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Easy Difficulty"
+alignment = 2
+
+[node name="StartButton" type="Button" parent="GameMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start Game"
+
+[node name="QuitButton" type="Button" parent="GameMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit Game"

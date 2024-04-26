@@ -1,0 +1,46 @@
+[gd_scene load_steps=8 format=3 uid="uid://yeqmjcvx8qd4"]
+
+[ext_resource type="Script" path="res://Obstacle.cs" id="1_qa4gr"]
+[ext_resource type="Texture2D" uid="uid://btocchuwscayo" path="res://sprites/obstacle_body.png" id="2_oewtv"]
+[ext_resource type="Texture2D" uid="uid://bo1ma6aqjvye0" path="res://sprites/pupil.png" id="3_ursvt"]
+[ext_resource type="Texture2D" uid="uid://c6ssf1k7bpgsk" path="res://sprites/obstacle_spikes.png" id="4_uetw3"]
+[ext_resource type="Texture2D" uid="uid://dvp3xeh3hhshc" path="res://sprites/obstacle_eyeball.png" id="5_lmb0q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_33o1q"]
+size = Vector2(31, 30)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pqrla"]
+radius = 24.07
+
+[node name="Obstacle" type="Area2D"]
+script = ExtResource("1_qa4gr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 1)
+shape = SubResource("RectangleShape2D_33o1q")
+
+[node name="SpriteContainer" type="Node2D" parent="."]
+scale = Vector2(0.05, 0.05)
+
+[node name="Eyeball" type="Sprite2D" parent="SpriteContainer"]
+position = Vector2(0, -13.3333)
+texture = ExtResource("5_lmb0q")
+
+[node name="Body" type="Sprite2D" parent="SpriteContainer"]
+texture = ExtResource("2_oewtv")
+offset = Vector2(10, 0)
+
+[node name="Spikes" type="Sprite2D" parent="SpriteContainer"]
+position = Vector2(5, 0)
+texture = ExtResource("4_uetw3")
+
+[node name="Pupil" type="Sprite2D" parent="SpriteContainer"]
+position = Vector2(9.53674e-07, 0)
+scale = Vector2(1.25, 1.25)
+texture = ExtResource("3_ursvt")
+
+[node name="EyeballArea" type="Area2D" parent="SpriteContainer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpriteContainer/EyeballArea"]
+position = Vector2(0, -3)
+shape = SubResource("CircleShape2D_pqrla")
