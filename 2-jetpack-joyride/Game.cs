@@ -40,6 +40,7 @@ public partial class Game : Node2D
 	private AudioStreamPlayer2D wheelSound;
 	private AudioStreamPlayer2D wheelRotationSound;
 	private AudioStreamPlayer2D enemySound;
+	private AudioStreamPlayer2D rewardSound;
 
 	// Called when the node enters the scene tree for the first time.
 	public override async void _Ready()
@@ -52,6 +53,7 @@ public partial class Game : Node2D
 		wheelSound = GetNode<AudioStreamPlayer2D>("WheelHitSound");
 		wheelRotationSound = GetNode<AudioStreamPlayer2D>("WheelRotationSound");
 		enemySound = GetNode<AudioStreamPlayer2D>("EnemySound");
+		rewardSound = GetNode<AudioStreamPlayer2D>("RewardSound");
 
 		player = GetNode<Player>("Player");
 		defaultLegBodyLocalPosition = player.legBody.Position;
@@ -314,7 +316,7 @@ public partial class Game : Node2D
 		});
 		coinsToRemove.ForEach((coin) => RemoveCoin(coin));
 
-		if (coins.Count < 1)
+		if (coins.Count < maxCoins)
 		{
 			SpawnCoin();
 		}
@@ -337,7 +339,7 @@ public partial class Game : Node2D
 		});
 		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
 
-		if (obstacles.Count < 1)
+		if (obstacles.Count < maxObstacles)
 		{
 			SpawnObstacle();
 		}
@@ -443,6 +445,9 @@ public partial class Game : Node2D
 		if (body == player)
 		{
 			IncreaseScore(5);
+			var randomPitch = new Random().Next(80, 130) / 100f;
+			rewardSound.PitchScale = randomPitch;
+			rewardSound.Play();
 			var tween = CreateTween();
 			var duration = 0.5f;
 			tween.TweenProperty(coin.sprite, new NodePath("scale"), new Vector2(0.0f, 0.0f), duration);
@@ -519,11 +524,6 @@ public partial class Game : Node2D
 			if (!enemySound.Playing)
 			{
 				enemySound.Play();
-				var soundTween = CreateTween();
-				soundTween.TweenProperty(enemySound, "volume_db", -80f, 5f);
-				// await ToSignal(soundTween, "finished");
-				// enemySound.Stop();
-				// enemySound.VolumeDb = 0f;
 			}
 			var tween = CreateTween();
 			var duration = 0.5f;
@@ -603,6 +603,8 @@ public partial class Game : Node2D
 	private float jetpackAcceleration = 750f;
 	private float obstacleSpeed = 450f;
 	private float playerMass = 100f;
+	private int maxCoins = 3;
+	private int maxObstacles = 1;
 
 	private string saveFilePath = "user://savegame.save";
 	private string bestScoreKey = "best_score";
