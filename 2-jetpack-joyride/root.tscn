@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://w1dkmq1e7res"]
+[gd_scene load_steps=18 format=3 uid="uid://w1dkmq1e7res"]
 
 [ext_resource type="Script" path="res://Game.cs" id="1_1usdg"]
 [ext_resource type="Script" path="res://Background.cs" id="2_8tmoa"]
@@ -29,6 +29,26 @@ linear_accel_min = 87.72
 linear_accel_max = 97.08
 scale_min = 0.05
 scale_max = 0.15
+
+[sub_resource type="FontFile" id="FontFile_0oujv"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/64/0 = Vector2(0, 0)
+cache/0/64/0/ascent = 0.0
+cache/0/64/0/descent = 0.0
+cache/0/64/0/underline_position = 0.0
+cache/0/64/0/underline_thickness = 0.0
+cache/0/64/0/scale = 1.0
+cache/0/64/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/64/0/kerning_overrides/64/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_f018w"]
+font = SubResource("FontFile_0oujv")
+font_size = 64
 
 [node name="Root" type="Node2D"]
 scale = Vector2(1.00323, 1)
@@ -112,3 +132,36 @@ stream = ExtResource("12_rqp1b")
 
 [node name="RewardSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("13_nyxll")
+
+[node name="GameMenu" type="CanvasLayer" parent="."]
+
+[node name="PanelContainer" type="PanelContainer" parent="GameMenu"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameTitle" type="Label" parent="GameMenu/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+text = "Jetpack Joyride"
+label_settings = SubResource("LabelSettings_f018w")
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameMenu/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="DifficultySwitch" type="CheckButton" parent="GameMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Easy Difficulty"
+alignment = 2
+
+[node name="StartButton" type="Button" parent="GameMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Start Game"
+
+[node name="QuitButton" type="Button" parent="GameMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Quit Game"

@@ -13,6 +13,7 @@ public partial class Game : Node2D
 	private Vector2 defaultLegBodyLocalPosition;
 	private Vector2 defaultWheelLocalPosition;
 	private GpuParticles2D headParticles;
+	private CanvasLayer gameMenu;
 	private List<Obstacle> obstacles = new List<Obstacle>();
 	private List<Coin> coins = new List<Coin>();
 	private float currentScore = 0;
@@ -34,6 +35,9 @@ public partial class Game : Node2D
 
 	private Tween rotationTween = null;
 	private Tween headTween = null;
+
+	private bool isEasyDifficulty = false;
+	private bool isPaused = true;
 
 	private AudioStreamPlayer2D hitSound;
 	private AudioStreamPlayer2D grindSound;
@@ -68,8 +72,18 @@ public partial class Game : Node2D
 			gameBounds.GlobalPosition.Y - gameBounds.shape.Size.Y / 2
 		);
 
+		var easyDifficultySwitch = (CheckButton)FindChild("DifficultySwitch");
+		easyDifficultySwitch.Pressed += onDifficultySwitched;
+		var startGameButton = (Button)FindChild("StartButton");
+		startGameButton.Pressed += onStartGameClicked;
+		var quitGameButton = (Button)FindChild("QuitButton");
+		quitGameButton.Pressed += onQuitGameClicked;
+
+		gameMenu = GetNode<CanvasLayer>("GameMenu");
+
 		coinScene = GD.Load<PackedScene>("res://coin.tscn");
 		obstacleScene = GD.Load<PackedScene>("res://obstacle.tscn");
+
 		SpawnCoin();
 
 		InitGame();
@@ -83,8 +97,96 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		var previousVelocty = playerVelocity;
+		if (Input.IsActionJustReleased("pause"))
+		{
+			UpdatePause(!isPaused);
+		}
+
 		var travelledDistance = obstacleSpeed * (float)delta;
+
+		if (player.IsProcessing())
+		{
+			UpdatePlayer(delta);
+		}
+
+		if (background.IsProcessing())
+		{
+			background.MoveBy(-travelledDistance);
+			if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+			{
+				var backupPosition = background.backup.GlobalPosition;
+				background.backup.GlobalPosition = background.main.GlobalPosition;
+				background.main.GlobalPosition = backupPosition;
+
+				background.backup.GlobalPosition = new Vector2(
+					gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + background.backup.Texture.GetSize().X * background.backup.Scale.X / 2,
+					background.backup.GlobalPosition.Y
+				);
+			}
+		}
+
+
+		var coinsToRemove = new List<Coin>();
+		coins.ForEach((coin) =>
+		{
+			if (coin.IsProcessing())
+			{
+				coin.GlobalPosition = new Vector2(
+							coin.GlobalPosition.X - travelledDistance,
+							coin.GlobalPosition.Y
+						);
+				coin.RotateBy(obstacleSpeed * 0.25f * (float)delta);
+
+				if (coin.GlobalPosition.X + coin.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+				{
+					coinsToRemove.Add(coin);
+				}
+			}
+		});
+		coinsToRemove.ForEach((coin) => RemoveCoin(coin));
+
+		if (coins.Count < maxCoins)
+		{
+			SpawnCoin();
+		}
+
+		var obstaclesToRemove = new List<Obstacle>();
+		obstacles.ForEach((obstacle) =>
+		{
+			if (obstacle.IsProcessing())
+			{
+				obstacle.GlobalPosition = new Vector2(
+					obstacle.GlobalPosition.X - travelledDistance,
+					obstacle.GlobalPosition.Y
+				);
+				obstacle.RotateBy(obstacleSpeed * 0.25f * (float)delta);
+
+				obstacle.LookAtPlayer(player.GlobalPosition);
+
+				if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
+				{
+					obstaclesToRemove.Add(obstacle);
+				}
+			}
+		});
+		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
+
+		if (obstacles.Count < maxObstacles)
+		{
+			SpawnObstacle();
+		}
+
+		if (scoreLabel.IsProcessing())
+		{
+			IncreaseScore(travelledDistance * 0.005f);
+		}
+
+		UpdatePause(isPaused);
+	}
+
+	private void UpdatePlayer(double delta)
+	{
+		var previousVelocty = playerVelocity;
 		headParticles.GlobalPosition = new Vector2(
 			player.GlobalPosition.X,
 			player.GlobalPosition.Y - player.shape.Height / 2
@@ -284,67 +386,6 @@ public partial class Game : Node2D
 			// }
 		}
 		player.wheel.RotationDegrees += wheelAngularVelocity * (float)delta;
-
-
-
-		background.MoveBy(-travelledDistance);
-		if (background.main.GlobalPosition.X + (background.main.Texture.GetSize().X * background.main.Scale.X) / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
-		{
-			var backupPosition = background.backup.GlobalPosition;
-			background.backup.GlobalPosition = background.main.GlobalPosition;
-			background.main.GlobalPosition = backupPosition;
-
-			background.backup.GlobalPosition = new Vector2(
-				gameBounds.GlobalPosition.X + gameBounds.shape.Size.X / 2 + background.backup.Texture.GetSize().X * background.backup.Scale.X / 2,
-				background.backup.GlobalPosition.Y
-			);
-		}
-
-		var coinsToRemove = new List<Coin>();
-		coins.ForEach((coin) =>
-		{
-			coin.GlobalPosition = new Vector2(
-				coin.GlobalPosition.X - travelledDistance,
-				coin.GlobalPosition.Y
-			);
-			coin.RotateBy(obstacleSpeed * 0.25f * (float)delta);
-
-			if (coin.GlobalPosition.X + coin.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
-			{
-				coinsToRemove.Add(coin);
-			}
-		});
-		coinsToRemove.ForEach((coin) => RemoveCoin(coin));
-
-		if (coins.Count < maxCoins)
-		{
-			SpawnCoin();
-		}
-
-		var obstaclesToRemove = new List<Obstacle>();
-		obstacles.ForEach((obstacle) =>
-		{
-			obstacle.GlobalPosition = new Vector2(
-				obstacle.GlobalPosition.X - travelledDistance,
-				obstacle.GlobalPosition.Y
-			);
-			obstacle.RotateBy(obstacleSpeed * 0.25f * (float)delta);
-
-			obstacle.LookAtPlayer(player.GlobalPosition);
-
-			if (obstacle.GlobalPosition.X + obstacle.shape.Size.X / 2 < gameBounds.GlobalPosition.X - gameBounds.shape.Size.X / 2)
-			{
-				obstaclesToRemove.Add(obstacle);
-			}
-		});
-		obstaclesToRemove.ForEach((obstacle) => RemoveObstacle(obstacle));
-
-		if (obstacles.Count < maxObstacles)
-		{
-			SpawnObstacle();
-		}
-
-		IncreaseScore(travelledDistance * 0.005f);
 	}
 
 	private void launchStraighteningTween()
@@ -478,7 +519,7 @@ public partial class Game : Node2D
 			furtherstX = allObjects.Max(node => node.GlobalPosition.X);
 		}
 
-		var newX = furtherstX + 100f + size.X;
+		var newX = furtherstX + 150f + size.X;
 
 		instance.GlobalPosition = new Vector2(
 			newX,
@@ -597,6 +638,59 @@ public partial class Game : Node2D
 		UpdateBestScore((float)savedData[bestScoreKey]);
 		UpdatePreviousScore((float)savedData[previousScoreKey]);
 		GD.Print($"SAVE: LoadGame restored {bestScore} and {previousScore}");
+	}
+
+	private void UpdatePause(bool isPaused)
+	{
+		this.isPaused = isPaused;
+		var pausables = new List<Node>() {
+			player,
+			background,
+			scoreLabel
+		}.Concat(coins).Concat(obstacles);
+		foreach (Node pausable in pausables)
+		{
+			pausable.SetProcess(!isPaused);
+		}
+		if (isPaused)
+		{
+			gameMenu.Show();
+		}
+		else
+		{
+			gameMenu.Hide();
+		}
+	}
+
+	private void UpdateDifficulty(bool isNewDifficultyEasy)
+	{
+		isEasyDifficulty = isNewDifficultyEasy;
+
+		if (isNewDifficultyEasy)
+		{
+			obstacleSpeed = 250f;
+		}
+		else
+		{
+			obstacleSpeed = 450f;
+		}
+	}
+
+	private void onStartGameClicked()
+	{
+		InitGame();
+		UpdatePause(isPaused: false);
+	}
+
+	private void onQuitGameClicked()
+	{
+		GetTree().Quit();
+	}
+
+	private void onDifficultySwitched()
+	{
+		var isNewDifficultyEasy = !isEasyDifficulty;
+		UpdateDifficulty(isNewDifficultyEasy);
 	}
 
 	private float gravityAcceleration = 9.8f * 20;

@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dvp3xeh3hhshc" path="res://sprites/obstacle_eyeball.png" id="5_lmb0q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_33o1q"]
-size = Vector2(52, 51)
+size = Vector2(31, 30)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pqrla"]
 radius = 24.07
@@ -16,11 +16,11 @@ radius = 24.07
 script = ExtResource("1_qa4gr")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 3.5)
+position = Vector2(0.5, 1)
 shape = SubResource("RectangleShape2D_33o1q")
 
 [node name="SpriteContainer" type="Node2D" parent="."]
-scale = Vector2(0.075, 0.075)
+scale = Vector2(0.05, 0.05)
 
 [node name="Eyeball" type="Sprite2D" parent="SpriteContainer"]
 position = Vector2(0, -13.3333)
