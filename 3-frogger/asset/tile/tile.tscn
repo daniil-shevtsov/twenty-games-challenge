@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://asset/tile/Tile.cs" id="1_8hx2e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q380h"]
+size = Vector2(40, 20)
 
 [node name="Tile" type="StaticBody2D"]
 script = ExtResource("1_8hx2e")

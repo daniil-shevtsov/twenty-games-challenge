@@ -44,8 +44,8 @@ public partial class Game : Node2D
 		var size = tile.shape.Size;
 		var space = 14;
 		tile.GlobalPosition = new Vector2(
-			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + (space + size.X / 2f) * x,
-			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + (space + size.Y / 2f) * y
+			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + size.X * x,
+			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
 		);
 	}
 }

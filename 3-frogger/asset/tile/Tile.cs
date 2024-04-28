@@ -13,8 +13,12 @@ public partial class Tile : StaticBody2D
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape;
 		background = GetNode<ColorRect>("ColorRect");
-		GD.Print($"KEK tile {collisionShape} {shape}");
 
+		background.Size = shape.Size;
+		background.Position = new Vector2(
+			collisionShape.Position.X - background.Size.X / 2f,
+			collisionShape.Position.Y - background.Size.Y / 2f
+		);
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
