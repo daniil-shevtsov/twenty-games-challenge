@@ -49,9 +49,13 @@ public partial class Game : Node2D
 		{
 			horizontal = -1;
 		}
-		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
-		var newTile = tiles[currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical)];
-		player.GlobalPosition = newTile.GlobalPosition;
+
+		if (horizontal != 0 || vertical != 0)
+		{
+			var currentTile = GetKeyForCoordinates(player.GlobalPosition);
+			var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
+			player.GlobalPosition = newTile.GlobalPosition;
+		}
 	}
 
 	public override void _Input(InputEvent @event)
@@ -138,6 +142,14 @@ public partial class Game : Node2D
 		return tuple;
 	}
 
+	private TileKey ClampKey(TileKey key)
+	{
+		return key.Copy(
+			newX: Math.Clamp(key.X, 0, horizontalCount),
+			newY: Math.Clamp(key.Y, 0, verticalCount)
+		);
+	}
+
 	private struct TileKey
 	{
 		public readonly int X;
@@ -161,6 +173,11 @@ public partial class Game : Node2D
 			}
 
 			return new TileKey(newX, newY);
+		}
+
+		public override String ToString()
+		{
+			return $"{(X, Y)}";
 		}
 	}
 }
