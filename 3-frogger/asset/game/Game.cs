@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Xml;
 
 public partial class Game : Node2D
 {
@@ -18,8 +19,8 @@ public partial class Game : Node2D
 
 		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
 
-		var horizontalCount = 4;
-		var verticalCount = 4;
+		var horizontalCount = 14;
+		var verticalCount = 14;
 		var scene = GetTree().CurrentScene;
 		for (int vertical = 0; vertical < verticalCount; vertical++)
 		{
@@ -41,9 +42,10 @@ public partial class Game : Node2D
 		scene.CallDeferred("add_child", tile);
 		await ToSignal(GetTree(), "process_frame");
 		var size = tile.shape.Size;
+		var space = 14;
 		tile.GlobalPosition = new Vector2(
-			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f,
-			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f
+			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + (space + size.X / 2f) * x,
+			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + (space + size.Y / 2f) * y
 		);
 	}
 }
