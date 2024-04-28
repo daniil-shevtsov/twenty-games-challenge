@@ -10,5 +10,7 @@ script = ExtResource("1_qskow")
 [node name="Camera2D" type="Camera2D" parent="."]
 
 [node name="GameBounds" parent="." instance=ExtResource("2_l674m")]
+position = Vector2(400, 300)
 
 [node name="Player" parent="." instance=ExtResource("2_3w373")]
+z_index = 99

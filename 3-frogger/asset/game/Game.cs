@@ -24,15 +24,7 @@ public partial class Game : Node2D
 		camera = GetNode<Camera2D>("Camera2D");
 		bounds = GetNode<GameBounds>("GameBounds");
 
-		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
-		var horizontalCount = 14;
-		var verticalCount = 14;
-		tileSize = new Vector2(
-			bounds.shape.Size.X / horizontalCount,
-			bounds.shape.Size.Y / verticalCount
-		);
-		InitTileGrid();
-		InitPlayer();
+		SetupEverything();
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -50,6 +42,22 @@ public partial class Game : Node2D
 			tiles[key].UpdateColor(Color.FromHtml("#FF0000"));
 			GD.Print($"MOUSE {position} {key}");
 		}
+	}
+
+	private async void SetupEverything()
+	{
+		camera.GlobalPosition = bounds.GlobalPosition;
+
+		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
+		var horizontalCount = 14;
+		var verticalCount = 14;
+		tileSize = new Vector2(
+			bounds.shape.Size.X / horizontalCount,
+			bounds.shape.Size.Y / verticalCount
+		);
+		InitTileGrid();
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		InitPlayer();
 	}
 
 	private void InitTileGrid()
@@ -78,8 +86,9 @@ public partial class Game : Node2D
 	private void InitPlayer()
 	{
 		player.Setup(tileSize);
-		var bottomCenterCoordinates = new Vector2(bounds.shape.Size.X / 2, bounds.shape.Size.Y);
-		var bottomCenterIndices = GetKeyForCoordinates(bottomCenterCoordinates);
+		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
+		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
+		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
 	}
 
 	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, Color color)
@@ -100,8 +109,9 @@ public partial class Game : Node2D
 
 	private Tuple<int, int> GetKeyForCoordinates(Vector2 coordinates)
 	{
-		int x = (int)(coordinates.X / (tileSize.X));
-		int y = (int)(coordinates.Y / (tileSize.Y));
+		var epsilon = 0.0001f;
+		int x = (int)((coordinates.X - epsilon) / tileSize.X);
+		int y = (int)((coordinates.Y - epsilon) / tileSize.Y);
 		var tuple = Tuple.Create(x, y);
 		GD.Print($"position {coordinates} tile size {tileSize} tuple {tuple}");
 
