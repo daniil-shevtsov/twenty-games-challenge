@@ -23,7 +23,13 @@ public partial class Tile : StaticBody2D
 			collisionShape.Position.X - background.Size.X / 2f,
 			collisionShape.Position.Y - background.Size.Y / 2f
 		);
-		background.Color = color;
+
+		UpdateColor(color);
+	}
+
+	public void UpdateColor(Godot.Color newColor)
+	{
+		background.Color = newColor;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

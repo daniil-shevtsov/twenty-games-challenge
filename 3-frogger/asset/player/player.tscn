@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" path="res://asset/player/Player.cs" id="1_ar48j"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5u06o"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xuoxd"]
 
 [node name="Player" type="StaticBody2D"]
 script = ExtResource("1_ar48j")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CapsuleShape2D_5u06o")
+shape = SubResource("RectangleShape2D_xuoxd")

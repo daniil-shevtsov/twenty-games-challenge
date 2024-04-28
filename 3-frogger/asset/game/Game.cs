@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Xml;
 
 public partial class Game : Node2D
@@ -10,6 +11,12 @@ public partial class Game : Node2D
 
 	private PackedScene tileScene;
 
+	private Dictionary<Tuple<int, int>, Tile> tiles = new();
+	private Vector2 tileSize;
+
+	static readonly int horizontalCount = 14;
+	static readonly int verticalCount = horizontalCount;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -18,16 +25,36 @@ public partial class Game : Node2D
 		bounds = GetNode<GameBounds>("GameBounds");
 
 		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
-
 		var horizontalCount = 14;
 		var verticalCount = 14;
-		var scene = GetTree().CurrentScene;
-
-		var tileSize = new Vector2(
+		tileSize = new Vector2(
 			bounds.shape.Size.X / horizontalCount,
 			bounds.shape.Size.Y / verticalCount
 		);
-		GD.Print($"KEK {bounds.shape.Size} {tileSize}");
+		InitTileGrid();
+		InitPlayer();
+	}
+
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(double delta)
+	{
+	}
+
+	public override void _Input(InputEvent @event)
+	{
+		if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.IsReleased())
+		{
+			var position = eventMouseButton.Position;
+
+			var key = GetKeyForCoordinates(position);
+			tiles[key].UpdateColor(Color.FromHtml("#FF0000"));
+			GD.Print($"MOUSE {position} {key}");
+		}
+	}
+
+	private void InitTileGrid()
+	{
+		var scene = GetTree().CurrentScene;
 
 		for (int vertical = 0; vertical < verticalCount; vertical++)
 		{
@@ -47,9 +74,12 @@ public partial class Game : Node2D
 		}
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+
+	private void InitPlayer()
 	{
+		player.Setup(tileSize);
+		var bottomCenterCoordinates = new Vector2(bounds.shape.Size.X / 2, bounds.shape.Size.Y);
+		var bottomCenterIndices = GetKeyForCoordinates(bottomCenterCoordinates);
 	}
 
 	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, Color color)
@@ -64,5 +94,17 @@ public partial class Game : Node2D
 			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + size.X * x,
 			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
 		);
+
+		tiles[Tuple.Create(x, y)] = tile;
+	}
+
+	private Tuple<int, int> GetKeyForCoordinates(Vector2 coordinates)
+	{
+		int x = (int)(coordinates.X / (tileSize.X));
+		int y = (int)(coordinates.Y / (tileSize.Y));
+		var tuple = Tuple.Create(x, y);
+		GD.Print($"position {coordinates} tile size {tileSize} tuple {tuple}");
+
+		return tuple;
 	}
 }
