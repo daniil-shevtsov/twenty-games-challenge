@@ -13,12 +13,17 @@ public partial class Tile : StaticBody2D
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape;
 		background = GetNode<ColorRect>("ColorRect");
+	}
 
+	public void Setup(Vector2 newSize, Godot.Color color)
+	{
+		shape.Size = newSize;
 		background.Size = shape.Size;
 		background.Position = new Vector2(
 			collisionShape.Position.X - background.Size.X / 2f,
 			collisionShape.Position.Y - background.Size.Y / 2f
 		);
+		background.Color = color;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

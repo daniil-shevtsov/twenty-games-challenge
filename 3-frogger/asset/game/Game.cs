@@ -22,11 +22,27 @@ public partial class Game : Node2D
 		var horizontalCount = 14;
 		var verticalCount = 14;
 		var scene = GetTree().CurrentScene;
+
+		var tileSize = new Vector2(
+			bounds.shape.Size.X / horizontalCount,
+			bounds.shape.Size.Y / verticalCount
+		);
+		GD.Print($"KEK {bounds.shape.Size} {tileSize}");
+
 		for (int vertical = 0; vertical < verticalCount; vertical++)
 		{
 			for (int horizontal = 0; horizontal < horizontalCount; horizontal++)
 			{
-				SpawnTile(scene, x: horizontal, y: vertical);
+				Color color;
+				if (horizontal % 2 == vertical % 2)
+				{
+					color = Color.FromHtml("#FFFFFF");
+				}
+				else
+				{
+					color = Color.FromHtml("#000000");
+				}
+				SpawnTile(scene, x: horizontal, y: vertical, tileSize, color);
 			}
 		}
 	}
@@ -36,13 +52,14 @@ public partial class Game : Node2D
 	{
 	}
 
-	private async void SpawnTile(Node scene, int x, int y)
+	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, Color color)
 	{
 		var tile = (Tile)tileScene.Instantiate();
 		scene.CallDeferred("add_child", tile);
 		await ToSignal(GetTree(), "process_frame");
+		tile.Setup(tileSize, color);
 		var size = tile.shape.Size;
-		var space = 14;
+
 		tile.GlobalPosition = new Vector2(
 			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + size.X * x,
 			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
