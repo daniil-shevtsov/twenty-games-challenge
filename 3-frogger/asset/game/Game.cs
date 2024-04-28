@@ -14,8 +14,8 @@ public partial class Game : Node2D
 	private Dictionary<Tuple<int, int>, Tile> tiles = new();
 	private Vector2 tileSize;
 
-	static readonly int horizontalCount = 14;
-	static readonly int verticalCount = horizontalCount;
+	static readonly int horizontalCount = 15;
+	static readonly int verticalCount = 14;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -49,8 +49,6 @@ public partial class Game : Node2D
 		camera.GlobalPosition = bounds.GlobalPosition;
 
 		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
-		var horizontalCount = 14;
-		var verticalCount = 14;
 		tileSize = new Vector2(
 			bounds.shape.Size.X / horizontalCount,
 			bounds.shape.Size.Y / verticalCount
@@ -110,8 +108,8 @@ public partial class Game : Node2D
 	private Tuple<int, int> GetKeyForCoordinates(Vector2 coordinates)
 	{
 		var epsilon = 0.0001f;
-		int x = (int)((coordinates.X - epsilon) / tileSize.X);
-		int y = (int)((coordinates.Y - epsilon) / tileSize.Y);
+		int x = (int)(Mathf.Clamp((coordinates.X - epsilon) / tileSize.X, 0, horizontalCount - 1));
+		int y = (int)(Mathf.Clamp((coordinates.Y - epsilon) / tileSize.Y, 0, verticalCount - 1));
 		var tuple = Tuple.Create(x, y);
 		GD.Print($"position {coordinates} tile size {tileSize} tuple {tuple}");
 
