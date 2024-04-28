@@ -11,7 +11,7 @@ public partial class Game : Node2D
 
 	private PackedScene tileScene;
 
-	private Dictionary<Tuple<int, int>, Tile> tiles = new();
+	private Dictionary<TileKey, Tile> tiles = new();
 	private Vector2 tileSize;
 
 	static readonly int horizontalCount = 15;
@@ -33,7 +33,7 @@ public partial class Game : Node2D
 		if (Input.IsActionJustReleased("up"))
 		{
 			var currentTile = GetKeyForCoordinates(player.GlobalPosition);
-			var newTile = tiles[Tuple.Create(currentTile.Item1, currentTile.Item2 - 1)];
+			var newTile = tiles[currentTile.Copy(newY: currentTile.Y - 1)];
 			player.GlobalPosition = newTile.GlobalPosition;
 		}
 	}
@@ -108,17 +108,43 @@ public partial class Game : Node2D
 			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
 		);
 
-		tiles[Tuple.Create(x, y)] = tile;
+		tiles[new TileKey(x, y)] = tile;
 	}
 
-	private Tuple<int, int> GetKeyForCoordinates(Vector2 coordinates)
+	private TileKey GetKeyForCoordinates(Vector2 coordinates)
 	{
 		var epsilon = 0.0001f;
-		int x = (int)(Mathf.Clamp((coordinates.X - epsilon) / tileSize.X, 0, horizontalCount - 1));
-		int y = (int)(Mathf.Clamp((coordinates.Y - epsilon) / tileSize.Y, 0, verticalCount - 1));
-		var tuple = Tuple.Create(x, y);
+		int x = (int)Mathf.Clamp((coordinates.X - epsilon) / tileSize.X, 0, horizontalCount - 1);
+		int y = (int)Mathf.Clamp((coordinates.Y - epsilon) / tileSize.Y, 0, verticalCount - 1);
+		var tuple = new TileKey(x, y);
 		GD.Print($"position {coordinates} tile size {tileSize} tuple {tuple}");
 
 		return tuple;
+	}
+
+	private struct TileKey
+	{
+		public readonly int X;
+		public readonly int Y;
+
+		public TileKey(int x, int y)
+		{
+			X = x;
+			Y = y;
+		}
+
+		public TileKey Copy(int newX = -1, int newY = -1)
+		{
+			if (newX == -1)
+			{
+				newX = X;
+			}
+			if (newY == -1)
+			{
+				newY = Y;
+			}
+
+			return new TileKey(newX, newY);
+		}
 	}
 }
