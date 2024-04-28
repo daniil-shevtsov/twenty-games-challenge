@@ -30,12 +30,28 @@ public partial class Game : Node2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		var horizontal = 0;
+		var vertical = 0;
+
 		if (Input.IsActionJustReleased("up"))
 		{
-			var currentTile = GetKeyForCoordinates(player.GlobalPosition);
-			var newTile = tiles[currentTile.Copy(newY: currentTile.Y - 1)];
-			player.GlobalPosition = newTile.GlobalPosition;
+			vertical = -1;
 		}
+		else if (Input.IsActionJustReleased("right"))
+		{
+			horizontal = 1;
+		}
+		else if (Input.IsActionJustReleased("down"))
+		{
+			vertical = 1;
+		}
+		else if (Input.IsActionJustReleased("left"))
+		{
+			horizontal = -1;
+		}
+		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
+		var newTile = tiles[currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical)];
+		player.GlobalPosition = newTile.GlobalPosition;
 	}
 
 	public override void _Input(InputEvent @event)
