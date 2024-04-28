@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://258hnq8w31mp"]
+
+[ext_resource type="Script" path="res://asset/game/GameBounds.cs" id="1_urtku"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0nugw"]
+size = Vector2(800, 600)
+
+[node name="GameBounds" type="Area2D"]
+script = ExtResource("1_urtku")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(4, 2)
+shape = SubResource("RectangleShape2D_0nugw")

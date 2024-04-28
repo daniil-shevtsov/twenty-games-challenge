@@ -12,9 +12,13 @@ public partial class Game : Node2D
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		player = GetNode<Player>("Player");
+		camera = GetNode<Camera2D>("Camera2D");
+		bounds = GetNode<GameBounds>("GameBounds");
+
 		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
 
-		var horizontalCount = 8;
+		var horizontalCount = 4;
 		var verticalCount = 4;
 		var scene = GetTree().CurrentScene;
 		for (int vertical = 0; vertical < verticalCount; vertical++)
@@ -38,8 +42,8 @@ public partial class Game : Node2D
 		await ToSignal(GetTree(), "process_frame");
 		var size = tile.shape.Size;
 		tile.GlobalPosition = new Vector2(
-			bounds.shape.Size.X - bounds.shape.Size.X / 2f + size.X / 2f,
-			bounds.shape.Size.Y - bounds.shape.Size.Y / 2f + size.Y / 2f
+			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f,
+			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f
 		);
 	}
 }

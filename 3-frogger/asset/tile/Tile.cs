@@ -13,7 +13,7 @@ public partial class Tile : StaticBody2D
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape;
 		background = GetNode<ColorRect>("ColorRect");
-
+		GD.Print($"KEK tile {collisionShape} {shape}");
 
 	}
 

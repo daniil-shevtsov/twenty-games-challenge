@@ -1,21 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://posc1u3w5v7h"]
+[gd_scene load_steps=4 format=3 uid="uid://posc1u3w5v7h"]
 
 [ext_resource type="Script" path="res://asset/game/Game.cs" id="1_qskow"]
 [ext_resource type="PackedScene" uid="uid://yuqkods02n3h" path="res://asset/player/player.tscn" id="2_3w373"]
-[ext_resource type="Script" path="res://asset/game/GameBounds.cs" id="2_posyb"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0nugw"]
-size = Vector2(800, 600)
+[ext_resource type="PackedScene" uid="uid://258hnq8w31mp" path="res://asset/game/game_bounds.tscn" id="2_l674m"]
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_qskow")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="GameBounds" type="Area2D" parent="."]
-script = ExtResource("2_posyb")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GameBounds"]
-shape = SubResource("RectangleShape2D_0nugw")
+[node name="GameBounds" parent="." instance=ExtResource("2_l674m")]
 
 [node name="Player" parent="." instance=ExtResource("2_3w373")]

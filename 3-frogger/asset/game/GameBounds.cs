@@ -11,6 +11,7 @@ public partial class GameBounds : Area2D
 	{
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape;
+		GD.Print($"KEK bounds {collisionShape} {shape}");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
