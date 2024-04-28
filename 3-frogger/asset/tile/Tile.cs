@@ -4,9 +4,9 @@ using System.Drawing;
 
 public partial class Tile : StaticBody2D
 {
-	CollisionShape2D collisionShape;
-	RectangleShape2D shape;
-	ColorRect background;
+	private CollisionShape2D collisionShape;
+	public RectangleShape2D shape;
+	public ColorRect background;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{

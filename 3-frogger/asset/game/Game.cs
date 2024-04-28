@@ -7,13 +7,39 @@ public partial class Game : Node2D
 	private Camera2D camera;
 	private GameBounds bounds;
 
+	private PackedScene tileScene;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
+
+		var horizontalCount = 8;
+		var verticalCount = 4;
+		var scene = GetTree().CurrentScene;
+		for (int vertical = 0; vertical < verticalCount; vertical++)
+		{
+			for (int horizontal = 0; horizontal < horizontalCount; horizontal++)
+			{
+				SpawnTile(scene, x: horizontal, y: vertical);
+			}
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+	}
+
+	private async void SpawnTile(Node scene, int x, int y)
+	{
+		var tile = (Tile)tileScene.Instantiate();
+		scene.CallDeferred("add_child", tile);
+		await ToSignal(GetTree(), "process_frame");
+		var size = tile.shape.Size;
+		tile.GlobalPosition = new Vector2(
+			bounds.shape.Size.X - bounds.shape.Size.X / 2f + size.X / 2f,
+			bounds.shape.Size.Y - bounds.shape.Size.Y / 2f + size.Y / 2f
+		);
 	}
 }

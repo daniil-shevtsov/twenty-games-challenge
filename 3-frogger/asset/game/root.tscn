@@ -1,11 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://posc1u3w5v7h"]
+[gd_scene load_steps=5 format=3 uid="uid://posc1u3w5v7h"]
 
 [ext_resource type="Script" path="res://asset/game/Game.cs" id="1_qskow"]
 [ext_resource type="PackedScene" uid="uid://yuqkods02n3h" path="res://asset/player/player.tscn" id="2_3w373"]
 [ext_resource type="Script" path="res://asset/game/GameBounds.cs" id="2_posyb"]
-[ext_resource type="PackedScene" uid="uid://c0qpoi14aevyh" path="res://asset/tile/tile.tscn" id="3_kdc2e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0nugw"]
+size = Vector2(800, 600)
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_qskow")
@@ -19,5 +19,3 @@ script = ExtResource("2_posyb")
 shape = SubResource("RectangleShape2D_0nugw")
 
 [node name="Player" parent="." instance=ExtResource("2_3w373")]
-
-[node name="Tile" parent="." instance=ExtResource("3_kdc2e")]
