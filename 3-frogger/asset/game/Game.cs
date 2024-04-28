@@ -139,14 +139,14 @@ public partial class Game : Node2D
 		var tuple = new TileKey(x, y);
 		GD.Print($"position {coordinates} tile size {tileSize} tuple {tuple}");
 
-		return tuple;
+		return ClampKey(tuple);
 	}
 
 	private TileKey ClampKey(TileKey key)
 	{
 		return key.Copy(
-			newX: Math.Clamp(key.X, 0, horizontalCount),
-			newY: Math.Clamp(key.Y, 0, verticalCount)
+			newX: Math.Clamp(key.X, 0, horizontalCount - 1),
+			newY: Math.Clamp(key.Y, 0, verticalCount - 1)
 		);
 	}
 
