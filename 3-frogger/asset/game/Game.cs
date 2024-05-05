@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 
 public partial class Game : Node2D
@@ -43,7 +44,13 @@ public partial class Game : Node2D
 		InitTileGrid();
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		InitPlayer();
-		tree.Setup(new Vector2(tileSize.X * 2, tileSize.Y));
+		tree.Setup(new Vector2(tileSize.X * 4, tileSize.Y));
+		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
+		if (bottomWaterTile != null)
+		{
+			tree.GlobalPosition = bottomWaterTile.GlobalPosition;
+			GD.Print($"new tree position: ${tree.GlobalPosition}");
+		}
 	}
 
 	private void InitTileGrid()
@@ -123,8 +130,7 @@ public partial class Game : Node2D
 		tiles[tileKey] = tile;
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public override void _PhysicsProcess(double delta)
 	{
 		var horizontal = 0;
 		var vertical = 0;
@@ -149,6 +155,13 @@ public partial class Game : Node2D
 		if (horizontal != 0 || vertical != 0)
 		{
 			UpdatePlayerTile(horizontal: horizontal, vertical: vertical);
+		}
+
+		var bottomWaterTile = tiles.Values.MaxBy(tile => tile.GlobalPosition.Y);
+		if (bottomWaterTile != null)
+		{
+			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - 250f * (float)delta, tree.GlobalPosition.Y);
+			// GD.Print($"new tree position: ${tree.GlobalPosition}");
 		}
 	}
 
@@ -206,10 +219,12 @@ public partial class Game : Node2D
 		var epsilon = 0.0001f;
 		int x = (int)Mathf.Clamp((coordinates.X - epsilon) / tileSize.X, 0, horizontalCount - 1);
 		int y = (int)Mathf.Clamp((coordinates.Y - epsilon) / tileSize.Y, 0, verticalCount - 1);
-		var tuple = new TileKey(x, y);
-		GD.Print($"position {coordinates} tile size {tileSize} tuple {tuple}");
+		var tileKey = new TileKey(x, y);
+		var finalKey = ClampKey(tileKey);
+		var tile = tiles[finalKey];
+		GD.Print($"position {coordinates} tile size {tileSize} key {tileKey} clamped {finalKey} tile position {tile.GlobalPosition}");
 
-		return ClampKey(tuple);
+		return finalKey;
 	}
 
 	private TileKey ClampKey(TileKey key)

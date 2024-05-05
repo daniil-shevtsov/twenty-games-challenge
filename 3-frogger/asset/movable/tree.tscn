@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://d2k1wsq4w74i4"]
+
+[ext_resource type="Script" path="res://asset/movable/Tree.cs" id="1_l0u0n"]
+[ext_resource type="Texture2D" uid="uid://4i0fixnvekb7" path="res://icon.svg" id="2_axfgt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fr7bj"]
+
+[node name="Tree" type="StaticBody2D"]
+script = ExtResource("1_l0u0n")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_fr7bj")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_axfgt")
