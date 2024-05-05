@@ -1,5 +1,4 @@
 using Godot;
-using System;
 using System.Drawing;
 
 public partial class Tile : StaticBody2D
@@ -7,6 +6,7 @@ public partial class Tile : StaticBody2D
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public ColorRect background;
+	public TileType tileType = TileType.Ground;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -25,6 +25,22 @@ public partial class Tile : StaticBody2D
 		);
 
 		UpdateColor(color);
+	}
+
+	public void UpdateType(TileType newType)
+	{
+		tileType = newType;
+
+		var newColor = background.Color;
+		switch (newType)
+		{
+			case TileType.Ground:
+				break;
+			case TileType.Water:
+				newColor = Godot.Color.FromHtml("#0000FF");
+				break;
+		}
+		background.Color = newColor;
 	}
 
 	public void UpdateColor(Godot.Color newColor)

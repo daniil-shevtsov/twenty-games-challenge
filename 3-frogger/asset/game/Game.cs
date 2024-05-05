@@ -65,7 +65,17 @@ public partial class Game : Node2D
 			var position = eventMouseButton.Position;
 
 			var key = GetKeyForCoordinates(position);
-			tiles[key].UpdateColor(Color.FromHtml("#FF0000"));
+			var newType = TileType.Ground;
+			switch (tiles[key].tileType)
+			{
+				case TileType.Ground:
+					newType = TileType.Water;
+					break;
+				case TileType.Water:
+					newType = TileType.Ground;
+					break;
+			}
+			tiles[key].UpdateType(newType);
 			GD.Print($"MOUSE {position} {key}");
 		}
 	}
