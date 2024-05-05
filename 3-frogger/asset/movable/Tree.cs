@@ -6,6 +6,8 @@ public partial class Tree : StaticBody2D
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public Sprite2D sprite;
+
+	public long id;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -14,7 +16,7 @@ public partial class Tree : StaticBody2D
 		sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
-	public void Setup(Vector2 newSize)
+	public void Setup(Vector2 newSize, long id)
 	{
 		shape.Size = newSize;
 		var newScale = shape.Size / sprite.Texture.GetSize();
@@ -23,6 +25,8 @@ public partial class Tree : StaticBody2D
 			collisionShape.Position.X,
 			collisionShape.Position.Y
 		);
+
+		this.id = id;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

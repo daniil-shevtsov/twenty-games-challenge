@@ -11,10 +11,11 @@ public partial class Game : Node2D
 	private GameBounds bounds;
 
 	private PackedScene tileScene;
+	private PackedScene treeScene;
 
 	private Dictionary<TileKey, Tile> tiles = new();
 
-	private Tree tree;
+	private Dictionary<long, Tree> trees = new();
 
 	private Vector2 tileSize;
 
@@ -23,13 +24,14 @@ public partial class Game : Node2D
 	static readonly int horizontalCount = 15;
 	static readonly int verticalCount = 14;
 
+	static readonly float treeSpeed = 150f;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		player = GetNode<Player>("Player");
 		camera = GetNode<Camera2D>("Camera2D");
 		bounds = GetNode<GameBounds>("GameBounds");
-		tree = GetNode<Tree>("Tree");
 
 		SetupEverything();
 	}
@@ -45,13 +47,22 @@ public partial class Game : Node2D
 		);
 		InitTileGrid();
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		treeScene = GD.Load<PackedScene>("res://asset/movable/tree.tscn");
+
 		InitPlayer();
-		tree.Setup(new Vector2(tileSize.X * 4, tileSize.Y));
 		SpawnTree();
 	}
 
 	private void SpawnTree()
 	{
+		var generatedId = 0L;
+		var tree = GetNode<Tree>("Tree");
+		tree.Setup(
+			newSize: new Vector2(tileSize.X * 4, tileSize.Y),
+			id: generatedId
+		);
+		trees[tree.id] = tree;
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
 		var treeInitialPosition = new Vector2(
 			bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f,
@@ -179,48 +190,51 @@ public partial class Game : Node2D
 
 	private void UpdateTrees(float delta)
 	{
-		var treeMoveAmount = 250f * (float)delta;
+		var treeMoveAmount = treeSpeed * (float)delta;
 
-		var bottomWaterTile = tiles.Values.MaxBy(tile => tile.GlobalPosition.Y);
-		if (bottomWaterTile != null)
+		trees.Values.ToList().ForEach(tree =>
 		{
-			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - treeMoveAmount, tree.GlobalPosition.Y);
-		}
-
-		if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
-		{
-			SpawnTree();
-		}
-
-		var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
-		var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
-
-		var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
-		var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
-
-		var treeTiles = tiles.Values.ToList()
-		.Where(tile =>
-		{
-
-			var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
-			var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
-			return tile.GlobalPosition.Y == tree.GlobalPosition.Y
-			&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
-			&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
-		}).Select(tile => tile.key).ToHashSet();
-
-		tiles.Values.ToList().ForEach(tile =>
-		{
-			if (treeTiles.Contains(tile.key))
+			var bottomWaterTile = tiles.Values.MaxBy(tile => tile.GlobalPosition.Y);
+			if (bottomWaterTile != null)
 			{
-				GD.Print($"TREE: {tile.key} now tree");
-				tile.UpdateType(TileType.Tree);
-			}
-			else if (tile.tileType != tile.originalTileType)
-			{
-				tile.ResetTypeToOriginal();
+				tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - treeMoveAmount, tree.GlobalPosition.Y);
 			}
 
+			if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
+			{
+				SpawnTree();
+			}
+
+			var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
+			var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
+
+			var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
+			var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
+
+			var treeTiles = tiles.Values.ToList()
+			.Where(tile =>
+			{
+
+				var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
+				var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
+				return tile.GlobalPosition.Y == tree.GlobalPosition.Y
+				&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
+				&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
+			}).Select(tile => tile.key).ToHashSet();
+
+			tiles.Values.ToList().ForEach(tile =>
+			{
+				if (treeTiles.Contains(tile.key))
+				{
+					GD.Print($"TREE: {tile.key} now tree");
+					tile.UpdateType(TileType.Tree);
+				}
+				else if (tile.tileType != tile.originalTileType)
+				{
+					tile.ResetTypeToOriginal();
+				}
+
+			});
 		});
 
 		if (isPlayerOnTree)
