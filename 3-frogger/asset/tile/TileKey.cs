@@ -29,4 +29,14 @@ public readonly struct TileKey
 	{
 		return $"{(X, Y)}";
 	}
+
+	public static bool operator ==(TileKey c1, TileKey c2)
+	{
+		return c1.Equals(c2);
+	}
+
+	public static bool operator !=(TileKey c1, TileKey c2)
+	{
+		return !c1.Equals(c2);
+	}
 }

@@ -143,6 +143,7 @@ public partial class Game : Node2D
 	{
 		UpdatePlayerInput();
 		UpdateTrees((float)delta);
+		HandlePlayerState();
 	}
 
 	private void UpdatePlayerInput()
@@ -186,27 +187,37 @@ public partial class Game : Node2D
 			SpawnTree();
 		}
 
+		var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
+		var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
+
+		var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
+		var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
+
+
+
 		var treeTiles = tiles.Values.ToList()
 		.Where(tile =>
 		{
-			var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
-			var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
+
 			var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
 			var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
 			return tile.GlobalPosition.Y == tree.GlobalPosition.Y
-			&& ((treeLeftSide >= tileLeftSide && treeLeftSide <= tileRightSide) || (treeRightSide >= tileLeftSide && treeRightSide <= tileRightSide));
+			&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
+			&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
 		}).Select(tile => tile.key).ToHashSet();
 
 		tiles.Values.ToList().ForEach(tile =>
 		{
 			if (treeTiles.Contains(tile.key))
 			{
+				GD.Print($"TREE: {tile.key} now tree");
 				tile.UpdateType(TileType.Tree);
 			}
-			else
+			else if (tile.tileType != tile.originalTileType)
 			{
 				tile.ResetTypeToOriginal();
 			}
+
 		});
 	}
 
@@ -215,15 +226,20 @@ public partial class Game : Node2D
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
 		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
 		player.GlobalPosition = newTile.GlobalPosition;
+		GD.Print($"TREE: player new tile: {newTile.key}");
+	}
 
-		switch (newTile.tileType)
+	private void HandlePlayerState()
+	{
+		var currentTile = tiles[GetKeyForCoordinates(player.GlobalPosition)];
+		switch (currentTile.tileType)
 		{
 			case TileType.Ground:
 				break;
 			case TileType.Tree:
 				break;
 			case TileType.Water:
-				HandlePlayerDying(newTile.key);
+				HandlePlayerDying(currentTile.key);
 				break;
 		}
 	}
@@ -252,7 +268,7 @@ public partial class Game : Node2D
 
 	private void HandlePlayerDying(TileKey playerTileKey)
 	{
-		GD.Print($"Player has died at tile: {tiles[playerTileKey].key}");
+		GD.Print($"TREE: Player has died at tile: {tiles[playerTileKey].key}");
 		Respawn();
 	}
 
