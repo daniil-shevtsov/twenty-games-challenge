@@ -213,7 +213,11 @@ public partial class Game : Node2D
 
 			if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
 			{
-				SpawnTree();
+				//SpawnTree();
+				tree.GlobalPosition = new Vector2(
+					bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f,
+					tree.GlobalPosition.Y
+				);
 			}
 
 			var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
