@@ -54,16 +54,16 @@ public partial class Game : Node2D
 
 
 		SpawnTree();
-		//SpawnTree(offset: -1);
+		SpawnTree(offset: -1);
 	}
 
 	private async void SpawnTree(int offset = 0)
 	{
-		var generatedId = 0L;
-		if (trees.Count > 0)
-		{
-			generatedId = trees.Values.Select(tree => tree.id).Max() + 1L;
-		}
+		var generatedId = offset;
+		// if (trees.Count > 0)
+		// {
+		// 	generatedId = trees.Values.Select(tree => tree.id).Max() + 1L;
+		// }
 
 		var tree = (Tree)treeScene.Instantiate();
 		GetTree().CurrentScene.CallDeferred("add_child", tree);
@@ -82,7 +82,7 @@ public partial class Game : Node2D
 		if (bottomWaterTile != null)
 		{
 			tree.GlobalPosition = treeInitialPosition;
-			GD.Print($"new tree position: ${tree.GlobalPosition}");
+			GD.Print($"new tree-{tree.id} position: ${tree.GlobalPosition}");
 		}
 	}
 
@@ -205,21 +205,19 @@ public partial class Game : Node2D
 
 		trees.Values.ToList().ForEach(tree =>
 		{
-			var bottomWaterTile = tiles.Values.MaxBy(tile => tile.GlobalPosition.Y);
-			if (bottomWaterTile != null)
-			{
-				tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - treeMoveAmount, tree.GlobalPosition.Y);
-			}
+			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - treeMoveAmount, tree.GlobalPosition.Y);
 
 			if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
 			{
-				//SpawnTree();
 				tree.GlobalPosition = new Vector2(
 					bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f,
 					tree.GlobalPosition.Y
 				);
 			}
+		});
 
+		var allTreeTiles = trees.Values.ToList().SelectMany(tree =>
+		{
 			var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
 			var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
 
@@ -235,21 +233,24 @@ public partial class Game : Node2D
 				return tile.GlobalPosition.Y == tree.GlobalPosition.Y
 				&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
 				&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
-			}).Select(tile => tile.key).ToHashSet();
-
-			tiles.Values.ToList().ForEach(tile =>
-			{
-				if (treeTiles.Contains(tile.key))
-				{
-					GD.Print($"TREE: {tile.key} now tree");
-					tile.UpdateType(TileType.Tree);
-				}
-				else if (tile.tileType != tile.originalTileType)
-				{
-					tile.ResetTypeToOriginal();
-				}
-
 			});
+			return treeTiles;
+		}).Select(tile => tile.key).ToHashSet();
+
+
+
+		tiles.Values.ToList().ForEach(tile =>
+		{
+			if (allTreeTiles.Contains(tile.key))
+			{
+				GD.Print($"TREE: {tile.key} now tree");
+				tile.UpdateType(TileType.Tree);
+			}
+			else if (tile.tileType != tile.originalTileType)
+			{
+				tile.ResetTypeToOriginal();
+			}
+
 		});
 
 		if (isPlayerOnTree)
