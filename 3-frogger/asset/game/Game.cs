@@ -75,6 +75,12 @@ public partial class Game : Node2D
 	private void HandlePlayerDying(TileKey playerTileKey)
 	{
 		GD.Print($"Player has died at tile: {tiles[playerTileKey].key}");
+		Respawn();
+	}
+
+	private void Respawn()
+	{
+		InitPlayer();
 	}
 
 	public override void _Input(InputEvent @event)
