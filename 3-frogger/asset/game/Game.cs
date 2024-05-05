@@ -51,13 +51,24 @@ public partial class Game : Node2D
 		treeScene = GD.Load<PackedScene>("res://asset/movable/tree.tscn");
 
 		InitPlayer();
+
+
 		SpawnTree();
+		//SpawnTree(offset: -1);
 	}
 
-	private void SpawnTree()
+	private async void SpawnTree(int offset = 0)
 	{
 		var generatedId = 0L;
-		var tree = GetNode<Tree>("Tree");
+		if (trees.Count > 0)
+		{
+			generatedId = trees.Values.Select(tree => tree.id).Max() + 1L;
+		}
+
+		var tree = (Tree)treeScene.Instantiate();
+		GetTree().CurrentScene.CallDeferred("add_child", tree);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
 		tree.Setup(
 			newSize: new Vector2(tileSize.X * 4, tileSize.Y),
 			id: generatedId
@@ -66,7 +77,7 @@ public partial class Game : Node2D
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
 		var treeInitialPosition = new Vector2(
 			bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f,
-			bottomWaterTile.GlobalPosition.Y
+			tiles[bottomWaterTile.key.Copy(newY: bottomWaterTile.key.Y + offset)].GlobalPosition.Y
 		);
 		if (bottomWaterTile != null)
 		{
@@ -138,7 +149,7 @@ public partial class Game : Node2D
 	{
 		var tile = (Tile)tileScene.Instantiate();
 		scene.CallDeferred("add_child", tile);
-		await ToSignal(GetTree(), "process_frame");
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		var tileKey = new TileKey(x, y);
 		tile.Setup(tileSize, tileKey, type);
 		var size = tile.shape.Size;
