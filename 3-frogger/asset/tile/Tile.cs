@@ -35,7 +35,6 @@ public partial class Tile : StaticBody2D
 	{
 		tileType = newType;
 
-		var newColor = background.Color;
 		switch (newType)
 		{
 			case TileType.Ground:
@@ -52,6 +51,9 @@ public partial class Tile : StaticBody2D
 				break;
 			case TileType.Water:
 				UpdateColor(Godot.Color.FromHtml("#0000FF"));
+				break;
+			case TileType.Tree:
+				UpdateColor(Godot.Color.FromHtml("#633200"));
 				break;
 		}
 	}

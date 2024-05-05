@@ -185,6 +185,15 @@ public partial class Game : Node2D
 		{
 			SpawnTree();
 		}
+
+		var treeTiles = new List<TileKey>() {
+			GetKeyForCoordinates(tree.GlobalPosition),
+		}.ConvertAll(key => tiles[key]);
+
+		treeTiles.ForEach(treeTile =>
+		{
+			treeTile.UpdateType(TileType.Tree);
+		});
 	}
 
 	private void UpdatePlayerTile(int horizontal, int vertical)
@@ -196,6 +205,8 @@ public partial class Game : Node2D
 		switch (newTile.tileType)
 		{
 			case TileType.Ground:
+				break;
+			case TileType.Tree:
 				break;
 			case TileType.Water:
 				HandlePlayerDying(newTile.key);
