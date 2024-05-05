@@ -27,6 +27,97 @@ public partial class Game : Node2D
 		SetupEverything();
 	}
 
+	private async void SetupEverything()
+	{
+		camera.GlobalPosition = bounds.GlobalPosition;
+
+		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
+		tileSize = new Vector2(
+			bounds.shape.Size.X / horizontalCount,
+			bounds.shape.Size.Y / verticalCount
+		);
+		InitTileGrid();
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		InitPlayer();
+	}
+
+	private void InitTileGrid()
+	{
+		var scene = GetTree().CurrentScene;
+
+		for (int vertical = 0; vertical < verticalCount; vertical++)
+		{
+			for (int horizontal = 0; horizontal < horizontalCount; horizontal++)
+			{
+				var type = TileType.Ground;
+				if (vertical > 1 && vertical < 7)
+				{
+					type = TileType.Water;
+				}
+				else if (vertical == 1)
+				{
+					if (horizontal == 0 || horizontal == 7 || horizontal == horizontalCount - 1)
+					{
+						type = TileType.Ground;
+					}
+					else
+					{
+						if (horizontal == horizontalCount / 2)
+						{
+							type = TileType.Ground;
+						}
+						if ((horizontal % 6 == 1) || (horizontal % 6 == 2))
+						{
+							type = TileType.Water;
+						}
+						else if ((horizontal % 6 == 3) || (horizontal % 6 == 4))
+						{
+							type = TileType.Ground;
+						}
+						else if ((horizontal % 6 == 5) || (horizontal % 6 == 6))
+						{
+							type = TileType.Ground;
+						}
+						else
+						{
+							type = TileType.Water;
+						}
+					}
+				}
+
+				SpawnTile(scene, x: horizontal, y: vertical, tileSize, type);
+			}
+		}
+	}
+
+
+	private void InitPlayer()
+	{
+		player.Setup(tileSize);
+		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
+		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
+		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
+	}
+
+	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, TileType type)
+	{
+		var tile = (Tile)tileScene.Instantiate();
+		scene.CallDeferred("add_child", tile);
+		await ToSignal(GetTree(), "process_frame");
+		var tileKey = new TileKey(x, y);
+		tile.Setup(tileSize, tileKey, type);
+		var size = tile.shape.Size;
+
+		tile.GlobalPosition = new Vector2(
+			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + size.X * x,
+			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
+		);
+
+
+		tile.key = tileKey;
+		tiles[tileKey] = tile;
+	}
+
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
@@ -72,17 +163,6 @@ public partial class Game : Node2D
 		}
 	}
 
-	private void HandlePlayerDying(TileKey playerTileKey)
-	{
-		GD.Print($"Player has died at tile: {tiles[playerTileKey].key}");
-		Respawn();
-	}
-
-	private void Respawn()
-	{
-		InitPlayer();
-	}
-
 	public override void _Input(InputEvent @event)
 	{
 		if (@event is InputEventMouseButton eventMouseButton && eventMouseButton.IsReleased())
@@ -105,60 +185,15 @@ public partial class Game : Node2D
 		}
 	}
 
-	private async void SetupEverything()
+	private void HandlePlayerDying(TileKey playerTileKey)
 	{
-		camera.GlobalPosition = bounds.GlobalPosition;
+		GD.Print($"Player has died at tile: {tiles[playerTileKey].key}");
+		Respawn();
+	}
 
-		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
-		tileSize = new Vector2(
-			bounds.shape.Size.X / horizontalCount,
-			bounds.shape.Size.Y / verticalCount
-		);
-		InitTileGrid();
-		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+	private void Respawn()
+	{
 		InitPlayer();
-	}
-
-	private void InitTileGrid()
-	{
-		var scene = GetTree().CurrentScene;
-
-		for (int vertical = 0; vertical < verticalCount; vertical++)
-		{
-			for (int horizontal = 0; horizontal < horizontalCount; horizontal++)
-			{
-
-				SpawnTile(scene, x: horizontal, y: vertical, tileSize);
-			}
-		}
-	}
-
-
-	private void InitPlayer()
-	{
-		player.Setup(tileSize);
-		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
-		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
-		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
-	}
-
-	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize)
-	{
-		var tile = (Tile)tileScene.Instantiate();
-		scene.CallDeferred("add_child", tile);
-		await ToSignal(GetTree(), "process_frame");
-		var tileKey = new TileKey(x, y);
-		tile.Setup(tileSize, tileKey);
-		var size = tile.shape.Size;
-
-		tile.GlobalPosition = new Vector2(
-			bounds.GlobalPosition.X - bounds.shape.Size.X / 2f + size.X / 2f + size.X * x,
-			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
-		);
-
-
-		tile.key = tileKey;
-		tiles[tileKey] = tile;
 	}
 
 	private TileKey GetKeyForCoordinates(Vector2 coordinates)

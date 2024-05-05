@@ -18,16 +18,17 @@ public partial class Tile : StaticBody2D
 		background = GetNode<ColorRect>("ColorRect");
 	}
 
-	public void Setup(Vector2 newSize, TileKey key)
+	public void Setup(Vector2 newSize, TileKey key, TileType type)
 	{
 		this.key = key;
+
 		shape.Size = newSize;
 		background.Size = shape.Size;
 		background.Position = new Vector2(
 			collisionShape.Position.X - background.Size.X / 2f,
 			collisionShape.Position.Y - background.Size.Y / 2f
 		);
-		UpdateType(TileType.Ground);
+		UpdateType(type);
 	}
 
 	public void UpdateType(TileType newType)
