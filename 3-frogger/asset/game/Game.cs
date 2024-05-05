@@ -52,10 +52,29 @@ public partial class Game : Node2D
 
 		if (horizontal != 0 || vertical != 0)
 		{
-			var currentTile = GetKeyForCoordinates(player.GlobalPosition);
-			var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
-			player.GlobalPosition = newTile.GlobalPosition;
+			UpdatePlayerTile(horizontal: horizontal, vertical: vertical);
 		}
+	}
+
+	private void UpdatePlayerTile(int horizontal, int vertical)
+	{
+		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
+		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
+		player.GlobalPosition = newTile.GlobalPosition;
+
+		switch (newTile.tileType)
+		{
+			case TileType.Ground:
+				break;
+			case TileType.Water:
+				HandlePlayerDying(newTile.key);
+				break;
+		}
+	}
+
+	private void HandlePlayerDying(TileKey playerTileKey)
+	{
+		GD.Print($"Player has died at tile: {tiles[playerTileKey].key}");
 	}
 
 	public override void _Input(InputEvent @event)
