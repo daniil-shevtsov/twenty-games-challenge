@@ -45,10 +45,19 @@ public partial class Game : Node2D
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		InitPlayer();
 		tree.Setup(new Vector2(tileSize.X * 4, tileSize.Y));
+		SpawnTree();
+	}
+
+	private void SpawnTree()
+	{
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
+		var treeInitialPosition = new Vector2(
+			bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f,
+			bottomWaterTile.GlobalPosition.Y
+		);
 		if (bottomWaterTile != null)
 		{
-			tree.GlobalPosition = bottomWaterTile.GlobalPosition;
+			tree.GlobalPosition = treeInitialPosition;
 			GD.Print($"new tree position: ${tree.GlobalPosition}");
 		}
 	}
@@ -132,6 +141,12 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
+		UpdatePlayerInput();
+		UpdateTrees((float)delta);
+	}
+
+	private void UpdatePlayerInput()
+	{
 		var horizontal = 0;
 		var vertical = 0;
 
@@ -156,12 +171,19 @@ public partial class Game : Node2D
 		{
 			UpdatePlayerTile(horizontal: horizontal, vertical: vertical);
 		}
+	}
 
+	private void UpdateTrees(float delta)
+	{
 		var bottomWaterTile = tiles.Values.MaxBy(tile => tile.GlobalPosition.Y);
 		if (bottomWaterTile != null)
 		{
 			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - 250f * (float)delta, tree.GlobalPosition.Y);
-			// GD.Print($"new tree position: ${tree.GlobalPosition}");
+		}
+
+		if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
+		{
+			SpawnTree();
 		}
 	}
 
