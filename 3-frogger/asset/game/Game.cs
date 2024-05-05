@@ -12,6 +12,9 @@ public partial class Game : Node2D
 	private PackedScene tileScene;
 
 	private Dictionary<TileKey, Tile> tiles = new();
+
+	private Tree tree;
+
 	private Vector2 tileSize;
 
 	static readonly int horizontalCount = 15;
@@ -23,6 +26,7 @@ public partial class Game : Node2D
 		player = GetNode<Player>("Player");
 		camera = GetNode<Camera2D>("Camera2D");
 		bounds = GetNode<GameBounds>("GameBounds");
+		tree = GetNode<Tree>("Tree");
 
 		SetupEverything();
 	}
@@ -39,6 +43,7 @@ public partial class Game : Node2D
 		InitTileGrid();
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		InitPlayer();
+		tree.Setup(new Vector2(tileSize.X * 2, tileSize.Y));
 	}
 
 	private void InitTileGrid()
