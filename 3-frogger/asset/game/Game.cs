@@ -18,6 +18,8 @@ public partial class Game : Node2D
 
 	private Vector2 tileSize;
 
+	private bool isPlayerOnTree = false;
+
 	static readonly int horizontalCount = 15;
 	static readonly int verticalCount = 14;
 
@@ -118,6 +120,7 @@ public partial class Game : Node2D
 		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
 		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
 		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
+		isPlayerOnTree = false;
 	}
 
 	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, TileType type)
@@ -143,7 +146,7 @@ public partial class Game : Node2D
 	{
 		UpdatePlayerInput();
 		UpdateTrees((float)delta);
-		HandlePlayerState();
+		HandlePlayerState((float)delta);
 	}
 
 	private void UpdatePlayerInput()
@@ -176,10 +179,12 @@ public partial class Game : Node2D
 
 	private void UpdateTrees(float delta)
 	{
+		var treeMoveAmount = 250f * (float)delta;
+
 		var bottomWaterTile = tiles.Values.MaxBy(tile => tile.GlobalPosition.Y);
 		if (bottomWaterTile != null)
 		{
-			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - 250f * (float)delta, tree.GlobalPosition.Y);
+			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - treeMoveAmount, tree.GlobalPosition.Y);
 		}
 
 		if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
@@ -192,8 +197,6 @@ public partial class Game : Node2D
 
 		var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
 		var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
-
-
 
 		var treeTiles = tiles.Values.ToList()
 		.Where(tile =>
@@ -219,6 +222,11 @@ public partial class Game : Node2D
 			}
 
 		});
+
+		if (isPlayerOnTree)
+		{
+			player.GlobalPosition = new Vector2(player.GlobalPosition.X - treeMoveAmount, player.GlobalPosition.Y);
+		}
 	}
 
 	private void UpdatePlayerTile(int horizontal, int vertical)
@@ -227,9 +235,10 @@ public partial class Game : Node2D
 		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
 		player.GlobalPosition = newTile.GlobalPosition;
 		GD.Print($"TREE: player new tile: {newTile.key}");
+		isPlayerOnTree = newTile.tileType == TileType.Tree;
 	}
 
-	private void HandlePlayerState()
+	private void HandlePlayerState(float delta)
 	{
 		var currentTile = tiles[GetKeyForCoordinates(player.GlobalPosition)];
 		switch (currentTile.tileType)
