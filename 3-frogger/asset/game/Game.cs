@@ -186,9 +186,16 @@ public partial class Game : Node2D
 			SpawnTree();
 		}
 
-		var treeTiles = new List<TileKey>() {
-			GetKeyForCoordinates(tree.GlobalPosition),
-		}.ToHashSet();
+		var treeTiles = tiles.Values.ToList()
+		.Where(tile =>
+		{
+			var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
+			var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
+			var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
+			var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
+			return tile.GlobalPosition.Y == tree.GlobalPosition.Y
+			&& ((treeLeftSide >= tileLeftSide && treeLeftSide <= tileRightSide) || (treeRightSide >= tileLeftSide && treeRightSide <= tileRightSide));
+		}).Select(tile => tile.key).ToHashSet();
 
 		tiles.Values.ToList().ForEach(tile =>
 		{
