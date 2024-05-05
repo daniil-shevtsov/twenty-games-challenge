@@ -18,4 +18,4 @@ z_index = 99
 
 [node name="Tree" parent="." instance=ExtResource("4_v46w7")]
 z_index = 98
-position = Vector2(393, 255)
+position = Vector2(393, 247)

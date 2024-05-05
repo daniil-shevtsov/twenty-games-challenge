@@ -188,11 +188,18 @@ public partial class Game : Node2D
 
 		var treeTiles = new List<TileKey>() {
 			GetKeyForCoordinates(tree.GlobalPosition),
-		}.ConvertAll(key => tiles[key]);
+		}.ToHashSet();
 
-		treeTiles.ForEach(treeTile =>
+		tiles.Values.ToList().ForEach(tile =>
 		{
-			treeTile.UpdateType(TileType.Tree);
+			if (treeTiles.Contains(tile.key))
+			{
+				tile.UpdateType(TileType.Tree);
+			}
+			else
+			{
+				tile.ResetTypeToOriginal();
+			}
 		});
 	}
 

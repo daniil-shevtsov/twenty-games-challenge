@@ -8,6 +8,7 @@ public partial class Tile : StaticBody2D
 	public RectangleShape2D shape;
 	public ColorRect background;
 	public TileKey key;
+	public TileType originalTileType;
 	public TileType tileType;
 
 	// Called when the node enters the scene tree for the first time.
@@ -28,6 +29,7 @@ public partial class Tile : StaticBody2D
 			collisionShape.Position.X - background.Size.X / 2f,
 			collisionShape.Position.Y - background.Size.Y / 2f
 		);
+		originalTileType = type;
 		UpdateType(type);
 	}
 
@@ -56,6 +58,11 @@ public partial class Tile : StaticBody2D
 				UpdateColor(Godot.Color.FromHtml("#633200"));
 				break;
 		}
+	}
+
+	public void ResetTypeToOriginal()
+	{
+		UpdateType(originalTileType);
 	}
 
 	public void UpdateColor(Godot.Color newColor)
