@@ -1,12 +1,15 @@
 using Godot;
 using System.Drawing;
+using Color = Godot.Color;
 
 public partial class Tile : StaticBody2D
 {
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public ColorRect background;
-	public TileType tileType = TileType.Ground;
+	public TileKey key;
+	public TileType tileType;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -15,16 +18,16 @@ public partial class Tile : StaticBody2D
 		background = GetNode<ColorRect>("ColorRect");
 	}
 
-	public void Setup(Vector2 newSize, Godot.Color color)
+	public void Setup(Vector2 newSize, TileKey key)
 	{
+		this.key = key;
 		shape.Size = newSize;
 		background.Size = shape.Size;
 		background.Position = new Vector2(
 			collisionShape.Position.X - background.Size.X / 2f,
 			collisionShape.Position.Y - background.Size.Y / 2f
 		);
-
-		UpdateColor(color);
+		UpdateType(TileType.Ground);
 	}
 
 	public void UpdateType(TileType newType)
@@ -35,12 +38,21 @@ public partial class Tile : StaticBody2D
 		switch (newType)
 		{
 			case TileType.Ground:
+				Color color;
+				if (key.X % 2 == key.Y % 2)
+				{
+					color = Color.FromHtml("#FFFFFF");
+				}
+				else
+				{
+					color = Color.FromHtml("#000000");
+				}
+				UpdateColor(color);
 				break;
 			case TileType.Water:
-				newColor = Godot.Color.FromHtml("#0000FF");
+				UpdateColor(Godot.Color.FromHtml("#0000FF"));
 				break;
 		}
-		background.Color = newColor;
 	}
 
 	public void UpdateColor(Godot.Color newColor)

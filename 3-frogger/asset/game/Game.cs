@@ -102,16 +102,8 @@ public partial class Game : Node2D
 		{
 			for (int horizontal = 0; horizontal < horizontalCount; horizontal++)
 			{
-				Color color;
-				if (horizontal % 2 == vertical % 2)
-				{
-					color = Color.FromHtml("#FFFFFF");
-				}
-				else
-				{
-					color = Color.FromHtml("#000000");
-				}
-				SpawnTile(scene, x: horizontal, y: vertical, tileSize, color);
+
+				SpawnTile(scene, x: horizontal, y: vertical, tileSize);
 			}
 		}
 	}
@@ -125,12 +117,13 @@ public partial class Game : Node2D
 		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
 	}
 
-	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, Color color)
+	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize)
 	{
 		var tile = (Tile)tileScene.Instantiate();
 		scene.CallDeferred("add_child", tile);
 		await ToSignal(GetTree(), "process_frame");
-		tile.Setup(tileSize, color);
+		var tileKey = new TileKey(x, y);
+		tile.Setup(tileSize, tileKey);
 		var size = tile.shape.Size;
 
 		tile.GlobalPosition = new Vector2(
@@ -138,7 +131,9 @@ public partial class Game : Node2D
 			bounds.GlobalPosition.Y - bounds.shape.Size.Y / 2f + size.Y / 2f + size.Y * y
 		);
 
-		tiles[new TileKey(x, y)] = tile;
+
+		tile.key = tileKey;
+		tiles[tileKey] = tile;
 	}
 
 	private TileKey GetKeyForCoordinates(Vector2 coordinates)
@@ -158,36 +153,5 @@ public partial class Game : Node2D
 			newX: Math.Clamp(key.X, 0, horizontalCount - 1),
 			newY: Math.Clamp(key.Y, 0, verticalCount - 1)
 		);
-	}
-
-	private struct TileKey
-	{
-		public readonly int X;
-		public readonly int Y;
-
-		public TileKey(int x, int y)
-		{
-			X = x;
-			Y = y;
-		}
-
-		public TileKey Copy(int newX = -1, int newY = -1)
-		{
-			if (newX == -1)
-			{
-				newX = X;
-			}
-			if (newY == -1)
-			{
-				newY = Y;
-			}
-
-			return new TileKey(newX, newY);
-		}
-
-		public override String ToString()
-		{
-			return $"{(X, Y)}";
-		}
 	}
 }
