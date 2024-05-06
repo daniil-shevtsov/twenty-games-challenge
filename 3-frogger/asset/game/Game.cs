@@ -60,10 +60,6 @@ public partial class Game : Node2D
 	private async void SpawnTree(int offset = 0)
 	{
 		var generatedId = offset;
-		// if (trees.Count > 0)
-		// {
-		// 	generatedId = trees.Values.Select(tree => tree.id).Max() + 1L;
-		// }
 
 		var tree = (Tree)treeScene.Instantiate();
 		GetTree().CurrentScene.CallDeferred("add_child", tree);

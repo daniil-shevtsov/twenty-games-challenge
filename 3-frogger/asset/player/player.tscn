@@ -1,7 +1,21 @@
-[gd_scene load_steps=4 format=3 uid="uid://yuqkods02n3h"]
+[gd_scene load_steps=18 format=3 uid="uid://yuqkods02n3h"]
 
 [ext_resource type="Script" path="res://asset/player/Player.cs" id="1_ar48j"]
 [ext_resource type="Texture2D" uid="uid://4i0fixnvekb7" path="res://icon.svg" id="2_wudp3"]
+[ext_resource type="Texture2D" uid="uid://d0ny7onv6m07t" path="res://asset/player/sprite/Body.png" id="3_uvxxu"]
+[ext_resource type="Texture2D" uid="uid://h6qu2bryapr5" path="res://asset/player/sprite/Head.png" id="4_02ftt"]
+[ext_resource type="Texture2D" uid="uid://dkv4vrarciij2" path="res://asset/player/sprite/BottomLeftLegStart.png" id="5_ijbvu"]
+[ext_resource type="Texture2D" uid="uid://b80mb4bys34jg" path="res://asset/player/sprite/BottomLeftLegJoint.png" id="6_jq3mg"]
+[ext_resource type="Texture2D" uid="uid://dn5qc53jd2xu6" path="res://asset/player/sprite/BottomLeftLegEnd.png" id="7_daenn"]
+[ext_resource type="Texture2D" uid="uid://dqgrgj5j81vje" path="res://asset/player/sprite/BottomRightLegStart.png" id="8_car3t"]
+[ext_resource type="Texture2D" uid="uid://djfgdrl4iokw8" path="res://asset/player/sprite/BottomRightLegJoint.png" id="9_y5x36"]
+[ext_resource type="Texture2D" uid="uid://c5box8mqwvsrg" path="res://asset/player/sprite/BottomRightLegEnd.png" id="10_exrc4"]
+[ext_resource type="Texture2D" uid="uid://vxttrgvcbhwe" path="res://asset/player/sprite/TopLeftLegStart.png" id="11_vjae2"]
+[ext_resource type="Texture2D" uid="uid://qcj87vmtgbm6" path="res://asset/player/sprite/TopLeftLegJoint.png" id="12_t0jt8"]
+[ext_resource type="Texture2D" uid="uid://cexad6jgbf53r" path="res://asset/player/sprite/TopLeftLegEnd.png" id="13_ykgw7"]
+[ext_resource type="Texture2D" uid="uid://coa0j21rvav2c" path="res://asset/player/sprite/TopRightLegStart.png" id="14_u3lk3"]
+[ext_resource type="Texture2D" uid="uid://bnwewfnf74h8q" path="res://asset/player/sprite/TopRightLegJoint.png" id="15_blxxu"]
+[ext_resource type="Texture2D" uid="uid://b8x0mf84ow2rd" path="res://asset/player/sprite/TopRightLegEnd.png" id="16_v8kdb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xuoxd"]
 
@@ -13,3 +27,74 @@ shape = SubResource("RectangleShape2D_xuoxd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_wudp3")
+
+[node name="Sprite" type="Node2D" parent="."]
+
+[node name="Body" type="Sprite2D" parent="Sprite"]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_uvxxu")
+
+[node name="Head" type="Sprite2D" parent="Sprite"]
+position = Vector2(0, -113)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("4_02ftt")
+
+[node name="BottomLeftLegStart" type="Sprite2D" parent="Sprite"]
+position = Vector2(-69, 66)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("5_ijbvu")
+
+[node name="BottomLeftLegJoint" type="Sprite2D" parent="Sprite"]
+position = Vector2(-107, 48)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("6_jq3mg")
+
+[node name="BottomLeftLegEnd" type="Sprite2D" parent="Sprite"]
+position = Vector2(-101, 127)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("7_daenn")
+
+[node name="BottomRightLegStart" type="Sprite2D" parent="Sprite"]
+position = Vector2(81, 64)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("8_car3t")
+
+[node name="BottomRightLegJoint" type="Sprite2D" parent="Sprite"]
+position = Vector2(123, 58)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("9_y5x36")
+
+[node name="BottomRightLegEnd" type="Sprite2D" parent="Sprite"]
+position = Vector2(121, 132)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("10_exrc4")
+
+[node name="TopLeftLegStart" type="Sprite2D" parent="Sprite"]
+position = Vector2(-89, -66)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("11_vjae2")
+
+[node name="TopLeftLegJoint" type="Sprite2D" parent="Sprite"]
+position = Vector2(-99, -114)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("12_t0jt8")
+
+[node name="TopLeftLegEnd" type="Sprite2D" parent="Sprite"]
+position = Vector2(-107, -158)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("13_ykgw7")
+
+[node name="TopRightLegStart" type="Sprite2D" parent="Sprite"]
+position = Vector2(114, -77)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("14_u3lk3")
+
+[node name="TopRightLegJoint" type="Sprite2D" parent="Sprite"]
+position = Vector2(134, -115)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("15_blxxu")
+
+[node name="TopRightLegEnd" type="Sprite2D" parent="Sprite"]
+position = Vector2(123, -176)
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("16_v8kdb")
