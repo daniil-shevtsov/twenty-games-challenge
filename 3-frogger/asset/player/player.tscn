@@ -29,9 +29,11 @@ shape = SubResource("RectangleShape2D_xuoxd")
 texture = ExtResource("2_wudp3")
 
 [node name="Sprite" type="Node2D" parent="."]
+position = Vector2(-2, -15)
+scale = Vector2(0.05, 0.05)
 
 [node name="Body" type="Sprite2D" parent="Sprite"]
-scale = Vector2(0.2, 0.2)
+position = Vector2(0, 82)
 texture = ExtResource("3_uvxxu")
 
 [node name="Head" type="Sprite2D" parent="Sprite/Body"]
@@ -39,75 +41,77 @@ position = Vector2(10, -490)
 scale = Vector2(1, 1)
 texture = ExtResource("4_02ftt")
 
-[node name="TopLeftLegStart" type="Sprite2D" parent="Sprite"]
-position = Vector2(-68, -54)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("11_vjae2")
-offset = Vector2(-85.365, -69.73)
-
-[node name="TopLeftLegJoint" type="Sprite2D" parent="Sprite"]
-position = Vector2(-106, -112)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("12_t0jt8")
-
-[node name="TopLeftLegEnd" type="Sprite2D" parent="Sprite"]
-position = Vector2(-107, -126)
-rotation = 0.0105871
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("13_ykgw7")
-offset = Vector2(46.57, -215.51)
-
-[node name="TopRightLegStart" type="Sprite2D" parent="Sprite"]
-position = Vector2(78.1529, -58.6867)
-rotation = -0.379483
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("14_u3lk3")
-offset = Vector2(157.575, -94.325)
-
-[node name="TopRightLegJoint" type="Sprite2D" parent="Sprite"]
-position = Vector2(129.153, -120.687)
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("15_blxxu")
-
-[node name="TopRightLegEnd" type="Sprite2D" parent="Sprite"]
-position = Vector2(119.153, -129.687)
-rotation = -0.0402169
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("16_v8kdb")
-offset = Vector2(19.09, -251.74)
-
-[node name="BottomLeftLegStart" type="Sprite2D" parent="Sprite"]
-position = Vector2(-59.2295, 64.5347)
-rotation = -2.07166
-scale = Vector2(0.2, 0.2)
+[node name="BottomLeftLegStart" type="Sprite2D" parent="Sprite/Body"]
+position = Vector2(-296.147, 322.674)
+rotation = -1.95477
+scale = Vector2(1, 1)
 texture = ExtResource("5_ijbvu")
 offset = Vector2(-129.655, -118.42)
 
-[node name="BottomLeftLegJoint" type="Sprite2D" parent="Sprite"]
-position = Vector2(-67, 145)
-scale = Vector2(0.2, 0.2)
+[node name="BottomLeftLegJoint" type="Sprite2D" parent="Sprite/Body/BottomLeftLegStart"]
+position = Vector2(-334.252, -227.27)
+rotation = 2.07166
+scale = Vector2(1, 1)
 texture = ExtResource("6_jq3mg")
 
-[node name="BottomLeftLegEnd" type="Sprite2D" parent="Sprite"]
-position = Vector2(-64, 165)
-scale = Vector2(0.2, 0.2)
+[node name="BottomLeftLegEnd" type="Sprite2D" parent="Sprite/Body/BottomLeftLegStart/BottomLeftLegJoint"]
+position = Vector2(15, 100)
+scale = Vector2(1, 1)
 texture = ExtResource("7_daenn")
 offset = Vector2(32.265, 272.105)
 
-[node name="BottomRightLegStart" type="Sprite2D" parent="Sprite"]
-position = Vector2(57, 75)
+[node name="BottomRightLegStart" type="Sprite2D" parent="Sprite/Body"]
+position = Vector2(285, 375)
 rotation = 1.98133
-scale = Vector2(0.2, 0.2)
+scale = Vector2(1, 1)
 texture = ExtResource("8_car3t")
 offset = Vector2(126.86, -118.2)
 
-[node name="BottomRightLegJoint" type="Sprite2D" parent="Sprite"]
-position = Vector2(70, 153)
-scale = Vector2(0.2, 0.2)
+[node name="BottomRightLegJoint" type="Sprite2D" parent="Sprite/Body/BottomRightLegStart"]
+position = Vector2(331.653, -215.246)
+rotation = -1.98133
+scale = Vector2(1, 1)
 texture = ExtResource("9_y5x36")
 
-[node name="BottomRightLegEnd" type="Sprite2D" parent="Sprite"]
-position = Vector2(61, 166)
-scale = Vector2(0.2, 0.2)
+[node name="BottomRightLegEnd" type="Sprite2D" parent="Sprite/Body/BottomRightLegStart/BottomRightLegJoint"]
+position = Vector2(-45.0001, 65.0001)
+scale = Vector2(1, 1)
 texture = ExtResource("10_exrc4")
 offset = Vector2(24.68, 293.12)
+
+[node name="TopRightLegStart" type="Sprite2D" parent="Sprite/Body"]
+position = Vector2(390.764, -293.433)
+rotation = -0.379483
+scale = Vector2(1, 1)
+texture = ExtResource("14_u3lk3")
+offset = Vector2(157.575, -94.325)
+
+[node name="TopRightLegJoint" type="Sprite2D" parent="Sprite/Body/TopRightLegStart"]
+position = Vector2(351.695, -193.483)
+rotation = 0.379483
+scale = Vector2(1, 1)
+texture = ExtResource("15_blxxu")
+
+[node name="TopRightLegEnd" type="Sprite2D" parent="Sprite/Body/TopRightLegStart/TopRightLegJoint"]
+position = Vector2(-45.7644, -56.5665)
+rotation = -0.0402169
+scale = Vector2(1, 1)
+texture = ExtResource("16_v8kdb")
+offset = Vector2(19.09, -251.74)
+
+[node name="TopLeftLegStart" type="Sprite2D" parent="Sprite/Body"]
+position = Vector2(-340, -270)
+scale = Vector2(1, 1)
+texture = ExtResource("11_vjae2")
+offset = Vector2(-85.365, -69.73)
+
+[node name="TopLeftLegJoint" type="Sprite2D" parent="Sprite/Body/TopLeftLegStart"]
+position = Vector2(-190, -290)
+scale = Vector2(1, 1)
+texture = ExtResource("12_t0jt8")
+
+[node name="TopLeftLegEnd" type="Sprite2D" parent="Sprite/Body/TopLeftLegStart/TopLeftLegJoint"]
+position = Vector2(-30, -49.9999)
+rotation = 0.0105871
+texture = ExtResource("13_ykgw7")
+offset = Vector2(46.57, -215.51)
