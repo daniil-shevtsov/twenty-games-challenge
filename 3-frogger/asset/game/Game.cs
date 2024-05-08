@@ -255,7 +255,7 @@ public partial class Game : Node2D
 		}
 	}
 
-	private void UpdatePlayerTile(int horizontal, int vertical)
+	private async void UpdatePlayerTile(int horizontal, int vertical)
 	{
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
 		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
@@ -263,6 +263,9 @@ public partial class Game : Node2D
 		GD.Print($"TREE: player new tile: {newTile.key}");
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 		player.animationPlayer.Play("walk");
+		await ToSignal(player.animationPlayer, "animation_finished");
+		player.animationPlayer.PlayBackwards("walk");
+		// player.animationPlayer.Play("walk");
 	}
 
 	private void HandlePlayerState(float delta)
