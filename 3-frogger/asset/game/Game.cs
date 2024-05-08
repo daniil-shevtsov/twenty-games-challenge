@@ -262,6 +262,7 @@ public partial class Game : Node2D
 		player.GlobalPosition = newTile.GlobalPosition;
 		GD.Print($"TREE: player new tile: {newTile.key}");
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
+		player.animationPlayer.Play("walk");
 	}
 
 	private void HandlePlayerState(float delta)
