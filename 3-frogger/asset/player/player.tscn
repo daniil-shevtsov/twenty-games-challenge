@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://yuqkods02n3h"]
+[gd_scene load_steps=21 format=3 uid="uid://yuqkods02n3h"]
 
 [ext_resource type="Script" path="res://asset/player/Player.cs" id="1_ar48j"]
 [ext_resource type="Texture2D" uid="uid://4i0fixnvekb7" path="res://icon.svg" id="2_wudp3"]
@@ -19,6 +19,210 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xuoxd"]
 
+[sub_resource type="Animation" id="Animation_36igk"]
+resource_name = "walk"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body/BottomLeftLegStart:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-1.95477, -0.0130548]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body/TopLeftLegStart:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -1.25601]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Body/TopRightLegStart:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-0.379483, 1.15784]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Body/TopRightLegStart/TopRightLegJoint:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.379483, -1.36311]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Body/BottomRightLegStart/BottomRightLegJoint:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [-1.98133, 0.136122]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Body/TopLeftLegStart/TopLeftLegJoint:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.64607]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Body/BottomLeftLegStart/BottomLeftLegJoint:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [2.07166, -0.0608146]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Body/BottomRightLegStart:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.98133, -0.157074]
+}
+
+[sub_resource type="Animation" id="Animation_cjsd1"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body/TopLeftLegStart:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body/TopRightLegStart:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-0.379483]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Body/TopRightLegStart/TopRightLegJoint:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.379483]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Body/BottomRightLegStart/BottomRightLegJoint:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-1.98133]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Body/TopLeftLegStart/TopLeftLegJoint:rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Body/BottomLeftLegStart/BottomLeftLegJoint:rotation")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [2.07166]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Body/BottomLeftLegStart:rotation")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [-1.95477]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Body/BottomRightLegStart:rotation")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.98133]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_s86c2"]
+_data = {
+"RESET": SubResource("Animation_cjsd1"),
+"walk": SubResource("Animation_36igk")
+}
+
 [node name="Player" type="StaticBody2D"]
 script = ExtResource("1_ar48j")
 
@@ -32,82 +236,75 @@ texture = ExtResource("2_wudp3")
 position = Vector2(-2, -15)
 scale = Vector2(0.05, 0.05)
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite"]
+libraries = {
+"": SubResource("AnimationLibrary_s86c2")
+}
+
 [node name="Body" type="Sprite2D" parent="Sprite"]
 position = Vector2(0, 82)
 texture = ExtResource("3_uvxxu")
 
 [node name="Head" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(10, -490)
-scale = Vector2(1, 1)
 texture = ExtResource("4_02ftt")
 
 [node name="BottomLeftLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(-296.147, 322.674)
 rotation = -1.95477
-scale = Vector2(1, 1)
 texture = ExtResource("5_ijbvu")
 offset = Vector2(-129.655, -118.42)
 
 [node name="BottomLeftLegJoint" type="Sprite2D" parent="Sprite/Body/BottomLeftLegStart"]
 position = Vector2(-334.252, -227.27)
 rotation = 2.07166
-scale = Vector2(1, 1)
 texture = ExtResource("6_jq3mg")
 
 [node name="BottomLeftLegEnd" type="Sprite2D" parent="Sprite/Body/BottomLeftLegStart/BottomLeftLegJoint"]
 position = Vector2(15, 100)
-scale = Vector2(1, 1)
 texture = ExtResource("7_daenn")
 offset = Vector2(32.265, 272.105)
 
 [node name="BottomRightLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(285, 375)
 rotation = 1.98133
-scale = Vector2(1, 1)
 texture = ExtResource("8_car3t")
 offset = Vector2(126.86, -118.2)
 
 [node name="BottomRightLegJoint" type="Sprite2D" parent="Sprite/Body/BottomRightLegStart"]
 position = Vector2(331.653, -215.246)
 rotation = -1.98133
-scale = Vector2(1, 1)
 texture = ExtResource("9_y5x36")
 
 [node name="BottomRightLegEnd" type="Sprite2D" parent="Sprite/Body/BottomRightLegStart/BottomRightLegJoint"]
 position = Vector2(-45.0001, 65.0001)
-scale = Vector2(1, 1)
 texture = ExtResource("10_exrc4")
 offset = Vector2(24.68, 293.12)
 
 [node name="TopRightLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(390.764, -293.433)
 rotation = -0.379483
-scale = Vector2(1, 1)
 texture = ExtResource("14_u3lk3")
 offset = Vector2(157.575, -94.325)
 
 [node name="TopRightLegJoint" type="Sprite2D" parent="Sprite/Body/TopRightLegStart"]
 position = Vector2(351.695, -193.483)
 rotation = 0.379483
-scale = Vector2(1, 1)
 texture = ExtResource("15_blxxu")
 
 [node name="TopRightLegEnd" type="Sprite2D" parent="Sprite/Body/TopRightLegStart/TopRightLegJoint"]
 position = Vector2(-45.7644, -56.5665)
 rotation = -0.0402169
-scale = Vector2(1, 1)
 texture = ExtResource("16_v8kdb")
 offset = Vector2(19.09, -251.74)
 
 [node name="TopLeftLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(-340, -270)
-scale = Vector2(1, 1)
 texture = ExtResource("11_vjae2")
 offset = Vector2(-85.365, -69.73)
 
 [node name="TopLeftLegJoint" type="Sprite2D" parent="Sprite/Body/TopLeftLegStart"]
 position = Vector2(-190, -290)
-scale = Vector2(1, 1)
 texture = ExtResource("12_t0jt8")
 
 [node name="TopLeftLegEnd" type="Sprite2D" parent="Sprite/Body/TopLeftLegStart/TopLeftLegJoint"]
