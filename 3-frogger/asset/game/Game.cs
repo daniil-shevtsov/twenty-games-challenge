@@ -21,6 +21,8 @@ public partial class Game : Node2D
 
 	private bool isPlayerOnTree = false;
 
+	private Animation walkAnimation;
+
 	static readonly int horizontalCount = 15;
 	static readonly int verticalCount = 14;
 
@@ -38,6 +40,17 @@ public partial class Game : Node2D
 
 	private async void SetupEverything()
 	{
+		walkAnimation = new Animation();
+		walkAnimation.AddTrack(0);
+		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
+		animationLibrary.AddAnimation("walk2", walkAnimation);
+		walkAnimation.AddTrack(0);
+		walkAnimation.Length = 0.5f;
+		var path = $"{player.sprite.GetPath()}:position";
+		walkAnimation.TrackSetPath(0, path);
+		walkAnimation.TrackInsertKey(0, 0.0, new Vector2(0, 0));
+		walkAnimation.TrackInsertKey(0, walkAnimation.Length, new Vector2(100, 100));
+
 		camera.GlobalPosition = bounds.GlobalPosition;
 
 		tileScene = GD.Load<PackedScene>("res://asset/tile/tile.tscn");
@@ -264,11 +277,11 @@ public partial class Game : Node2D
 		tween.TweenProperty(player, "global_position", newTile.GlobalPosition, 0.5f);
 		GD.Print($"TREE: player new tile: {newTile.key}");
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
-		player.animationPlayer.Play("walk");
+		var animationName = "walk2";
+		player.animationPlayer.Play(animationName);
 		// player.animationPlayer.GetAnimation("walk").Length = 0.25f;
 		await ToSignal(player.animationPlayer, "animation_finished");
-		player.animationPlayer.PlayBackwards("walk");
-		// player.animationPlayer.Play("walk");
+		player.animationPlayer.PlayBackwards(animationName);
 	}
 
 	private void HandlePlayerState(float delta)
