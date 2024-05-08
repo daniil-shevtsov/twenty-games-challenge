@@ -20,6 +20,7 @@
 
 [sub_resource type="Animation" id="Animation_36igk"]
 resource_name = "walk"
+length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -27,7 +28,7 @@ tracks/0/path = NodePath("Body/BottomLeftLegStart:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [-0.0130548, -1.95477]
@@ -39,7 +40,7 @@ tracks/1/path = NodePath("Body/TopLeftLegStart:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [-1.25601, 0.0]
@@ -51,7 +52,7 @@ tracks/2/path = NodePath("Body/TopRightLegStart:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [1.15784, -0.379483]
@@ -63,7 +64,7 @@ tracks/3/path = NodePath("Body/TopRightLegStart/TopRightLegJoint:rotation")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [-1.36311, 0.379483]
@@ -75,7 +76,7 @@ tracks/4/path = NodePath("Body/BottomRightLegStart/BottomRightLegJoint:rotation"
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.136122, -1.98133]
@@ -87,7 +88,7 @@ tracks/5/path = NodePath("Body/TopLeftLegStart/TopLeftLegJoint:rotation")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [1.64607, 0.0]
@@ -99,7 +100,7 @@ tracks/6/path = NodePath("Body/BottomLeftLegStart/BottomLeftLegJoint:rotation")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [-0.0608146, 2.07166]
@@ -111,7 +112,7 @@ tracks/7/path = NodePath("Body/BottomRightLegStart:rotation")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 1),
+"times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [-0.157074, 1.98133]

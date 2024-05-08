@@ -263,6 +263,7 @@ public partial class Game : Node2D
 		GD.Print($"TREE: player new tile: {newTile.key}");
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 		player.animationPlayer.Play("walk");
+		// player.animationPlayer.GetAnimation("walk").Length = 0.25f;
 		await ToSignal(player.animationPlayer, "animation_finished");
 		player.animationPlayer.PlayBackwards("walk");
 		// player.animationPlayer.Play("walk");
