@@ -259,7 +259,9 @@ public partial class Game : Node2D
 	{
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
 		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
-		player.GlobalPosition = newTile.GlobalPosition;
+		//player.GlobalPosition = newTile.GlobalPosition;
+		var tween = CreateTween();
+		tween.TweenProperty(player, "global_position", newTile.GlobalPosition, 0.5f);
 		GD.Print($"TREE: player new tile: {newTile.key}");
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 		player.animationPlayer.Play("walk");
