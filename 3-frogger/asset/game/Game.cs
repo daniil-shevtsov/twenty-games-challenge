@@ -50,15 +50,15 @@ public partial class Game : Node2D
 		walkAnimation.Length = 0.5f;
 
 		var guiAnimation = player.animationPlayer.GetAnimation("walk");
-		walkAnimation.AddTrack(Animation.TrackType.Value, 0);
-		walkAnimation.TrackSetPath(0, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation_degrees");
-		walkAnimation.TrackInsertKey(0, 0.0, 0f);
-		walkAnimation.TrackInsertKey(0, walkAnimation.Length, -65f);
+		var track1 = walkAnimation.AddTrack(Animation.TrackType.Value);
+		walkAnimation.TrackSetPath(track1, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation_degrees");
+		walkAnimation.TrackInsertKey(track1, 0.0, 0f);
+		walkAnimation.TrackInsertKey(track1, walkAnimation.Length, -65f);
 
-		// walkAnimation.AddTrack(Animation.TrackType.Value, 1);
-		// walkAnimation.TrackSetPath(1, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation");
-		// walkAnimation.TrackInsertKey(1, 0.0, 0f);
-		// walkAnimation.TrackInsertKey(1, walkAnimation.Length, 65f);
+		var track2 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
+		walkAnimation.TrackSetPath(track2, $"{player.sprite.GetPathTo(player.topRightLegStart)}:rotation_degrees");
+		walkAnimation.TrackInsertKey(track2, 0.0, 0f);
+		walkAnimation.TrackInsertKey(track2, walkAnimation.Length, 65f);
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
