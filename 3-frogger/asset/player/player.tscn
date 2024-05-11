@@ -19,7 +19,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xuoxd"]
 
 [sub_resource type="Animation" id="Animation_cjsd1"]
-length = 0.001
+length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true

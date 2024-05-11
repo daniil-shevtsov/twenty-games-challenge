@@ -44,16 +44,21 @@ public partial class Game : Node2D
 	private async void SetupEverything()
 	{
 		walkAnimation = new Animation();
-		walkAnimation.AddTrack(0);
+
 		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
 		animationLibrary.AddAnimation(animationName, walkAnimation);
 		walkAnimation.Length = 0.5f;
-		var spriteNodePath = player.sprite.GetPathTo(player.body);
+
 		var guiAnimation = player.animationPlayer.GetAnimation("walk");
-		var path = $"{spriteNodePath}:rotation";
-		walkAnimation.TrackSetPath(0, path);
+		walkAnimation.AddTrack(Animation.TrackType.Value, 0);
+		walkAnimation.TrackSetPath(0, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation_degrees");
 		walkAnimation.TrackInsertKey(0, 0.0, 0f);
-		walkAnimation.TrackInsertKey(0, walkAnimation.Length, 180f);
+		walkAnimation.TrackInsertKey(0, walkAnimation.Length, -65f);
+
+		// walkAnimation.AddTrack(Animation.TrackType.Value, 1);
+		// walkAnimation.TrackSetPath(1, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation");
+		// walkAnimation.TrackInsertKey(1, 0.0, 0f);
+		// walkAnimation.TrackInsertKey(1, walkAnimation.Length, 65f);
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
@@ -287,8 +292,8 @@ public partial class Game : Node2D
 
 		player.animationPlayer.Play(animationName);
 		// player.animationPlayer.GetAnimation("walk").Length = 0.25f;
-		// await ToSignal(player.animationPlayer, "animation_finished");
-		// player.animationPlayer.PlayBackwards(animationName);
+		await ToSignal(player.animationPlayer, "animation_finished");
+		player.animationPlayer.PlayBackwards(animationName);
 	}
 
 	private void HandlePlayerState(float delta)

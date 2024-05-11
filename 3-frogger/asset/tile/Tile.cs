@@ -62,7 +62,6 @@ public partial class Tile : StaticBody2D
 
 	public void ResetTypeToOriginal()
 	{
-		GD.Print($"TREE: reset {key} to original");
 		UpdateType(originalTileType);
 	}
 
