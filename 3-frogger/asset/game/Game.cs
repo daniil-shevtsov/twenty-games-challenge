@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Xml;
 
 public partial class Game : Node2D
@@ -41,6 +42,29 @@ public partial class Game : Node2D
 		SetupEverything();
 	}
 
+	struct BodyPartKeyFrame
+	{
+		public Node part;
+		public float time;
+		public float value;
+
+		public BodyPartKeyFrame(Node part, float time, float value)
+		{
+			this.part = part;
+			this.time = time;
+			this.value = value;
+		}
+	}
+	struct PlayerKeyFrame
+	{
+		public List<BodyPartKeyFrame> bodyParts;
+
+		public PlayerKeyFrame(List<BodyPartKeyFrame> bodyParts)
+		{
+			this.bodyParts = bodyParts;
+		}
+	}
+
 	private async void SetupEverything()
 	{
 		walkAnimation = new Animation();
@@ -49,26 +73,80 @@ public partial class Game : Node2D
 		animationLibrary.AddAnimation(animationName, walkAnimation);
 		walkAnimation.Length = 0.5f;
 
-		var guiAnimation = player.animationPlayer.GetAnimation("walk");
-		var track1 = walkAnimation.AddTrack(Animation.TrackType.Value);
-		walkAnimation.TrackSetPath(track1, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation_degrees");
-		walkAnimation.TrackInsertKey(track1, 0.0, -94f);
-		walkAnimation.TrackInsertKey(track1, walkAnimation.Length, 0f);
+		// var track1 = walkAnimation.AddTrack(Animation.TrackType.Value);
+		// walkAnimation.TrackSetPath(track1, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation_degrees");
+		// walkAnimation.TrackInsertKey(track1, 0.0, -94f);
+		// walkAnimation.TrackInsertKey(track1, walkAnimation.Length, 0f);
 
-		var track2 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
-		walkAnimation.TrackSetPath(track2, $"{player.sprite.GetPathTo(player.topRightLegStart)}:rotation_degrees");
-		walkAnimation.TrackInsertKey(track2, 0.0, 76f);
-		walkAnimation.TrackInsertKey(track2, walkAnimation.Length, -13f);
+		// var track2 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
+		// walkAnimation.TrackSetPath(track2, $"{player.sprite.GetPathTo(player.topRightLegStart)}:rotation_degrees");
+		// walkAnimation.TrackInsertKey(track2, 0.0, 76f);
+		// walkAnimation.TrackInsertKey(track2, walkAnimation.Length, -13f);
 
-		var track3 = walkAnimation.AddTrack(Animation.TrackType.Value);
-		walkAnimation.TrackSetPath(track3, $"{player.sprite.GetPathTo(player.topLeftLegJoint)}:rotation_degrees");
-		walkAnimation.TrackInsertKey(track3, 0.0, 104f);
-		walkAnimation.TrackInsertKey(track3, walkAnimation.Length, -13f);
+		// var track3 = walkAnimation.AddTrack(Animation.TrackType.Value);
+		// walkAnimation.TrackSetPath(track3, $"{player.sprite.GetPathTo(player.topLeftLegJoint)}:rotation_degrees");
+		// walkAnimation.TrackInsertKey(track3, 0.0, 104f);
+		// walkAnimation.TrackInsertKey(track3, walkAnimation.Length, -13f);
 
-		var track4 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
-		walkAnimation.TrackSetPath(track4, $"{player.sprite.GetPathTo(player.topRightLegJoint)}:rotation_degrees");
-		walkAnimation.TrackInsertKey(track4, 0.0, -75f);
-		walkAnimation.TrackInsertKey(track4, walkAnimation.Length, 26f);
+		// var track4 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
+		// walkAnimation.TrackSetPath(track4, $"{player.sprite.GetPathTo(player.topRightLegJoint)}:rotation_degrees");
+		// walkAnimation.TrackInsertKey(track4, 0.0, -75f);
+		// walkAnimation.TrackInsertKey(track4, walkAnimation.Length, 26f);
+
+		var trackKey = 0;
+		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>()
+		{
+			new BodyPartKeyFrame(player.topLeftLegStart, 0f, -94f),
+			new BodyPartKeyFrame(player.topLeftLegJoint, 0f, 104f),
+			// new BodyPartKeyFrame(player.topRightLegStart, 0f, 76f),
+			// new BodyPartKeyFrame(player.topRightLegJoint, 0f, -75f),
+		});
+		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>()
+		{
+			new BodyPartKeyFrame(player.topLeftLegStart, walkAnimation.Length, 0f),
+			new BodyPartKeyFrame(player.topLeftLegJoint, walkAnimation.Length, -13f),
+			// new BodyPartKeyFrame(player.topRightLegStart, walkAnimation.Length, -13f),
+			// new BodyPartKeyFrame(player.topRightLegJoint, walkAnimation.Length, 26f),
+		});
+		GD.Print($"KEK  string.Join: {string.Join(", ", initialPlayerKeyFrame.bodyParts.Select(x => ObjectToString(x)))}");
+		var playerKeyFrames = new List<PlayerKeyFrame>() {
+			initialPlayerKeyFrame,
+			finalPlayerKeyFrame
+		};
+
+		GD.Print($"KEK before SELECT {initialPlayerKeyFrame.bodyParts.Count}");
+		initialPlayerKeyFrame.bodyParts.ForEach((bodyPartKeyFrame) =>
+		{
+			GD.Print("KEKKK");
+		});
+		initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFrame) =>
+		{
+			GD.Print("KEKKK");
+			return bodyPartKeyFrame;
+		});
+		var modified = initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFrame, index) =>
+		{
+			GD.Print("KEK");
+			var path = $"{player.sprite.GetPathTo(bodyPartKeyFrame.part)}:rotation_degrees";
+
+			trackKey = walkAnimation.AddTrack(Animation.TrackType.Value, index);
+			GD.Print($"Kek index {index} trackKey {trackKey}");
+			walkAnimation.TrackSetPath(trackKey, path);
+			return bodyPartKeyFrame;
+		});
+		GD.Print($"KEK after SELECT {modified}");
+
+		//TODO: Use playerKeyFrames list somehow (in a more suting data structure)
+		playerKeyFrames.ForEach(playerKeyFrame =>
+		{
+			var modified2 = playerKeyFrame.bodyParts.Select((bodyPart, index) =>
+			{
+				walkAnimation.TrackInsertKey(trackKey, bodyPart.time, bodyPart.value);
+
+				return bodyPart;
+			});
+			GD.Print($"KEK modified 2{modified2}");
+		});
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
@@ -90,6 +168,24 @@ public partial class Game : Node2D
 
 		isPaused = false;
 	}
+
+	private string ObjectToString(Object myObj)
+	{
+		var stringBuilder = new StringBuilder();
+		stringBuilder.Append("{");
+		foreach (var prop in myObj.GetType().GetProperties())
+		{
+			stringBuilder.Append(" " + prop.Name + ": " + prop.GetValue(myObj, null));
+		}
+
+		foreach (var field in myObj.GetType().GetFields())
+		{
+			stringBuilder.Append(" " + field.Name + ": " + field.GetValue(myObj));
+		}
+		stringBuilder.Append(" }");
+		return stringBuilder.ToString();
+	}
+
 
 	private async void SpawnTree(int offset = 0)
 	{
@@ -301,7 +397,6 @@ public partial class Game : Node2D
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 
 		player.animationPlayer.Play(animationName);
-		// player.animationPlayer.GetAnimation("walk").Length = 0.25f;
 		await ToSignal(player.animationPlayer, "animation_finished");
 		player.animationPlayer.PlayBackwards(animationName);
 	}
