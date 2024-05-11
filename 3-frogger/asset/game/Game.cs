@@ -106,7 +106,7 @@ public partial class Game : Node2D
 
 		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new Dictionary<string, BodyPartKeyFrame>(
 			new[] {
-				new KeyValuePair<string, BodyPartKeyFrame>(nameof(player.topLeftLegStart), new BodyPartKeyFrame(player.topLeftLegStart, 0f, -94f))
+				new KeyValuePair<string, BodyPartKeyFrame>(player.topLeftLegStart.id, new BodyPartKeyFrame(player.topLeftLegStart, 0f, -94f))
 				// new BodyPartKeyFrame(player.topLeftLegJoint, 0f, 104f),
 			// new BodyPartKeyFrame(player.topRightLegStart, 0f, 76f),
 			// new BodyPartKeyFrame(player.topRightLegJoint, 0f, -75f),
@@ -114,7 +114,7 @@ public partial class Game : Node2D
 		));
 		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new Dictionary<string, BodyPartKeyFrame>(
 			new[] {
-				new KeyValuePair<string, BodyPartKeyFrame>(nameof(player.topLeftLegStart), new BodyPartKeyFrame(player.topLeftLegStart, walkAnimation.Length, 0f)),
+				new KeyValuePair<string, BodyPartKeyFrame>(player.topLeftLegStart.id, new BodyPartKeyFrame(player.topLeftLegStart, walkAnimation.Length, 0f)),
 			// new BodyPartKeyFrame(player.topLeftLegJoint, walkAnimation.Length, -13f),
 			// new BodyPartKeyFrame(player.topRightLegStart, walkAnimation.Length, -13f),
 			// new BodyPartKeyFrame(player.topRightLegJoint, walkAnimation.Length, 26f),
@@ -140,10 +140,6 @@ public partial class Game : Node2D
 			walkAnimation.TrackSetPath(trackIndex, path);
 			return new KeyValuePair<string, AnimationTrack>(bodyPartKey, new AnimationTrack(trackIndex, path));
 		}).ToDictionary(pair => pair.Key, pair => pair.Value);
-		GD.Print($"KEK after SELECT {addedTracks}");
-
-		// walkAnimation.TrackInsertKey(addedTracks[0].trackIndex, 0.0, playerKeyFrames[0].bodyParts[0].value);
-		// walkAnimation.TrackInsertKey(addedTracks[0].trackIndex, walkAnimation.Length, playerKeyFrames[1].bodyParts[0].value);
 
 		//TODO: Use playerKeyFrames list somehow (in a more suting data structure)
 		playerKeyFrames.ForEach(playerKeyFrame =>
@@ -157,7 +153,6 @@ public partial class Game : Node2D
 				var toInsert = bodyPartKeyFrame;
 				GD.Print($"KEK insert key {ObjectToString(toInsert)} to track {trackIndex}");
 				walkAnimation.TrackInsertKey(trackIndex, toInsert.time, toInsert.value);
-				// walkAnimation.TrackInsertKey(addedTracks[index].trackIndex, bodyPart.time, bodyPart.value);
 			});
 		});
 
