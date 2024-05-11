@@ -45,12 +45,16 @@ public partial class Game : Node2D
 		walkAnimation.AddTrack(0);
 		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
 		animationLibrary.AddAnimation(animationName, walkAnimation);
-		walkAnimation.AddTrack(0);
+		// walkAnimation.AddTrack(0);
 		walkAnimation.Length = 0.5f;
-		var path = $"{player.sprite.GetPath()}:position";
+		var spriteNodePath = player.sprite.GetPathTo(player.body);
+		var guiAnimation = player.animationPlayer.GetAnimation("walk");
+		// KEK guiAnimation: Body/BottomLeftLegStart:rotation
+		GD.Print($"KEK guiAnimation: {guiAnimation.TrackGetPath(0)} spriteNodePath: {spriteNodePath}");
+		var path = $"Body/BottomLeftLegStart:rotation";
 		walkAnimation.TrackSetPath(0, path);
-		walkAnimation.TrackInsertKey(0, 0.0, new Vector2(0, 0));
-		walkAnimation.TrackInsertKey(0, walkAnimation.Length, new Vector2(50, 0));
+		walkAnimation.TrackInsertKey(0, 0.0, 0f);
+		walkAnimation.TrackInsertKey(0, walkAnimation.Length, 180f);
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
@@ -92,7 +96,6 @@ public partial class Game : Node2D
 		if (bottomWaterTile != null)
 		{
 			tree.GlobalPosition = treeInitialPosition;
-			GD.Print($"new tree-{tree.id} position: ${tree.GlobalPosition}");
 		}
 	}
 
@@ -253,7 +256,6 @@ public partial class Game : Node2D
 		{
 			if (allTreeTiles.Contains(tile.key))
 			{
-				GD.Print($"TREE: {tile.key} now tree");
 				tile.UpdateType(TileType.Tree);
 			}
 			else if (tile.tileType != tile.originalTileType)
@@ -276,13 +278,13 @@ public partial class Game : Node2D
 		//player.GlobalPosition = newTile.GlobalPosition;
 		var tween = CreateTween();
 		tween.TweenProperty(player, "global_position", newTile.GlobalPosition, 0.5f);
-		GD.Print($"TREE: player new tile: {newTile.key}");
+
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 
 		player.animationPlayer.Play(animationName);
 		// player.animationPlayer.GetAnimation("walk").Length = 0.25f;
-		await ToSignal(player.animationPlayer, "animation_finished");
-		player.animationPlayer.PlayBackwards(animationName);
+		// await ToSignal(player.animationPlayer, "animation_finished");
+		// player.animationPlayer.PlayBackwards(animationName);
 	}
 
 	private void HandlePlayerState(float delta)
@@ -318,13 +320,11 @@ public partial class Game : Node2D
 					break;
 			}
 			tiles[key].UpdateType(newType);
-			GD.Print($"MOUSE {position} {key}");
 		}
 	}
 
 	private void HandlePlayerDying(TileKey playerTileKey)
 	{
-		GD.Print($"TREE: Player has died at tile: {tiles[playerTileKey].key}");
 		Respawn();
 	}
 
@@ -341,7 +341,6 @@ public partial class Game : Node2D
 		var tileKey = new TileKey(x, y);
 		var finalKey = ClampKey(tileKey);
 		var tile = tiles[finalKey];
-		GD.Print($"position {coordinates} tile size {tileSize} key {tileKey} clamped {finalKey} tile position {tile.GlobalPosition}");
 
 		return finalKey;
 	}

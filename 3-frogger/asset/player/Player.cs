@@ -6,6 +6,7 @@ public partial class Player : StaticBody2D
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public Node2D sprite;
+	public Sprite2D body;
 	public AnimationPlayer animationPlayer;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -13,6 +14,7 @@ public partial class Player : StaticBody2D
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape;
 		sprite = GetNode<Node2D>("Sprite");
+		body = sprite.GetNode<Sprite2D>("Body");
 		animationPlayer = sprite.GetNode<AnimationPlayer>("AnimationPlayer");
 	}
 
