@@ -24,6 +24,8 @@ public partial class Game : Node2D
 
 	private Animation walkAnimation;
 
+	private Tween playerMoveTween = null;
+
 	private bool isPaused = true;
 	private string animationName = "walk2";
 
@@ -359,8 +361,12 @@ public partial class Game : Node2D
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
 		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
 		//player.GlobalPosition = newTile.GlobalPosition;
-		var tween = CreateTween();
-		tween.TweenProperty(player, "global_position", newTile.GlobalPosition, 0.5f);
+		if (playerMoveTween != null)
+		{
+			playerMoveTween.Stop();
+		}
+		playerMoveTween = CreateTween();
+		playerMoveTween.TweenProperty(player, "global_position", newTile.GlobalPosition, 0.5f);
 
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 
