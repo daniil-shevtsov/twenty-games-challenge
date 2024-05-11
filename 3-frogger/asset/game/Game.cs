@@ -20,7 +20,7 @@ public partial class Game : Node2D
 
 	private Vector2 tileSize;
 
-	private bool isPlayerOnTree = false;
+	private long? playerTreeId = null;
 
 	private Animation walkAnimation;
 
@@ -85,7 +85,8 @@ public partial class Game : Node2D
 
 		tree.Setup(
 			newSize: new Vector2(tileSize.X * 4, tileSize.Y),
-			id: generatedId
+			id: generatedId,
+			speedMultiplier: new Random().Next(75, 125) / 100f
 		);
 		trees[tree.id] = tree;
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
@@ -155,7 +156,7 @@ public partial class Game : Node2D
 		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
 		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
 		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
-		isPlayerOnTree = false;
+		playerTreeId = null;
 	}
 
 	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, TileType type)
@@ -215,12 +216,36 @@ public partial class Game : Node2D
 		}
 	}
 
+	private TileKey[] GetTreeTiles(Tree tree)
+	{
+		var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
+		var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
+
+		var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
+		var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
+
+		var treeTiles = tiles.Values.ToList()
+		.Where(tile =>
+		{
+
+			var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
+			var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
+			return tile.GlobalPosition.Y == tree.GlobalPosition.Y
+			&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
+			&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
+		})
+		.Select(tile => tile.key);
+
+		return treeTiles.ToArray();
+	}
+
 	private void UpdateTrees(float delta)
 	{
-		var treeMoveAmount = treeSpeed * (float)delta;
 
 		trees.Values.ToList().ForEach(tree =>
 		{
+			var treeMoveAmount = calculateTreeMovementAmount(tree, (float)delta);
+
 			tree.GlobalPosition = new Vector2(tree.GlobalPosition.X - treeMoveAmount, tree.GlobalPosition.Y);
 
 			if (tree.GlobalPosition.X + tree.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
@@ -234,25 +259,8 @@ public partial class Game : Node2D
 
 		var allTreeTiles = trees.Values.ToList().SelectMany(tree =>
 		{
-			var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
-			var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
-
-			var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
-			var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
-
-			var treeTiles = tiles.Values.ToList()
-			.Where(tile =>
-			{
-
-				var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
-				var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
-				return tile.GlobalPosition.Y == tree.GlobalPosition.Y
-				&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
-				&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
-			});
-			return treeTiles;
-		}).Select(tile => tile.key).ToHashSet();
-
+			return GetTreeTiles(tree);
+		}).ToHashSet();
 
 
 		tiles.Values.ToList().ForEach(tile =>
@@ -268,8 +276,10 @@ public partial class Game : Node2D
 
 		});
 
-		if (isPlayerOnTree)
+		if (playerTreeId != null)
 		{
+			var playerTree = trees[(long)playerTreeId];
+			var treeMoveAmount = calculateTreeMovementAmount(playerTree, (float)delta);
 			player.GlobalPosition = new Vector2(player.GlobalPosition.X - treeMoveAmount, player.GlobalPosition.Y);
 		}
 	}
@@ -284,7 +294,7 @@ public partial class Game : Node2D
 			playerMoveTween.Stop();
 		}
 		//TODO: Don't have time to figure out how to make tween work while you are being moved by the tree
-		if (isPlayerOnTree)
+		if (playerTreeId != null)
 		{
 			player.GlobalPosition = newTile.GlobalPosition;
 		}
@@ -295,8 +305,15 @@ public partial class Game : Node2D
 			playerMoveTween.TweenProperty(player, "global_position", newTile.GlobalPosition, tileWalkDuration);
 		}
 
+		if (newTile.tileType == TileType.Tree)
+		{
+			playerTreeId = trees.First(treeKeypair => GetKeyForCoordinates(treeKeypair.Value.GlobalPosition) == newTile.key).Value.id;
+		}
+		else
+		{
+			playerTreeId = null;
+		}
 
-		isPlayerOnTree = newTile.tileType == TileType.Tree;
 
 		if (horizontal != 0)
 		{
@@ -351,6 +368,8 @@ public partial class Game : Node2D
 			tiles[key].UpdateType(newType);
 		}
 	}
+
+	private float calculateTreeMovementAmount(Tree tree, float delta) => treeSpeed * tree.speedMultiplier * delta;
 
 	private void HandlePlayerDying(TileKey playerTileKey)
 	{
