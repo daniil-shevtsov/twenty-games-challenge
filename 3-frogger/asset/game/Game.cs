@@ -33,7 +33,7 @@ public partial class Game : Node2D
 	static readonly int horizontalCount = 15;
 	static readonly int verticalCount = 14;
 
-	static readonly float treeSpeed = 150f;
+	static readonly float treeSpeed = 50f;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -362,25 +362,26 @@ public partial class Game : Node2D
 				Tile leftTile = null;
 				if (currentTile.key.X > 0)
 				{
-					leftTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
+					//leftTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
 				}
 
 				Tile rightTile = null;
 				if (currentTile.key.X < tiles.Count - 1)
 				{
-					rightTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
+					//rightTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
 				}
 
 				if (rightTile != null && rightTile.tileType == TileType.Tree)
 				{
 					UpdatePlayerTile(rightTile);
 				}
-				else if (leftTile.tileType == TileType.Tree)
+				else if (leftTile != null && leftTile.tileType == TileType.Tree)
 				{
 					UpdatePlayerTile(leftTile);
 				}
 				else
 				{
+					GD.Print($"Player is dying because {ObjectToString(leftTile?.key)}:{leftTile?.tileType} {ObjectToString(currentTile.key)}:{currentTile.tileType} {ObjectToString(rightTile?.key)}:{rightTile?.tileType}");
 					HandlePlayerDying(currentTile.key);
 				}
 
