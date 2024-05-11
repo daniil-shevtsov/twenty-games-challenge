@@ -44,11 +44,11 @@ public partial class Game : Node2D
 
 	struct BodyPartKeyFrame
 	{
-		public Node part;
+		public BodyPart part;
 		public float time;
 		public float value;
 
-		public BodyPartKeyFrame(Node part, float time, float value)
+		public BodyPartKeyFrame(BodyPart part, float time, float value)
 		{
 			this.part = part;
 			this.time = time;
@@ -104,20 +104,20 @@ public partial class Game : Node2D
 		// walkAnimation.TrackInsertKey(track4, 0.0, -75f);
 		// walkAnimation.TrackInsertKey(track4, walkAnimation.Length, 26f);
 
-		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new Dictionary<string, BodyPartKeyFrame>(
-			new[] {
-				new KeyValuePair<string, BodyPartKeyFrame>(player.topLeftLegStart.id, new BodyPartKeyFrame(player.topLeftLegStart, 0f, -94f))
-				// new BodyPartKeyFrame(player.topLeftLegJoint, 0f, 104f),
-			// new BodyPartKeyFrame(player.topRightLegStart, 0f, 76f),
-			// new BodyPartKeyFrame(player.topRightLegJoint, 0f, -75f),
-			}
-		));
+
+		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
+			new BodyPartKeyFrame(player.topLeftLegStart, 0f, -94f),
+			new BodyPartKeyFrame(player.topLeftLegJoint, 0f, 104f),
+			new BodyPartKeyFrame(player.topRightLegStart, 0f, 76f),
+			new BodyPartKeyFrame(player.topRightLegJoint, 0f, -75f)
+		}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
+		);
 		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new Dictionary<string, BodyPartKeyFrame>(
 			new[] {
 				new KeyValuePair<string, BodyPartKeyFrame>(player.topLeftLegStart.id, new BodyPartKeyFrame(player.topLeftLegStart, walkAnimation.Length, 0f)),
-			// new BodyPartKeyFrame(player.topLeftLegJoint, walkAnimation.Length, -13f),
-			// new BodyPartKeyFrame(player.topRightLegStart, walkAnimation.Length, -13f),
-			// new BodyPartKeyFrame(player.topRightLegJoint, walkAnimation.Length, 26f),
+				new KeyValuePair<string, BodyPartKeyFrame>(player.topLeftLegJoint.id, new BodyPartKeyFrame(player.topLeftLegJoint, walkAnimation.Length, -13f)),
+				new KeyValuePair<string, BodyPartKeyFrame>(player.topRightLegStart.id, new BodyPartKeyFrame(player.topRightLegStart, walkAnimation.Length, -13f)),
+				new KeyValuePair<string, BodyPartKeyFrame>(player.topRightLegJoint.id, new BodyPartKeyFrame(player.topRightLegJoint, walkAnimation.Length, 26f))
 			}
 		));
 		GD.Print($"KEK  string.Join: {string.Join(", ", initialPlayerKeyFrame.bodyParts.Select(x => ObjectToString(x)))}");
