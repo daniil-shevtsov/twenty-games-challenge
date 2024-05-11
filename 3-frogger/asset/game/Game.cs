@@ -222,7 +222,7 @@ public partial class Game : Node2D
 
 		if (horizontal != 0 || vertical != 0)
 		{
-			UpdatePlayerTile(horizontal: horizontal, vertical: vertical);
+			ChoosePlayerTileByInput(horizontal: horizontal, vertical: vertical);
 		}
 	}
 
@@ -294,10 +294,9 @@ public partial class Game : Node2D
 		}
 	}
 
-	private async void UpdatePlayerTile(int horizontal, int vertical)
+	private async void UpdatePlayerTile(Tile newTile)
 	{
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
-		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
 
 		if (playerMoveTween != null)
 		{
@@ -324,6 +323,17 @@ public partial class Game : Node2D
 			playerTreeId = null;
 		}
 
+		player.animationPlayer.Play(animationName);
+		await ToSignal(player.animationPlayer, "animation_finished");
+		player.animationPlayer.PlayBackwards(animationName);
+	}
+
+	private void ChoosePlayerTileByInput(int horizontal, int vertical)
+	{
+		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
+		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
+
+		UpdatePlayerTile(newTile);
 
 		if (horizontal != 0)
 		{
@@ -337,10 +347,6 @@ public partial class Game : Node2D
 		{
 			player.sprite.RotationDegrees = 0f;
 		}
-
-		player.animationPlayer.Play(animationName);
-		await ToSignal(player.animationPlayer, "animation_finished");
-		player.animationPlayer.PlayBackwards(animationName);
 	}
 
 	private void HandlePlayerState(float delta)
@@ -353,7 +359,31 @@ public partial class Game : Node2D
 			case TileType.Tree:
 				break;
 			case TileType.Water:
-				HandlePlayerDying(currentTile.key);
+				Tile leftTile = null;
+				if (currentTile.key.X > 0)
+				{
+					leftTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
+				}
+
+				Tile rightTile = null;
+				if (currentTile.key.X < tiles.Count - 1)
+				{
+					rightTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
+				}
+
+				if (rightTile != null && rightTile.tileType == TileType.Tree)
+				{
+					UpdatePlayerTile(rightTile);
+				}
+				else if (leftTile.tileType == TileType.Tree)
+				{
+					UpdatePlayerTile(leftTile);
+				}
+				else
+				{
+					HandlePlayerDying(currentTile.key);
+				}
+
 				break;
 		}
 	}
