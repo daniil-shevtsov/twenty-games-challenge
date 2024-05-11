@@ -84,39 +84,26 @@ public partial class Game : Node2D
 		animationLibrary.AddAnimation(animationName, walkAnimation);
 		walkAnimation.Length = 0.5f;
 
-		// var track1 = walkAnimation.AddTrack(Animation.TrackType.Value);
-		// walkAnimation.TrackSetPath(track1, $"{player.sprite.GetPathTo(player.topLeftLegStart)}:rotation_degrees");
-		// walkAnimation.TrackInsertKey(track1, 0.0, -94f);
-		// walkAnimation.TrackInsertKey(track1, walkAnimation.Length, 0f);
-
-		// var track2 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
-		// walkAnimation.TrackSetPath(track2, $"{player.sprite.GetPathTo(player.topRightLegStart)}:rotation_degrees");
-		// walkAnimation.TrackInsertKey(track2, 0.0, 76f);
-		// walkAnimation.TrackInsertKey(track2, walkAnimation.Length, -13f);
-
-		// var track3 = walkAnimation.AddTrack(Animation.TrackType.Value);
-		// walkAnimation.TrackSetPath(track3, $"{player.sprite.GetPathTo(player.topLeftLegJoint)}:rotation_degrees");
-		// walkAnimation.TrackInsertKey(track3, 0.0, 104f);
-		// walkAnimation.TrackInsertKey(track3, walkAnimation.Length, -13f);
-
-		// var track4 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
-		// walkAnimation.TrackSetPath(track4, $"{player.sprite.GetPathTo(player.topRightLegJoint)}:rotation_degrees");
-		// walkAnimation.TrackInsertKey(track4, 0.0, -75f);
-		// walkAnimation.TrackInsertKey(track4, walkAnimation.Length, 26f);
-
-
 		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
 				new(player.topLeftLegStart, 0f, -94f),
 				new(player.topLeftLegJoint, 0f, 104f),
 				new(player.topRightLegStart, 0f, 76f),
-				new(player.topRightLegJoint, 0f, -75f)
+				new(player.topRightLegJoint, 0f, -75f),
+				new(player.bottomLeftLegStart, 0f, 0f),
+				new(player.bottomLeftLegJoint, 0f, 0f),
+				new(player.bottomRightLegStart, 0f, 0f),
+				new(player.bottomRightLegJoint, 0f, 0f)
 			}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
 		);
 		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
 				new(player.topLeftLegStart, walkAnimation.Length, 0f),
 				new(player.topLeftLegJoint, walkAnimation.Length, -13f),
 				new(player.topRightLegStart, walkAnimation.Length, -13f),
-				new(player.topRightLegJoint, walkAnimation.Length, 26f)
+				new(player.topRightLegJoint, walkAnimation.Length, 26f),
+				new(player.bottomLeftLegStart, walkAnimation.Length, -96),
+				new(player.bottomLeftLegJoint, walkAnimation.Length, 108f),
+				new(player.bottomRightLegStart, walkAnimation.Length, 87f),
+				new(player.bottomRightLegJoint, walkAnimation.Length, -96f)
 			}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
 		);
 
