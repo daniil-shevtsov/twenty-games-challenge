@@ -1,20 +1,39 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Player : StaticBody2D
 {
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public Node2D sprite;
-	public Sprite2D body;
-	public Sprite2D bottomLeftLegStart;
-	public Sprite2D bottomLeftLegJoint;
-	public Sprite2D bottomRightLegStart;
-	public Sprite2D bottomRightLegJoint;
-	public Sprite2D topLeftLegStart;
-	public Sprite2D topLeftLegJoint;
-	public Sprite2D topRightLegStart;
-	public Sprite2D topRightLegJoint;
+	public BodyPart body;
+	public BodyPart bottomLeftLegStart;
+	public BodyPart bottomLeftLegJoint;
+	public BodyPart bottomRightLegStart;
+	public BodyPart bottomRightLegJoint;
+	public BodyPart topLeftLegStart;
+	public BodyPart topLeftLegJoint;
+	public BodyPart topRightLegStart;
+	public BodyPart topRightLegJoint;
+
+	public List<BodyPart> bodyParts
+	{
+		get
+		{
+			return new List<BodyPart>() {
+				body,
+				bottomLeftLegStart,
+				bottomLeftLegJoint,
+				bottomRightLegStart,
+				bottomRightLegJoint,
+				topLeftLegStart,
+				topLeftLegJoint,
+				topRightLegStart,
+				topRightLegJoint
+			};
+		}
+	}
 	public AnimationPlayer animationPlayer;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -25,15 +44,22 @@ public partial class Player : StaticBody2D
 
 		animationPlayer = sprite.GetNode<AnimationPlayer>("AnimationPlayer");
 
-		body = sprite.GetNode<Sprite2D>("Body");
-		bottomLeftLegStart = (Sprite2D)sprite.FindChild("BottomLeftLegStart");
-		bottomLeftLegJoint = (Sprite2D)sprite.FindChild("BottomLeftLegJoint");
-		bottomRightLegStart = (Sprite2D)sprite.FindChild("BottomRightLegStart");
-		bottomRightLegJoint = (Sprite2D)sprite.FindChild("BottomRightLegJoint");
-		topLeftLegStart = (Sprite2D)sprite.FindChild("TopLeftLegStart");
-		topLeftLegJoint = (Sprite2D)sprite.FindChild("TopLeftLegJoint");
-		topRightLegStart = (Sprite2D)sprite.FindChild("TopRightLegStart");
-		topRightLegJoint = (Sprite2D)sprite.FindChild("TopRightLegJoint");
+		body = sprite.GetNode<BodyPart>("Body");
+		bottomLeftLegStart = (BodyPart)sprite.FindChild("BottomLeftLegStart");
+		bottomLeftLegJoint = (BodyPart)sprite.FindChild("BottomLeftLegJoint");
+		bottomRightLegStart = (BodyPart)sprite.FindChild("BottomRightLegStart");
+		bottomRightLegJoint = (BodyPart)sprite.FindChild("BottomRightLegJoint");
+		topLeftLegStart = (BodyPart)sprite.FindChild("TopLeftLegStart");
+		topLeftLegJoint = (BodyPart)sprite.FindChild("TopLeftLegJoint");
+		topRightLegStart = (BodyPart)sprite.FindChild("TopRightLegStart");
+		topRightLegJoint = (BodyPart)sprite.FindChild("TopRightLegJoint");
+
+		bodyParts.ForEach(bodyPart =>
+		{
+			var nameOfTextureFile = bodyPart.Texture.ResourcePath[(bodyPart.Texture.ResourcePath.LastIndexOf("/") + 1)..bodyPart.Texture.ResourcePath.LastIndexOf(".")];
+			bodyPart.Setup(id: nameOfTextureFile);
+			GD.Print($"Set id {bodyPart.id}");
+		});
 	}
 
 	public void Setup(Vector2 newSize)

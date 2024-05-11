@@ -1,7 +1,8 @@
-[gd_scene load_steps=20 format=3 uid="uid://yuqkods02n3h"]
+[gd_scene load_steps=21 format=3 uid="uid://yuqkods02n3h"]
 
 [ext_resource type="Script" path="res://asset/player/Player.cs" id="1_ar48j"]
 [ext_resource type="Texture2D" uid="uid://d0ny7onv6m07t" path="res://asset/player/sprite/Body.png" id="3_uvxxu"]
+[ext_resource type="Script" path="res://asset/player/BodyPart.cs" id="3_yjhhs"]
 [ext_resource type="Texture2D" uid="uid://h6qu2bryapr5" path="res://asset/player/sprite/Head.png" id="4_02ftt"]
 [ext_resource type="Texture2D" uid="uid://dkv4vrarciij2" path="res://asset/player/sprite/BottomLeftLegStart.png" id="5_ijbvu"]
 [ext_resource type="Texture2D" uid="uid://b80mb4bys34jg" path="res://asset/player/sprite/BottomLeftLegJoint.png" id="6_jq3mg"]
@@ -240,69 +241,83 @@ libraries = {
 [node name="Body" type="Sprite2D" parent="Sprite"]
 position = Vector2(0, 82)
 texture = ExtResource("3_uvxxu")
+script = ExtResource("3_yjhhs")
 
 [node name="Head" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(10, -490)
 texture = ExtResource("4_02ftt")
+script = ExtResource("3_yjhhs")
 
 [node name="BottomLeftLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(-296.147, 322.674)
 texture = ExtResource("5_ijbvu")
 offset = Vector2(-129.655, -118.42)
+script = ExtResource("3_yjhhs")
 
 [node name="BottomLeftLegJoint" type="Sprite2D" parent="Sprite/Body/BottomLeftLegStart"]
 position = Vector2(-334.252, -227.27)
 texture = ExtResource("6_jq3mg")
+script = ExtResource("3_yjhhs")
 
 [node name="BottomLeftLegEnd" type="Sprite2D" parent="Sprite/Body/BottomLeftLegStart/BottomLeftLegJoint"]
 position = Vector2(15, 100)
 texture = ExtResource("7_daenn")
 offset = Vector2(32.265, 272.105)
+script = ExtResource("3_yjhhs")
 
 [node name="BottomRightLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(285, 375)
 texture = ExtResource("8_car3t")
 offset = Vector2(126.86, -118.2)
+script = ExtResource("3_yjhhs")
 
 [node name="BottomRightLegJoint" type="Sprite2D" parent="Sprite/Body/BottomRightLegStart"]
 position = Vector2(331.653, -215.246)
 texture = ExtResource("9_y5x36")
+script = ExtResource("3_yjhhs")
 
 [node name="BottomRightLegEnd" type="Sprite2D" parent="Sprite/Body/BottomRightLegStart/BottomRightLegJoint"]
 position = Vector2(-45.0001, 65.0001)
 texture = ExtResource("10_exrc4")
 offset = Vector2(24.68, 293.12)
+script = ExtResource("3_yjhhs")
 
 [node name="TopRightLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(390.764, -293.433)
 rotation = 1.33018
 texture = ExtResource("14_u3lk3")
 offset = Vector2(157.575, -94.325)
+script = ExtResource("3_yjhhs")
 
 [node name="TopRightLegJoint" type="Sprite2D" parent="Sprite/Body/TopRightLegStart"]
 position = Vector2(351.695, -193.483)
 rotation = -1.32523
 texture = ExtResource("15_blxxu")
+script = ExtResource("3_yjhhs")
 
 [node name="TopRightLegEnd" type="Sprite2D" parent="Sprite/Body/TopRightLegStart/TopRightLegJoint"]
 position = Vector2(-45.7644, -56.5665)
 rotation = -0.0402169
 texture = ExtResource("16_v8kdb")
 offset = Vector2(19.09, -251.74)
+script = ExtResource("3_yjhhs")
 
 [node name="TopLeftLegStart" type="Sprite2D" parent="Sprite/Body"]
 position = Vector2(-340, -270)
 rotation = -1.64516
 texture = ExtResource("11_vjae2")
 offset = Vector2(-85.365, -69.73)
+script = ExtResource("3_yjhhs")
 
 [node name="TopLeftLegJoint" type="Sprite2D" parent="Sprite/Body/TopLeftLegStart"]
 position = Vector2(-190, -290)
 rotation = 1.8171
 texture = ExtResource("12_t0jt8")
+script = ExtResource("3_yjhhs")
 
 [node name="TopLeftLegEnd" type="Sprite2D" parent="Sprite/Body/TopLeftLegStart/TopLeftLegJoint"]
 position = Vector2(-30, -49.9999)
 rotation = 0.0105871
 texture = ExtResource("13_ykgw7")
 offset = Vector2(46.57, -215.51)
+script = ExtResource("3_yjhhs")
