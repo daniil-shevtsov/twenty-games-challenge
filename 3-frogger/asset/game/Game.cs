@@ -65,6 +65,17 @@ public partial class Game : Node2D
 		}
 	}
 
+	struct AnimationTrack
+	{
+		public int trackIndex;
+		public string trackPath;
+		public AnimationTrack(int trackIndex, string trackPath)
+		{
+			this.trackIndex = trackIndex;
+			this.trackPath = trackPath;
+		}
+	}
+
 	private async void SetupEverything()
 	{
 		walkAnimation = new Animation();
@@ -93,18 +104,17 @@ public partial class Game : Node2D
 		// walkAnimation.TrackInsertKey(track4, 0.0, -75f);
 		// walkAnimation.TrackInsertKey(track4, walkAnimation.Length, 26f);
 
-		var trackKey = 0;
 		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>()
 		{
 			new BodyPartKeyFrame(player.topLeftLegStart, 0f, -94f),
-			new BodyPartKeyFrame(player.topLeftLegJoint, 0f, 104f),
+			// new BodyPartKeyFrame(player.topLeftLegJoint, 0f, 104f),
 			// new BodyPartKeyFrame(player.topRightLegStart, 0f, 76f),
 			// new BodyPartKeyFrame(player.topRightLegJoint, 0f, -75f),
 		});
 		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>()
 		{
 			new BodyPartKeyFrame(player.topLeftLegStart, walkAnimation.Length, 0f),
-			new BodyPartKeyFrame(player.topLeftLegJoint, walkAnimation.Length, -13f),
+			// new BodyPartKeyFrame(player.topLeftLegJoint, walkAnimation.Length, -13f),
 			// new BodyPartKeyFrame(player.topRightLegStart, walkAnimation.Length, -13f),
 			// new BodyPartKeyFrame(player.topRightLegJoint, walkAnimation.Length, 26f),
 		});
@@ -119,34 +129,33 @@ public partial class Game : Node2D
 		{
 			GD.Print("KEKKK");
 		});
-		initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFrame) =>
+		var addedTracks = initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFrame, index) =>
 		{
-			GD.Print("KEKKK");
-			return bodyPartKeyFrame;
-		});
-		var modified = initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFrame, index) =>
-		{
-			GD.Print("KEK");
+			GD.Print("KEK addedTracks");
 			var path = $"{player.sprite.GetPathTo(bodyPartKeyFrame.part)}:rotation_degrees";
 
-			trackKey = walkAnimation.AddTrack(Animation.TrackType.Value, index);
-			GD.Print($"Kek index {index} trackKey {trackKey}");
-			walkAnimation.TrackSetPath(trackKey, path);
-			return bodyPartKeyFrame;
-		});
-		GD.Print($"KEK after SELECT {modified}");
+			var trackIndex = walkAnimation.AddTrack(Animation.TrackType.Value);
+
+			walkAnimation.TrackSetPath(trackIndex, path);
+			return new AnimationTrack(trackIndex, path);
+		}).ToList();
+		GD.Print($"KEK after SELECT {addedTracks}");
+
+		walkAnimation.TrackInsertKey(addedTracks[0].trackIndex, 0.0, -94f);
+		walkAnimation.TrackInsertKey(addedTracks[0].trackIndex, walkAnimation.Length, 0f);
 
 		//TODO: Use playerKeyFrames list somehow (in a more suting data structure)
-		playerKeyFrames.ForEach(playerKeyFrame =>
-		{
-			var modified2 = playerKeyFrame.bodyParts.Select((bodyPart, index) =>
-			{
-				walkAnimation.TrackInsertKey(trackKey, bodyPart.time, bodyPart.value);
+		// playerKeyFrames.ForEach(playerKeyFrame =>
+		// {
+		// 	var modified2 = playerKeyFrame.bodyParts.Select((bodyPart, index) =>
+		// 	{
+		// 		GD.Print("KEk select called");
+		// 		walkAnimation.TrackInsertKey(addedTracks[index].trackIndex, bodyPart.time, bodyPart.value);
 
-				return bodyPart;
-			});
-			GD.Print($"KEK modified 2{modified2}");
-		});
+		// 		return bodyPart.time;
+		// 	});
+		// 	GD.Print($"KEK modified 2{modified2}");
+		// });
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
