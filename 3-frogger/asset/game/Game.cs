@@ -82,7 +82,7 @@ public partial class Game : Node2D
 
 		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
 		animationLibrary.AddAnimation(animationName, walkAnimation);
-		walkAnimation.Length = 0.5f;
+		walkAnimation.Length = 0.25f;
 
 		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
 				new(player.topLeftLegStart, 0f, -94f),
@@ -119,22 +119,18 @@ public partial class Game : Node2D
 			var path = $"{player.sprite.GetPathTo(bodyPartKeyFrame.part)}:rotation_degrees";
 
 			var trackIndex = walkAnimation.AddTrack(Animation.TrackType.Value);
-			GD.Print($"KEK create track {trackIndex} for path {path}");
 			walkAnimation.TrackSetPath(trackIndex, path);
 			return new KeyValuePair<string, AnimationTrack>(bodyPartKey, new AnimationTrack(trackIndex, path));
 		}).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-		//TODO: Use playerKeyFrames list somehow (in a more suting data structure)
 		playerKeyFrames.ForEach(playerKeyFrame =>
 		{
-			GD.Print($"playerKeyFrames iteration");
 			playerKeyFrame.bodyParts.ToList().ForEach(bodyPartKeyFramePair =>
 			{
 				var bodyPartKey = bodyPartKeyFramePair.Key;
 				var bodyPartKeyFrame = bodyPartKeyFramePair.Value;
 				var trackIndex = addedTracks[bodyPartKey].trackIndex;
 				var toInsert = bodyPartKeyFrame;
-				GD.Print($"KEK insert key {ObjectToString(toInsert)} to track {trackIndex}");
 				walkAnimation.TrackInsertKey(trackIndex, toInsert.time, toInsert.value);
 			});
 		});
@@ -153,30 +149,11 @@ public partial class Game : Node2D
 
 		InitPlayer();
 
-
 		SpawnTree();
 		SpawnTree(offset: -1);
 
 		isPaused = false;
 	}
-
-	private string ObjectToString(Object myObj)
-	{
-		var stringBuilder = new StringBuilder();
-		stringBuilder.Append("{");
-		foreach (var prop in myObj.GetType().GetProperties())
-		{
-			stringBuilder.Append(" " + prop.Name + ": " + prop.GetValue(myObj, null));
-		}
-
-		foreach (var field in myObj.GetType().GetFields())
-		{
-			stringBuilder.Append(" " + field.Name + ": " + field.GetValue(myObj));
-		}
-		stringBuilder.Append(" }");
-		return stringBuilder.ToString();
-	}
-
 
 	private async void SpawnTree(int offset = 0)
 	{
@@ -387,6 +364,19 @@ public partial class Game : Node2D
 
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 
+		if (horizontal != 0)
+		{
+			player.sprite.RotationDegrees = 90f * horizontal;
+		}
+		else if (vertical == 1)
+		{
+			player.sprite.RotationDegrees = 180f;
+		}
+		else
+		{
+			player.sprite.RotationDegrees = 0f;
+		}
+
 		player.animationPlayer.Play(animationName);
 		await ToSignal(player.animationPlayer, "animation_finished");
 		player.animationPlayer.PlayBackwards(animationName);
@@ -456,5 +446,22 @@ public partial class Game : Node2D
 			newX: Math.Clamp(key.X, 0, horizontalCount - 1),
 			newY: Math.Clamp(key.Y, 0, verticalCount - 1)
 		);
+	}
+
+	private string ObjectToString(Object myObj)
+	{
+		var stringBuilder = new StringBuilder();
+		stringBuilder.Append("{");
+		foreach (var prop in myObj.GetType().GetProperties())
+		{
+			stringBuilder.Append(" " + prop.Name + ": " + prop.GetValue(myObj, null));
+		}
+
+		foreach (var field in myObj.GetType().GetFields())
+		{
+			stringBuilder.Append(" " + field.Name + ": " + field.GetValue(myObj));
+		}
+		stringBuilder.Append(" }");
+		return stringBuilder.ToString();
 	}
 }
