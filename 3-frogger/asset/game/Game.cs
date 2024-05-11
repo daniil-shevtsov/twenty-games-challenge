@@ -45,98 +45,10 @@ public partial class Game : Node2D
 		SetupEverything();
 	}
 
-	struct BodyPartKeyFrame
-	{
-		public BodyPart part;
-		public float time;
-		public float value;
-
-		public BodyPartKeyFrame(BodyPart part, float time, float value)
-		{
-			this.part = part;
-			this.time = time;
-			this.value = value;
-		}
-	}
-	struct PlayerKeyFrame
-	{
-		public Dictionary<string, BodyPartKeyFrame> bodyParts;
-
-		public PlayerKeyFrame(Dictionary<string, BodyPartKeyFrame> bodyParts)
-		{
-			this.bodyParts = bodyParts;
-		}
-	}
-
-	struct AnimationTrack
-	{
-		public int trackIndex;
-		public string trackPath;
-		public AnimationTrack(int trackIndex, string trackPath)
-		{
-			this.trackIndex = trackIndex;
-			this.trackPath = trackPath;
-		}
-	}
 
 	private async void SetupEverything()
 	{
-		walkAnimation = new Animation();
-
-		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
-		animationLibrary.AddAnimation(animationName, walkAnimation);
-		walkAnimation.Length = tileWalkDuration / 2f;
-
-		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
-				new(player.topLeftLegStart, 0f, -94f),
-				new(player.topLeftLegJoint, 0f, 104f),
-				new(player.topRightLegStart, 0f, 76f),
-				new(player.topRightLegJoint, 0f, -75f),
-				new(player.bottomLeftLegStart, 0f, 0f),
-				new(player.bottomLeftLegJoint, 0f, 0f),
-				new(player.bottomRightLegStart, 0f, 0f),
-				new(player.bottomRightLegJoint, 0f, 0f)
-			}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
-		);
-		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
-				new(player.topLeftLegStart, walkAnimation.Length, 0f),
-				new(player.topLeftLegJoint, walkAnimation.Length, -13f),
-				new(player.topRightLegStart, walkAnimation.Length, -13f),
-				new(player.topRightLegJoint, walkAnimation.Length, 26f),
-				new(player.bottomLeftLegStart, walkAnimation.Length, -96),
-				new(player.bottomLeftLegJoint, walkAnimation.Length, 108f),
-				new(player.bottomRightLegStart, walkAnimation.Length, 87f),
-				new(player.bottomRightLegJoint, walkAnimation.Length, -96f)
-			}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
-		);
-
-		var playerKeyFrames = new List<PlayerKeyFrame>() {
-			initialPlayerKeyFrame,
-			finalPlayerKeyFrame
-		};
-
-		var addedTracks = initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFramePair) =>
-		{
-			var bodyPartKey = bodyPartKeyFramePair.Key;
-			var bodyPartKeyFrame = bodyPartKeyFramePair.Value;
-			var path = $"{player.sprite.GetPathTo(bodyPartKeyFrame.part)}:rotation_degrees";
-
-			var trackIndex = walkAnimation.AddTrack(Animation.TrackType.Value);
-			walkAnimation.TrackSetPath(trackIndex, path);
-			return new KeyValuePair<string, AnimationTrack>(bodyPartKey, new AnimationTrack(trackIndex, path));
-		}).ToDictionary(pair => pair.Key, pair => pair.Value);
-
-		playerKeyFrames.ForEach(playerKeyFrame =>
-		{
-			playerKeyFrame.bodyParts.ToList().ForEach(bodyPartKeyFramePair =>
-			{
-				var bodyPartKey = bodyPartKeyFramePair.Key;
-				var bodyPartKeyFrame = bodyPartKeyFramePair.Value;
-				var trackIndex = addedTracks[bodyPartKey].trackIndex;
-				var toInsert = bodyPartKeyFrame;
-				walkAnimation.TrackInsertKey(trackIndex, toInsert.time, toInsert.value);
-			});
-		});
+		SetupAnimation();
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
@@ -152,11 +64,16 @@ public partial class Game : Node2D
 
 		InitPlayer();
 
-		SpawnTree();
-		SpawnTree(offset: -1);
+		var minOffset = 0;
+		var maxOffset = 4;
+		for (var i = minOffset; i <= maxOffset; ++i)
+		{
+			SpawnTree(offset: -i);
+		}
 
 		isPaused = false;
 	}
+
 
 	private async void SpawnTree(int offset = 0)
 	{
@@ -445,6 +362,67 @@ public partial class Game : Node2D
 		InitPlayer();
 	}
 
+	private void SetupAnimation()
+	{
+		walkAnimation = new Animation();
+
+		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
+		animationLibrary.AddAnimation(animationName, walkAnimation);
+		walkAnimation.Length = tileWalkDuration / 2f;
+
+		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
+				new(player.topLeftLegStart, 0f, -94f),
+				new(player.topLeftLegJoint, 0f, 104f),
+				new(player.topRightLegStart, 0f, 76f),
+				new(player.topRightLegJoint, 0f, -75f),
+				new(player.bottomLeftLegStart, 0f, 0f),
+				new(player.bottomLeftLegJoint, 0f, 0f),
+				new(player.bottomRightLegStart, 0f, 0f),
+				new(player.bottomRightLegJoint, 0f, 0f)
+			}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
+		);
+		var finalPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
+				new(player.topLeftLegStart, walkAnimation.Length, 0f),
+				new(player.topLeftLegJoint, walkAnimation.Length, -13f),
+				new(player.topRightLegStart, walkAnimation.Length, -13f),
+				new(player.topRightLegJoint, walkAnimation.Length, 26f),
+				new(player.bottomLeftLegStart, walkAnimation.Length, -96),
+				new(player.bottomLeftLegJoint, walkAnimation.Length, 108f),
+				new(player.bottomRightLegStart, walkAnimation.Length, 87f),
+				new(player.bottomRightLegJoint, walkAnimation.Length, -96f)
+			}.ToDictionary(keyFrame => keyFrame.part.id, keyFrame => keyFrame)
+		);
+
+		var playerKeyFrames = new List<PlayerKeyFrame>() {
+			initialPlayerKeyFrame,
+			finalPlayerKeyFrame
+		};
+
+		var addedTracks = initialPlayerKeyFrame.bodyParts.Select((bodyPartKeyFramePair) =>
+		{
+			var bodyPartKey = bodyPartKeyFramePair.Key;
+			var bodyPartKeyFrame = bodyPartKeyFramePair.Value;
+			var path = $"{player.sprite.GetPathTo(bodyPartKeyFrame.part)}:rotation_degrees";
+
+			var trackIndex = walkAnimation.AddTrack(Animation.TrackType.Value);
+			walkAnimation.TrackSetPath(trackIndex, path);
+			return new KeyValuePair<string, AnimationTrack>(bodyPartKey, new AnimationTrack(trackIndex, path));
+		}).ToDictionary(pair => pair.Key, pair => pair.Value);
+
+		playerKeyFrames.ForEach(playerKeyFrame =>
+		{
+			playerKeyFrame.bodyParts.ToList().ForEach(bodyPartKeyFramePair =>
+			{
+				var bodyPartKey = bodyPartKeyFramePair.Key;
+				var bodyPartKeyFrame = bodyPartKeyFramePair.Value;
+				var trackIndex = addedTracks[bodyPartKey].trackIndex;
+				var toInsert = bodyPartKeyFrame;
+				walkAnimation.TrackInsertKey(trackIndex, toInsert.time, toInsert.value);
+			});
+		});
+	}
+
+
 	private TileKey GetKeyForCoordinates(Vector2 coordinates)
 	{
 		var epsilon = 0.0001f;
@@ -480,5 +458,39 @@ public partial class Game : Node2D
 		}
 		stringBuilder.Append(" }");
 		return stringBuilder.ToString();
+	}
+
+	struct BodyPartKeyFrame
+	{
+		public BodyPart part;
+		public float time;
+		public float value;
+
+		public BodyPartKeyFrame(BodyPart part, float time, float value)
+		{
+			this.part = part;
+			this.time = time;
+			this.value = value;
+		}
+	}
+	struct PlayerKeyFrame
+	{
+		public Dictionary<string, BodyPartKeyFrame> bodyParts;
+
+		public PlayerKeyFrame(Dictionary<string, BodyPartKeyFrame> bodyParts)
+		{
+			this.bodyParts = bodyParts;
+		}
+	}
+
+	struct AnimationTrack
+	{
+		public int trackIndex;
+		public string trackPath;
+		public AnimationTrack(int trackIndex, string trackPath)
+		{
+			this.trackIndex = trackIndex;
+			this.trackPath = trackPath;
+		}
 	}
 }
