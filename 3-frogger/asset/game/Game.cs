@@ -68,30 +68,40 @@ public partial class Game : Node2D
 		var maxOffset = 4;
 		for (var i = minOffset; i <= maxOffset; ++i)
 		{
-			SpawnTree(offset: -i);
+			var random = new Random();
+			var speedMultiplier = random.Next(75, 125) / 100f;
+			var tileCount = random.Next(2, 5);
+			for (var j = 0; j < 3; ++j)
+			{
+				SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
+			}
 		}
 
 		isPaused = false;
 	}
 
 
-	private async void SpawnTree(int offset = 0)
+	private async void SpawnTree(int offset, int count, float speedMultiplier, int tileCount)
 	{
-		var generatedId = offset;
+		var generatedId = offset * 10000 + count;
 
 		var tree = (Tree)treeScene.Instantiate();
 		GetTree().CurrentScene.CallDeferred("add_child", tree);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
+		var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
 		tree.Setup(
-			newSize: new Vector2(tileSize.X * 4, tileSize.Y),
+			newSize: treeSize,
 			id: generatedId,
-			speedMultiplier: new Random().Next(75, 125) / 100f
+			speedMultiplier: speedMultiplier
 		);
 		trees[tree.id] = tree;
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
+		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f;
+		var distanceBetweenTrees = 150f;
+		var horizontalPosition = defaultHorizontalPosition + treeSize.X * count + (distanceBetweenTrees * count);
 		var treeInitialPosition = new Vector2(
-			bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f,
+			horizontalPosition,
 			tiles[bottomWaterTile.key.Copy(newY: bottomWaterTile.key.Y + offset)].GlobalPosition.Y
 		);
 		if (bottomWaterTile != null)
