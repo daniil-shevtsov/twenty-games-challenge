@@ -28,6 +28,7 @@ public partial class Game : Node2D
 
 	private bool isPaused = true;
 	private string animationName = "walk2";
+	private float tileWalkDuration = 0.25f;
 
 	static readonly int horizontalCount = 15;
 	static readonly int verticalCount = 14;
@@ -84,7 +85,7 @@ public partial class Game : Node2D
 
 		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
 		animationLibrary.AddAnimation(animationName, walkAnimation);
-		walkAnimation.Length = 0.25f;
+		walkAnimation.Length = tileWalkDuration / 2f;
 
 		var initialPlayerKeyFrame = new PlayerKeyFrame(bodyParts: new List<BodyPartKeyFrame>() {
 				new(player.topLeftLegStart, 0f, -94f),
@@ -360,13 +361,23 @@ public partial class Game : Node2D
 	{
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
 		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
-		//player.GlobalPosition = newTile.GlobalPosition;
+
 		if (playerMoveTween != null)
 		{
 			playerMoveTween.Stop();
 		}
-		playerMoveTween = CreateTween();
-		playerMoveTween.TweenProperty(player, "global_position", newTile.GlobalPosition, 0.5f);
+		//TODO: Don't have time to figure out how to make tween work while you are being moved by the tree
+		if (isPlayerOnTree)
+		{
+			player.GlobalPosition = newTile.GlobalPosition;
+		}
+		else
+		{
+
+			playerMoveTween = CreateTween();
+			playerMoveTween.TweenProperty(player, "global_position", newTile.GlobalPosition, tileWalkDuration);
+		}
+
 
 		isPlayerOnTree = newTile.tileType == TileType.Tree;
 
