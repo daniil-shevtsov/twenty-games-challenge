@@ -22,6 +22,8 @@ public partial class Game : Node2D
 	private bool isPlayerOnTree = false;
 
 	private Animation walkAnimation;
+
+	private bool isPaused = true;
 	private string animationName = "walk2";
 
 	static readonly int horizontalCount = 15;
@@ -45,13 +47,10 @@ public partial class Game : Node2D
 		walkAnimation.AddTrack(0);
 		var animationLibrary = player.animationPlayer.GetAnimationLibrary("");
 		animationLibrary.AddAnimation(animationName, walkAnimation);
-		// walkAnimation.AddTrack(0);
 		walkAnimation.Length = 0.5f;
 		var spriteNodePath = player.sprite.GetPathTo(player.body);
 		var guiAnimation = player.animationPlayer.GetAnimation("walk");
-		// KEK guiAnimation: Body/BottomLeftLegStart:rotation
-		GD.Print($"KEK guiAnimation: {guiAnimation.TrackGetPath(0)} spriteNodePath: {spriteNodePath}");
-		var path = $"Body/BottomLeftLegStart:rotation";
+		var path = $"{spriteNodePath}:rotation";
 		walkAnimation.TrackSetPath(0, path);
 		walkAnimation.TrackInsertKey(0, 0.0, 0f);
 		walkAnimation.TrackInsertKey(0, walkAnimation.Length, 180f);
@@ -73,6 +72,8 @@ public partial class Game : Node2D
 
 		SpawnTree();
 		SpawnTree(offset: -1);
+
+		isPaused = false;
 	}
 
 	private async void SpawnTree(int offset = 0)
@@ -179,9 +180,12 @@ public partial class Game : Node2D
 
 	public override void _PhysicsProcess(double delta)
 	{
-		UpdatePlayerInput();
-		UpdateTrees((float)delta);
-		HandlePlayerState((float)delta);
+		if (!isPaused)
+		{
+			UpdatePlayerInput();
+			UpdateTrees((float)delta);
+			HandlePlayerState((float)delta);
+		}
 	}
 
 	private void UpdatePlayerInput()
