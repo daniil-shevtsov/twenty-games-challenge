@@ -300,14 +300,14 @@ public partial class Game : Node2D
 		}
 		else
 		{
-
 			playerMoveTween = CreateTween();
 			playerMoveTween.TweenProperty(player, "global_position", newTile.GlobalPosition, tileWalkDuration);
 		}
 
 		if (newTile.tileType == TileType.Tree)
 		{
-			playerTreeId = trees.First(treeKeypair => GetKeyForCoordinates(treeKeypair.Value.GlobalPosition) == newTile.key).Value.id;
+
+			playerTreeId = trees.First(treeKeypair => GetTreeTiles(treeKeypair.Value).Contains(newTile.key)).Value.id;
 		}
 		else
 		{
