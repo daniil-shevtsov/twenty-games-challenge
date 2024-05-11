@@ -58,7 +58,17 @@ public partial class Game : Node2D
 		var track2 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
 		walkAnimation.TrackSetPath(track2, $"{player.sprite.GetPathTo(player.topRightLegStart)}:rotation_degrees");
 		walkAnimation.TrackInsertKey(track2, 0.0, 76f);
-		walkAnimation.TrackInsertKey(track2, walkAnimation.Length, 0f);
+		walkAnimation.TrackInsertKey(track2, walkAnimation.Length, -13f);
+
+		var track3 = walkAnimation.AddTrack(Animation.TrackType.Value);
+		walkAnimation.TrackSetPath(track3, $"{player.sprite.GetPathTo(player.topLeftLegJoint)}:rotation_degrees");
+		walkAnimation.TrackInsertKey(track3, 0.0, 104f);
+		walkAnimation.TrackInsertKey(track3, walkAnimation.Length, -13f);
+
+		var track4 = walkAnimation.AddTrack(Animation.TrackType.Value, 1);
+		walkAnimation.TrackSetPath(track4, $"{player.sprite.GetPathTo(player.topRightLegJoint)}:rotation_degrees");
+		walkAnimation.TrackInsertKey(track4, 0.0, -75f);
+		walkAnimation.TrackInsertKey(track4, walkAnimation.Length, 26f);
 
 		camera.GlobalPosition = bounds.GlobalPosition;
 
