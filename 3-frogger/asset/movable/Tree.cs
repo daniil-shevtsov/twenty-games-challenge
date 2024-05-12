@@ -9,6 +9,7 @@ public partial class Tree : StaticBody2D
 
 	public long id;
 	public float speedMultiplier;
+	public int lengthInTiles;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -17,8 +18,9 @@ public partial class Tree : StaticBody2D
 		sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
-	public void Setup(Vector2 newSize, long id, float speedMultiplier)
+	public void Setup(int lengthsInTiles, Vector2 tileSize, long id, float speedMultiplier)
 	{
+		var newSize = new Vector2(tileSize.X * lengthsInTiles, tileSize.Y);
 		shape.Size = newSize;
 		var newScale = shape.Size / sprite.Texture.GetSize();
 		sprite.Scale = newScale;
@@ -29,6 +31,7 @@ public partial class Tree : StaticBody2D
 
 		this.id = id;
 		this.speedMultiplier = speedMultiplier;
+		this.lengthInTiles = lengthInTiles;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

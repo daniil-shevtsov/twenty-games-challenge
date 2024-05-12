@@ -70,7 +70,8 @@ public partial class Game : Node2D
 		{
 			var random = new Random();
 			var speedMultiplier = random.Next(75, 125) / 100f;
-			var tileCount = random.Next(2, 5);
+			var tileCount = 3;//random.Next(2, 5);
+			GD.Print($"Tile count: {tileCount}");
 			for (var j = 0; j < 3; ++j)
 			{
 				SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
@@ -89,9 +90,10 @@ public partial class Game : Node2D
 		GetTree().CurrentScene.CallDeferred("add_child", tree);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
-		var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
+		//var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
 		tree.Setup(
-			newSize: treeSize,
+			tileCount,
+			tileSize: tileSize,
 			id: generatedId,
 			speedMultiplier: speedMultiplier
 		);
@@ -99,10 +101,10 @@ public partial class Game : Node2D
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
 		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f;
 		var distanceBetweenTrees = 150f;
-		var horizontalPosition = defaultHorizontalPosition + treeSize.X * count + (distanceBetweenTrees * count);
+		var horizontalPosition = defaultHorizontalPosition + tree.shape.Size.X * count + (distanceBetweenTrees * count);
 		var treeInitialPosition = new Vector2(
 			horizontalPosition,
-			tiles[bottomWaterTile.key.Copy(newY: bottomWaterTile.key.Y + offset)].GlobalPosition.Y
+			GetTileOrNull(bottomWaterTile.key.Copy(newY: bottomWaterTile.key.Y + offset)).GlobalPosition.Y
 		);
 		if (bottomWaterTile != null)
 		{
@@ -165,7 +167,7 @@ public partial class Game : Node2D
 		player.Setup(tileSize);
 		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
 		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
-		player.GlobalPosition = tiles[bottomCenterKey].GlobalPosition;
+		player.GlobalPosition = GetTileOrNull(bottomCenterKey).GlobalPosition;
 		playerTreeId = null;
 	}
 
@@ -185,7 +187,7 @@ public partial class Game : Node2D
 
 
 		tile.key = tileKey;
-		tiles[tileKey] = tile;
+		UpdateTile(tileKey, tile);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -231,22 +233,43 @@ public partial class Game : Node2D
 		var treeLeftSide = tree.GlobalPosition.X - tree.shape.Size.X / 2f;
 		var treeRightSide = tree.GlobalPosition.X + tree.shape.Size.X / 2f;
 
-		var treeLeftSideTile = tiles[GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y))];
-		var treeRightSideTile = tiles[GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y))];
+		// var treeLeftSideTile = GetTileOrNull(GetKeyForCoordinates(new Vector2(treeLeftSide, tree.GlobalPosition.Y)));
+		// var treeRightSideTile = GetTileOrNull(GetKeyForCoordinates(new Vector2(treeRightSide, tree.GlobalPosition.Y)));
 
-		var treeTiles = tiles.Values.ToList()
-		.Where(tile =>
+
+		var treeCenterTile = GetTileOrNull(GetKeyForCoordinates(tree.GlobalPosition));
+		var treeLeftSideTile = GetTileOrNull(new TileKey(treeCenterTile.key.X - 1, treeCenterTile.key.Y));
+		var treeRightSideTile = GetTileOrNull(new TileKey(treeCenterTile.key.X + 1, treeCenterTile.key.Y));
+
+		// var treeTiles = tiles.Values.ToList()
+		// .Where(tile =>
+		// {
+
+		// 	var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
+		// 	var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
+		// 	return tile.GlobalPosition.Y == tree.GlobalPosition.Y
+		// 	&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
+		// 	&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
+		// })
+		// .Select(tile => tile.key);
+		var tileKeys = new TileKey[3];
+
+		if (treeLeftSideTile != null)
 		{
+			tileKeys[0] = treeLeftSideTile.key;
+		}
+		tileKeys[1] = treeCenterTile.key;
+		if (treeRightSideTile != null)
+		{
+			tileKeys[2] = treeRightSideTile.key;
+		}
 
-			var tileLeftSide = tile.GlobalPosition.X - tile.shape.Size.X / 2f;
-			var tileRightSide = tile.GlobalPosition.X + tile.shape.Size.X / 2f;
-			return tile.GlobalPosition.Y == tree.GlobalPosition.Y
-			&& (tileLeftSide >= treeLeftSideTile.GlobalPosition.X - treeLeftSideTile.shape.Size.X / 2f)
-			&& (tileRightSide <= treeRightSideTile.GlobalPosition.X + treeLeftSideTile.shape.Size.X / 2f);
-		})
-		.Select(tile => tile.key);
-
-		return treeTiles.ToArray();
+		return tileKeys;
+		// return new TileKey[] {
+		// 	treeLeftSideTile.key,
+		// 	treeCenterTile.key,
+		// 	treeRightSideTile.key
+		// }; //treeTiles.ToArray();
 	}
 
 	private void UpdateTrees(float delta)
@@ -331,7 +354,7 @@ public partial class Game : Node2D
 	private void ChoosePlayerTileByInput(int horizontal, int vertical)
 	{
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
-		var newTile = tiles[ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical))];
+		var newTile = GetTileOrNull(ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical)));
 
 		UpdatePlayerTile(newTile);
 
@@ -351,7 +374,7 @@ public partial class Game : Node2D
 
 	private void HandlePlayerState(float delta)
 	{
-		var currentTile = tiles[GetKeyForCoordinates(player.GlobalPosition)];
+		var currentTile = GetTileOrNull(GetKeyForCoordinates(player.GlobalPosition));
 		switch (currentTile.tileType)
 		{
 			case TileType.Ground:
@@ -362,13 +385,13 @@ public partial class Game : Node2D
 				Tile leftTile = null;
 				if (currentTile.key.X > 0)
 				{
-					//leftTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
+					//leftTile = GetTileOrNull(new TileKey(currentTile.key.X - 1, currentTile.key.Y));
 				}
 
 				Tile rightTile = null;
 				if (currentTile.key.X < tiles.Count - 1)
 				{
-					//rightTile = tiles[new TileKey(currentTile.key.X - 1, currentTile.key.Y)];
+					//rightTile = GetTileOrNull(new TileKey(currentTile.key.X - 1, currentTile.key.Y));
 				}
 
 				if (rightTile != null && rightTile.tileType == TileType.Tree)
@@ -397,7 +420,7 @@ public partial class Game : Node2D
 
 			var key = GetKeyForCoordinates(position);
 			var newType = TileType.Ground;
-			switch (tiles[key].tileType)
+			switch (GetTileOrNull(key).tileType)
 			{
 				case TileType.Ground:
 					newType = TileType.Water;
@@ -406,7 +429,7 @@ public partial class Game : Node2D
 					newType = TileType.Ground;
 					break;
 			}
-			tiles[key].UpdateType(newType);
+			GetTileOrNull(key).UpdateType(newType);
 		}
 	}
 
@@ -490,9 +513,27 @@ public partial class Game : Node2D
 		int y = (int)Mathf.Clamp((coordinates.Y - epsilon) / tileSize.Y, 0, verticalCount - 1);
 		var tileKey = new TileKey(x, y);
 		var finalKey = ClampKey(tileKey);
-		var tile = tiles[finalKey];
+		var tile = GetTileOrNull(finalKey);
 
 		return finalKey;
+	}
+
+
+	private Tile GetTileOrNull(TileKey key)
+	{
+		if (tiles.ContainsKey(key))
+		{
+			return tiles[key];
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	private void UpdateTile(TileKey key, Tile newValue)
+	{
+		tiles[key] = newValue;
 	}
 
 	private TileKey ClampKey(TileKey key)
