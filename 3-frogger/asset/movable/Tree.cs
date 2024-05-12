@@ -14,13 +14,14 @@ public partial class Tree : StaticBody2D
 	public override void _Ready()
 	{
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
-		shape = (RectangleShape2D)collisionShape.Shape;
+		shape = (RectangleShape2D)collisionShape.Shape.Duplicate();
+		collisionShape.Shape = shape;
 		sprite = GetNode<Sprite2D>("Sprite2D");
 	}
 
-	public void Setup(int lengthsInTiles, Vector2 tileSize, long id, float speedMultiplier)
+	public void Setup(int lengthInTiles, Vector2 tileSize, long id, float speedMultiplier)
 	{
-		var newSize = new Vector2(tileSize.X * lengthsInTiles, tileSize.Y);
+		var newSize = new Vector2(tileSize.X * lengthInTiles, tileSize.Y);
 		shape.Size = newSize;
 		var newScale = shape.Size / sprite.Texture.GetSize();
 		sprite.Scale = newScale;

@@ -1,16 +1,18 @@
 [gd_scene load_steps=4 format=3 uid="uid://d2k1wsq4w74i4"]
 
 [ext_resource type="Script" path="res://asset/movable/Tree.cs" id="1_l0u0n"]
-[ext_resource type="Texture2D" uid="uid://4i0fixnvekb7" path="res://icon.svg" id="2_axfgt"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fr7bj"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sj0tw"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ahyuk"]
+load_path = "res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex"
 
 [node name="Tree" type="StaticBody2D"]
 script = ExtResource("1_l0u0n")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_fr7bj")
+shape = SubResource("RectangleShape2D_sj0tw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 visible = false
-texture = ExtResource("2_axfgt")
+texture = SubResource("CompressedTexture2D_ahyuk")

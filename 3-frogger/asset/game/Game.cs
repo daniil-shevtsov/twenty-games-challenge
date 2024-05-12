@@ -69,8 +69,9 @@ public partial class Game : Node2D
 		for (var i = minOffset; i <= maxOffset; ++i)
 		{
 			var random = new Random();
-			var speedMultiplier = random.Next(75, 125) / 100f;
-			var tileCount = 3;//random.Next(2, 5);
+			var tileCount = random.Next(2, 5);
+			var speedMultiplier = 1f + 0.25f * tileCount; //random.Next(75, 125) / 100f + 0.25f * (i % 2);
+
 			GD.Print($"Tile count: {tileCount}");
 			for (var j = 0; j < 3; ++j)
 			{
@@ -97,6 +98,7 @@ public partial class Game : Node2D
 			id: generatedId,
 			speedMultiplier: speedMultiplier
 		);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		trees[tree.id] = tree;
 		var bottomWaterTile = tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
 		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + tree.shape.Size.X / 2f;
@@ -326,6 +328,7 @@ public partial class Game : Node2D
 			playerMoveTween.Stop();
 		}
 		//TODO: Don't have time to figure out how to make tween work while you are being moved by the tree
+		GD.Print($"PLAYER: current tile {currentTile} new tile {newTile.key} {newTile.tileType}");
 		if (playerTreeId != null)
 		{
 			player.GlobalPosition = newTile.GlobalPosition;
@@ -355,6 +358,8 @@ public partial class Game : Node2D
 	{
 		var currentTile = GetKeyForCoordinates(player.GlobalPosition);
 		var newTile = GetTileOrNull(ClampKey(currentTile.Copy(newX: currentTile.X + horizontal, newY: currentTile.Y + vertical)));
+
+		GD.Print($"PLAYER: Chosen player tile by input: {newTile?.key}");
 
 		UpdatePlayerTile(newTile);
 
@@ -402,9 +407,10 @@ public partial class Game : Node2D
 				{
 					UpdatePlayerTile(leftTile);
 				}
-				else
+				else if (playerTreeId == null)
 				{
-					GD.Print($"Player is dying because {ObjectToString(leftTile?.key)}:{leftTile?.tileType} {ObjectToString(currentTile.key)}:{currentTile.tileType} {ObjectToString(rightTile?.key)}:{rightTile?.tileType}");
+					// GD.Print($"Player is dying because {ObjectToString(leftTile?.key)}:{leftTile?.tileType} {ObjectToString(currentTile.key)}:{currentTile.tileType} {ObjectToString(rightTile?.key)}:{rightTile?.tileType}");
+					GD.Print($"PLAYER: dying current tile {currentTile?.key} {currentTile?.tileType}");
 					HandlePlayerDying(currentTile.key);
 				}
 
