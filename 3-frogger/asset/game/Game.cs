@@ -505,6 +505,11 @@ public partial class Game : Node2D
 
 	private string ObjectToString(Object myObj)
 	{
+		if (myObj == null)
+		{
+			return "null";
+		}
+
 		var stringBuilder = new StringBuilder();
 		stringBuilder.Append("{");
 		foreach (var prop in myObj.GetType().GetProperties())
