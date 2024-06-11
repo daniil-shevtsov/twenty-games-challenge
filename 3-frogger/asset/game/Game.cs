@@ -13,10 +13,12 @@ public partial class Game : Node2D
 
 	private PackedScene tileScene;
 	private PackedScene treeScene;
+	private PackedScene carScene;
 
 	private Dictionary<TileKey, Tile> tiles = new();
 
 	private Dictionary<long, Tree> trees = new();
+	private Dictionary<long, Car> cars = new();
 
 	private Vector2 tileSize;
 
@@ -34,6 +36,7 @@ public partial class Game : Node2D
 	static readonly int verticalCount = 14;
 
 	static readonly float treeSpeed = 50f;
+	static readonly float carSpeed = treeSpeed;
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -61,6 +64,7 @@ public partial class Game : Node2D
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
 		treeScene = GD.Load<PackedScene>("res://asset/movable/tree.tscn");
+		carScene = GD.Load<PackedScene>("res://asset/movable/car.tscn");
 
 		InitPlayer();
 
@@ -72,10 +76,23 @@ public partial class Game : Node2D
 			var tileCount = random.Next(2, 5);
 			var speedMultiplier = 1f + 0.25f * tileCount; //random.Next(75, 125) / 100f + 0.25f * (i % 2);
 
-			GD.Print($"Tile count: {tileCount}");
+			GD.Print($"Tree Tile count: {tileCount}");
 			for (var j = 0; j < 3; ++j)
 			{
 				SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
+			}
+		}
+
+		for (var i = minOffset; i <= maxOffset; ++i)
+		{
+			var random = new Random();
+			var tileCount = random.Next(2, 5);
+			var speedMultiplier = 1f + 0.25f * tileCount; //random.Next(75, 125) / 100f + 0.25f * (i % 2);
+
+			GD.Print($"Car Tile count: {tileCount}");
+			for (var j = 0; j < 3; ++j)
+			{
+				SpawnCar(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
 			}
 		}
 
@@ -111,6 +128,37 @@ public partial class Game : Node2D
 		if (bottomWaterTile != null)
 		{
 			tree.GlobalPosition = treeInitialPosition;
+		}
+	}
+
+	private async void SpawnCar(int offset, int count, float speedMultiplier, int tileCount)
+	{
+		var generatedId = offset * 10000 + 847 + count;
+
+		var car = (Car)carScene.Instantiate();
+		GetTree().CurrentScene.CallDeferred("add_child", car);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
+		//var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
+		car.Setup(
+			tileCount,
+			tileSize: tileSize,
+			id: generatedId,
+			speedMultiplier: speedMultiplier
+		);
+		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+		cars[car.id] = car;
+		var bottomWaterTile = tiles.Values.Last();//tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
+		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f;
+		var distanceBetweenTrees = 150f;
+		var horizontalPosition = defaultHorizontalPosition + car.shape.Size.X * count + (distanceBetweenTrees * count);
+		var treeInitialPosition = new Vector2(
+			horizontalPosition,
+			GetTileOrNull(bottomWaterTile.key.Copy(newY: bottomWaterTile.key.Y + offset)).GlobalPosition.Y
+		);
+		if (bottomWaterTile != null)
+		{
+			car.GlobalPosition = treeInitialPosition;
 		}
 	}
 
@@ -292,6 +340,21 @@ public partial class Game : Node2D
 			}
 		});
 
+		cars.Values.ToList().ForEach(car =>
+	{
+		var treeMoveAmount = calculateCarMovementAmount(car, (float)delta);
+
+		car.GlobalPosition = new Vector2(car.GlobalPosition.X - treeMoveAmount, car.GlobalPosition.Y);
+
+		if (car.GlobalPosition.X + car.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
+		{
+			car.GlobalPosition = new Vector2(
+				bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f,
+				car.GlobalPosition.Y
+			);
+		}
+	});
+
 		var allTreeTiles = trees.Values.ToList().SelectMany(tree =>
 		{
 			return GetTreeTiles(tree);
@@ -440,6 +503,7 @@ public partial class Game : Node2D
 	}
 
 	private float calculateTreeMovementAmount(Tree tree, float delta) => treeSpeed * tree.speedMultiplier * delta;
+	private float calculateCarMovementAmount(Car car, float delta) => treeSpeed * car.speedMultiplier * delta;
 
 	private void HandlePlayerDying(TileKey playerTileKey)
 	{
