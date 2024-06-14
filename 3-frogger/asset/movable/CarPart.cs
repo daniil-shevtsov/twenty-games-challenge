@@ -3,6 +3,10 @@ using System;
 
 public partial class CarPart : StaticBody2D
 {
+
+	[Signal]
+	public delegate void HealthDepletedEventHandler(float amount);
+
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public Node2D sprite;
@@ -27,5 +31,10 @@ public partial class CarPart : StaticBody2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+	}
+
+	public void HandleHealthDepletedEventHandler(float amount)
+	{
+
 	}
 }

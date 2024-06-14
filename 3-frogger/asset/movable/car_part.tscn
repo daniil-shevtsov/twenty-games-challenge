@@ -5,70 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://bjvcnm42wytji" path="res://asset/movable/sprite/CarLegStart.png" id="3_gpxjv"]
 [ext_resource type="Texture2D" uid="uid://br6j21grikrjr" path="res://asset/movable/sprite/CarLegEnd.png" id="4_i5w6r"]
 
-[sub_resource type="Animation" id="Animation_aqy5r"]
-resource_name = "car_part_walk"
-length = 2.0
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Body/LeftLegStart:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [-2.42329, -1.9539, -1.25635, -1.96275, -2.42252, -3.09726, -3.613, -2.74909, -2.42252]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Body/LeftLegStart/LeftLegEnd:rotation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [-0.454722, 0.332116, -0.788885, -1.32924, -0.455531, -1.03843, -0.192911, -1.47148, -0.455531]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Body/RightLegStart:rotation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [0.171458, 0.619352, 1.43543, 0.681881, 0.171042, -0.668368, -1.07816, -0.6026, 0.171042]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Body/RightLegStart/RightLegEnd:rotation")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [-0.195985, 0.664146, -0.680819, 0.704766, -0.195477, -1.23159, 0.137826, 0.484053, -0.195477]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Body:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1.4, 1.6, 1.8, 2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 0,
-"values": [Vector2(1600, 0), Vector2(1600, 0), Vector2(1400, 0), Vector2(1320, 0), Vector2(1320, 0), Vector2(1120, 0), Vector2(1120, 0), Vector2(1120, 0)]
-}
-
 [sub_resource type="Animation" id="Animation_ei0fx"]
 length = 0.001
 tracks/0/type = "value"
@@ -132,6 +68,93 @@ tracks/4/keys = {
 "values": [Vector2(1600, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_aqy5r"]
+resource_name = "car_part_walk"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Body/LeftLegStart:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-2.42329, -1.9539, -1.25635, -1.96275, -2.42252, -3.09726, -3.613, -2.74909, -2.42252]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Body/LeftLegStart/LeftLegEnd:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-0.454722, 0.332116, -0.788885, -1.32924, -0.455531, -1.03843, -0.192911, -1.47148, -0.455531]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Body/RightLegStart:rotation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.171458, 0.619352, 1.43543, 0.681881, 0.171042, -0.668368, -1.07816, -0.6026, 0.171042]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Body/RightLegStart/RightLegEnd:rotation")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1, 1.4, 1.6, 1.8, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [-0.195985, 0.664146, -0.680819, 0.704766, -0.195477, -1.23159, 0.137826, 0.484053, -0.195477]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Body:position")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.6, 0.8, 1.4, 1.6, 1.8, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(1600, 0), Vector2(1600, 0), Vector2(1400, 0), Vector2(1320, 0), Vector2(1320, 0), Vector2(1120, 0), Vector2(1040, 0), Vector2(1040, 0)]
+}
+tracks/5/type = "method"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("..")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.4, 0.6, 1.4, 1.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"values": [{
+"args": [200.0],
+"method": &"HandleHealthDepletedEventHandler"
+}, {
+"args": [80.0],
+"method": &"HandleHealthDepletedEventHandler"
+}, {
+"args": [200.0],
+"method": &"HandleHealthDepletedEventHandler"
+}, {
+"args": [80.0],
+"method": &"HandleHealthDepletedEventHandler"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mjf4n"]
 _data = {
 "RESET": SubResource("Animation_ei0fx"),
@@ -185,3 +208,5 @@ offset = Vector2(-99.14, -65.695)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, 0.5)
 shape = SubResource("RectangleShape2D_hrwfg")
+
+[connection signal="HealthDepleted" from="." to="." method="HandleHealthDepletedEventHandler"]
