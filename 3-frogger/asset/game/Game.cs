@@ -341,20 +341,20 @@ public partial class Game : Node2D
 			}
 		});
 
-		// 	cars.Values.ToList().ForEach(car =>
-		// {
-		// 	var treeMoveAmount = calculateCarMovementAmount(car, (float)delta);
+		cars.Values.ToList().ForEach(car =>
+	{
+		// var treeMoveAmount = calculateCarMovementAmount(car, (float)delta);
 
-		// 	car.GlobalPosition = new Vector2(car.GlobalPosition.X - treeMoveAmount, car.GlobalPosition.Y);
+		// car.GlobalPosition = new Vector2(car.GlobalPosition.X - treeMoveAmount, car.GlobalPosition.Y);
 
-		// 	if (car.GlobalPosition.X + car.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
-		// 	{
-		// 		car.GlobalPosition = new Vector2(
-		// 			bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f,
-		// 			car.GlobalPosition.Y
-		// 		);
-		// 	}
-		// });
+		if (car.GlobalPosition.X + car.shape.Size.X / 2f < bounds.GlobalPosition.X - bounds.shape.Size.X / 2f)
+		{
+			car.GlobalPosition = new Vector2(
+				bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f,
+				car.GlobalPosition.Y
+			);
+		}
+	});
 
 		var allTreeTiles = trees.Values.ToList().SelectMany(tree =>
 		{
