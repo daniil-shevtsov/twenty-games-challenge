@@ -31,6 +31,7 @@ public partial class Car : StaticBody2D
 		this.speedMultiplier = speedMultiplier;
 		this.lengthInTiles = lengthInTiles;
 
+		shape.Size = Vector2.Zero;
 		for (int i = 0; i < lengthInTiles; ++i)
 		{
 			var carPart = (CarPart)carPartScene.Instantiate();
@@ -45,7 +46,9 @@ public partial class Car : StaticBody2D
 				carPart.shape.Size.X / 2f + carPart.shape.Size.X * i - totalWidth / 2f,
 				0f
 			);
+			shape.Size = new Vector2(shape.Size.X + carPart.shape.Size.X, carPart.shape.Size.Y);
 		}
+		GD.Print($"Final car size: {shape.Size}");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
