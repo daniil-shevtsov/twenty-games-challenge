@@ -91,7 +91,10 @@ public partial class Game : Node2D
 			var tileCount = random.Next(2, 5);
 			var speedMultiplier = 1f + 0.25f * tileCount; //random.Next(75, 125) / 100f + 0.25f * (i % 2);
 
-			SpawnCar(offset: -i, count: 0, speedMultiplier: speedMultiplier, tileCount: tileCount);
+			if (i % 2 == 0)
+			{
+				SpawnCar(offset: -i, count: 0, speedMultiplier: speedMultiplier, tileCount: tileCount);
+			}
 		}
 
 		isPaused = false;
