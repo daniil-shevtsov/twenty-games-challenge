@@ -11,6 +11,9 @@ public partial class CarPart : StaticBody2D
 	public RectangleShape2D shape;
 	public Node2D sprite;
 	public Sprite2D bodySprite;
+	public AnimationPlayer animationPlayer;
+
+	private Tween tween;
 
 	public long id;
 	// Called when the node enters the scene tree for the first time.
@@ -21,11 +24,14 @@ public partial class CarPart : StaticBody2D
 		collisionShape.Shape = shape;
 		sprite = GetNode<Node2D>("Sprite2D");
 		bodySprite = sprite.GetNode<Sprite2D>("Body");
+		animationPlayer = sprite.GetNode<AnimationPlayer>("AnimationPlayer");
 	}
 
 	public void Setup(long id)
 	{
 		this.id = id;
+
+		animationPlayer.Play("car_part_walk");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -33,8 +39,14 @@ public partial class CarPart : StaticBody2D
 	{
 	}
 
-	public void HandleHealthDepletedEventHandler(float amount)
+	public async void HandleHealthDepletedEventHandler(float amount)
 	{
-
+		GD.Print($"Car-{id} Move {amount}");
+		tween = CreateTween();
+		var newPosition = new Vector2(
+			GlobalPosition.X - amount,
+			GlobalPosition.Y
+		);
+		tween.TweenProperty(this, "global_position", newPosition, 0.2f);
 	}
 }

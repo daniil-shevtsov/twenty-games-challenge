@@ -1,11 +1,11 @@
 [gd_scene load_steps=3 format=3 uid="uid://gtcpa7bmh64x"]
 
-[ext_resource type="Script" path="res://asset/movable/Car.cs" id="1_l7cwd"]
+[ext_resource type="Script" path="res://asset/movable/Car.cs" id="1_il0md"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2qt67"]
 
 [node name="Car" type="StaticBody2D"]
-script = ExtResource("1_l7cwd")
+script = ExtResource("1_il0md")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_2qt67")
