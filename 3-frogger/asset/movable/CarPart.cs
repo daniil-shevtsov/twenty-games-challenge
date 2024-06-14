@@ -41,10 +41,11 @@ public partial class CarPart : StaticBody2D
 
 	public async void HandleHealthDepletedEventHandler(float amount)
 	{
-		GD.Print($"Car-{id} Move {amount}");
+		var scaledAmount = amount * sprite.Scale.X;
+		GD.Print($"Car-{id} Move {scaledAmount}");
 		tween = CreateTween();
 		var newPosition = new Vector2(
-			GlobalPosition.X - amount,
+			GlobalPosition.X - scaledAmount,
 			GlobalPosition.Y
 		);
 		tween.TweenProperty(this, "global_position", newPosition, 0.2f);
