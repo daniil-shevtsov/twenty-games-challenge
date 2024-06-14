@@ -1,12 +1,13 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class Car : StaticBody2D
 {
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
-	public Node2D sprite;
-	public Sprite2D bodySprite;
+
+	public List<CarPart> parts = new();
 
 	public long id;
 	public float speedMultiplier;
@@ -17,24 +18,34 @@ public partial class Car : StaticBody2D
 		collisionShape = GetNode<CollisionShape2D>("CollisionShape2D");
 		shape = (RectangleShape2D)collisionShape.Shape.Duplicate();
 		collisionShape.Shape = shape;
-		sprite = GetNode<Node2D>("Sprite2D");
-		bodySprite = sprite.GetNode<Sprite2D>("Body");
 	}
 
-	public void Setup(int lengthInTiles, Vector2 tileSize, long id, float speedMultiplier)
+	public async void Setup(
+		int lengthInTiles,
+		PackedScene carPartScene,
+		long id,
+		float speedMultiplier
+		)
 	{
-		var newSize = new Vector2(tileSize.X * lengthInTiles, tileSize.Y);
-		shape.Size = newSize;
-		var newScale = shape.Size / bodySprite.Texture.GetSize();
-		sprite.Scale = newScale;
-		sprite.Position = new Vector2(
-			collisionShape.Position.X,
-			collisionShape.Position.Y
-		);
-
 		this.id = id;
 		this.speedMultiplier = speedMultiplier;
 		this.lengthInTiles = lengthInTiles;
+
+		for (int i = 0; i < lengthInTiles; ++i)
+		{
+			var carPart = (CarPart)carPartScene.Instantiate();
+			AddChild(carPart);
+			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+			var generatedPartId = 100000 + 754 + i;
+			carPart.Setup(generatedPartId);
+			parts.Add(carPart);
+
+			var totalWidth = carPart.shape.Size.X * lengthInTiles;
+			carPart.Position = new Vector2(
+				carPart.shape.Size.X / 2f + carPart.shape.Size.X * i - totalWidth / 2f,
+				0f
+			);
+		}
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

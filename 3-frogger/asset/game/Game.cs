@@ -14,6 +14,7 @@ public partial class Game : Node2D
 	private PackedScene tileScene;
 	private PackedScene treeScene;
 	private PackedScene carScene;
+	private PackedScene carPartScene;
 
 	private Dictionary<TileKey, Tile> tiles = new();
 
@@ -65,6 +66,7 @@ public partial class Game : Node2D
 
 		treeScene = GD.Load<PackedScene>("res://asset/movable/tree.tscn");
 		carScene = GD.Load<PackedScene>("res://asset/movable/car.tscn");
+		carPartScene = GD.Load<PackedScene>("res://asset/movable/car_part.tscn");
 
 		InitPlayer();
 
@@ -89,11 +91,7 @@ public partial class Game : Node2D
 			var tileCount = random.Next(2, 5);
 			var speedMultiplier = 1f + 0.25f * tileCount; //random.Next(75, 125) / 100f + 0.25f * (i % 2);
 
-			GD.Print($"Car Tile count: {tileCount}");
-			for (var j = 0; j < 3; ++j)
-			{
-				SpawnCar(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
-			}
+			SpawnCar(offset: -i, count: 0, speedMultiplier: speedMultiplier, tileCount: tileCount);
 		}
 
 		isPaused = false;
@@ -142,7 +140,7 @@ public partial class Game : Node2D
 		//var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
 		car.Setup(
 			tileCount,
-			tileSize: tileSize,
+			carPartScene,
 			id: generatedId,
 			speedMultiplier: speedMultiplier
 		);
