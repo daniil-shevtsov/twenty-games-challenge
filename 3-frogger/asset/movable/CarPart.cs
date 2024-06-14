@@ -10,6 +10,7 @@ public partial class CarPart : StaticBody2D
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public Node2D sprite;
+	public Node2D container;
 	public Sprite2D bodySprite;
 	public AnimationPlayer animationPlayer;
 
@@ -23,7 +24,8 @@ public partial class CarPart : StaticBody2D
 		shape = (RectangleShape2D)collisionShape.Shape.Duplicate();
 		collisionShape.Shape = shape;
 		sprite = GetNode<Node2D>("Sprite2D");
-		bodySprite = sprite.GetNode<Sprite2D>("Body");
+		container = sprite.GetNode<Node2D>("Container");
+		bodySprite = container.GetNode<Sprite2D>("Body");
 		animationPlayer = sprite.GetNode<AnimationPlayer>("AnimationPlayer");
 	}
 

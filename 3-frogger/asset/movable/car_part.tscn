@@ -10,7 +10,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Body/LeftLegStart:rotation")
+tracks/0/path = NodePath("Container/LeftLegStart:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -22,7 +22,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Body/LeftLegStart/LeftLegEnd:rotation")
+tracks/1/path = NodePath("Container/LeftLegStart/LeftLegEnd:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -34,7 +34,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Body/RightLegStart:rotation")
+tracks/2/path = NodePath("Container/RightLegStart:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -46,7 +46,7 @@ tracks/2/keys = {
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Body/RightLegStart/RightLegEnd:rotation")
+tracks/3/path = NodePath("Container/RightLegStart/RightLegEnd:rotation")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
@@ -58,7 +58,7 @@ tracks/3/keys = {
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("Body:position")
+tracks/4/path = NodePath("Container:position")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -70,55 +70,55 @@ tracks/4/keys = {
 
 [sub_resource type="Animation" id="Animation_aqy5r"]
 resource_name = "car_part_walk"
-length = 2.8
+length = 3.0
 loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Body/LeftLegStart:rotation")
+tracks/0/path = NodePath("Container/LeftLegStart:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.6, 1.9, 2.1, 2.3, 2.4, 2.6, 2.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.8, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [-2.42329, -2.42329, -1.9539, -1.9539, -1.25635, -1.25635, -1.96275, -2.42252, -2.42252, -3.09726, -3.09726, -3.613, -3.613, -2.74909, -2.42252]
+"values": [-2.42329, -2.42329, -1.9539, -1.9539, -1.25635, -1.25635, -1.96275, -2.42252, -2.42252, -3.09726, -3.09726, -3.613, -3.613, -2.42252, -2.42252, -2.42252]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Body/LeftLegStart/LeftLegEnd:rotation")
+tracks/1/path = NodePath("Container/LeftLegStart/LeftLegEnd:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.6, 1.9, 2.1, 2.3, 2.4, 2.6, 2.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.8, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [-0.454722, -0.454722, 0.332116, 0.332116, -0.788885, -0.788885, -1.32924, -0.455531, -0.455531, -1.03843, -1.03843, -0.192911, -0.192911, -1.47148, -0.455531]
+"values": [-0.454722, -0.454722, 0.332116, 0.332116, -0.788885, -0.788885, -1.32924, -0.455531, -0.455531, -1.03843, -1.03843, -0.192911, -0.192911, -1.47148, -0.455531, -0.455531]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Body/RightLegStart:rotation")
+tracks/2/path = NodePath("Container/RightLegStart:rotation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.6, 1.9, 2.1, 2.3, 2.4, 2.6, 2.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.8, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [0.171458, 0.171458, 0.619352, 0.619352, 1.43543, 1.43543, 0.681881, 0.171042, 0.171042, -0.668368, -0.668368, -1.07816, -1.07816, -0.6026, 0.171042]
+"values": [0.171458, 0.171458, 0.619352, 0.619352, 1.43543, 1.43543, 0.681881, 0.171042, 0.171042, -0.668368, -0.668368, -1.07816, -1.07816, -0.6026, 0.171042, 0.171042]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Body/RightLegStart/RightLegEnd:rotation")
+tracks/3/path = NodePath("Container/RightLegStart/RightLegEnd:rotation")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.6, 1.9, 2.1, 2.3, 2.4, 2.6, 2.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.1, 0.5, 0.7, 0.9, 1.1, 1.3, 1.5, 1.8, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [-0.195985, -0.195985, 0.664146, 0.664146, -0.680819, -0.680819, 0.704766, -0.195477, -0.195477, -1.23159, -1.23159, 0.137826, 0.137826, 0.484053, -0.195477]
+"values": [-0.195985, -0.195985, 0.664146, 0.664146, -0.680819, -0.680819, 0.704766, -0.195477, -0.195477, -1.23159, -1.23159, 0.137826, 0.137826, 0.484053, -0.195477, -0.195477]
 }
 tracks/4/type = "method"
 tracks/4/imported = false
@@ -127,7 +127,7 @@ tracks/4/path = NodePath("..")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0.7, 1.1, 2.1, 2.4),
+"times": PackedFloat32Array(0.7, 1.1, 2.3, 2.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "values": [{
 "args": [200.0],
@@ -146,14 +146,26 @@ tracks/4/keys = {
 tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = false
-tracks/5/path = NodePath("Body:position")
+tracks/5/path = NodePath("Container/Body:position")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.7, 0.9, 1.1, 1.3, 1.9, 2.1, 2.3, 2.4, 2.6, 2.8),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.9, 1, 1.1, 2.4, 2.5, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(-200, 0), Vector2(-200, 0), Vector2(-280, 0), Vector2(-280, 0), Vector2(-280, 0), Vector2(-480, 0), Vector2(-480, 0), Vector2(-560, 0), Vector2(-560, 0)]
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(-50, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Container:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.7, 0.9, 1.1, 1.3, 2.3, 2.5, 2.7, 2.9, 3.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(-200, 0), Vector2(-200, 0), Vector2(-280, 0), Vector2(-280, 0), Vector2(-480, 0), Vector2(-480, 0), Vector2(-560, 0), Vector2(-560, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_mjf4n"]
@@ -175,30 +187,38 @@ scale = Vector2(0.05, 0.05)
 libraries = {
 "": SubResource("AnimationLibrary_mjf4n")
 }
+speed_scale = 2.0
 
-[node name="Body" type="Sprite2D" parent="Sprite2D"]
+[node name="Container" type="Node2D" parent="Sprite2D"]
+scale = Vector2(1, 1)
+
+[node name="Body" type="Sprite2D" parent="Sprite2D/Container"]
+position = Vector2(-1.86264e-05, 0)
+scale = Vector2(1, 1)
 texture = ExtResource("2_6s6qg")
 
-[node name="RightLegStart" type="Sprite2D" parent="Sprite2D/Body"]
+[node name="RightLegStart" type="Sprite2D" parent="Sprite2D/Container"]
 position = Vector2(0, -380)
 rotation = -0.802731
+scale = Vector2(1, 1)
 texture = ExtResource("3_gpxjv")
 offset = Vector2(-36.445, -97.53)
 
-[node name="RightLegEnd" type="Sprite2D" parent="Sprite2D/Body/RightLegStart"]
+[node name="RightLegEnd" type="Sprite2D" parent="Sprite2D/Container/RightLegStart"]
 position = Vector2(-80, -200)
 rotation = -1.16382
 scale = Vector2(-1, 1)
 texture = ExtResource("4_i5w6r")
 offset = Vector2(-99.14, -65.695)
 
-[node name="LeftLegStart" type="Sprite2D" parent="Sprite2D/Body"]
+[node name="LeftLegStart" type="Sprite2D" parent="Sprite2D/Container"]
 position = Vector2(-39.9999, 320)
 rotation = -3.63112
+scale = Vector2(1, 1)
 texture = ExtResource("3_gpxjv")
 offset = Vector2(-36.445, -97.53)
 
-[node name="LeftLegEnd" type="Sprite2D" parent="Sprite2D/Body/LeftLegStart"]
+[node name="LeftLegEnd" type="Sprite2D" parent="Sprite2D/Container/LeftLegStart"]
 position = Vector2(-80, -200)
 rotation = 0.223618
 texture = ExtResource("4_i5w6r")

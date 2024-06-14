@@ -81,7 +81,7 @@ public partial class Game : Node2D
 			GD.Print($"Tree Tile count: {tileCount}");
 			for (var j = 0; j < 3; ++j)
 			{
-				SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
+				// SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
 			}
 		}
 
