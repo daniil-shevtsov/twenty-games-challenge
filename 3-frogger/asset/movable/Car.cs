@@ -31,6 +31,8 @@ public partial class Car : StaticBody2D
 		this.speedMultiplier = speedMultiplier;
 		this.lengthInTiles = lengthInTiles;
 
+		var animationMultiplier = new Random().NextInt64(0, 25) / 100f;
+
 		shape.Size = Vector2.Zero;
 		for (int i = 0; i < lengthInTiles; ++i)
 		{
@@ -38,7 +40,7 @@ public partial class Car : StaticBody2D
 			AddChild(carPart);
 			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 			var generatedPartId = 100000 + 754 + i;
-			carPart.Setup(generatedPartId);
+			carPart.Setup(generatedPartId, 4 / lengthInTiles);
 			parts.Add(carPart);
 
 			var totalWidth = carPart.shape.Size.X * lengthInTiles;
@@ -46,6 +48,7 @@ public partial class Car : StaticBody2D
 				carPart.shape.Size.X / 2f + carPart.shape.Size.X * i - totalWidth / 2f,
 				0f
 			);
+			carPart.animationPlayer.SpeedScale = 1.0f + animationMultiplier;
 			shape.Size = new Vector2(shape.Size.X + carPart.shape.Size.X, carPart.shape.Size.Y);
 		}
 		GD.Print($"Final car size: {shape.Size}");

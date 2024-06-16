@@ -187,19 +187,15 @@ scale = Vector2(0.05, 0.05)
 libraries = {
 "": SubResource("AnimationLibrary_mjf4n")
 }
-speed_scale = 2.0
 
 [node name="Container" type="Node2D" parent="Sprite2D"]
-scale = Vector2(1, 1)
 
 [node name="Body" type="Sprite2D" parent="Sprite2D/Container"]
-scale = Vector2(1, 1)
 texture = ExtResource("2_6s6qg")
 
 [node name="RightLegStart" type="Sprite2D" parent="Sprite2D/Container"]
 position = Vector2(0, -380)
 rotation = -0.802731
-scale = Vector2(1, 1)
 texture = ExtResource("3_gpxjv")
 offset = Vector2(-36.445, -97.53)
 
@@ -213,7 +209,6 @@ offset = Vector2(-99.14, -65.695)
 [node name="LeftLegStart" type="Sprite2D" parent="Sprite2D/Container"]
 position = Vector2(-39.9999, 320)
 rotation = -3.63112
-scale = Vector2(1, 1)
 texture = ExtResource("3_gpxjv")
 offset = Vector2(-36.445, -97.53)
 

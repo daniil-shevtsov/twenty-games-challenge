@@ -17,6 +17,7 @@ public partial class CarPart : StaticBody2D
 	private Tween tween;
 
 	public long id;
+	public float speedMultiplier;
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -29,9 +30,10 @@ public partial class CarPart : StaticBody2D
 		animationPlayer = sprite.GetNode<AnimationPlayer>("AnimationPlayer");
 	}
 
-	public void Setup(long id)
+	public void Setup(long id, float speedMultiplier)
 	{
 		this.id = id;
+		this.speedMultiplier = speedMultiplier;
 
 		animationPlayer.Play("car_part_walk");
 	}
@@ -43,7 +45,7 @@ public partial class CarPart : StaticBody2D
 
 	public async void HandleHealthDepletedEventHandler(float amount)
 	{
-		var scaledAmount = amount * sprite.Scale.X;
+		var scaledAmount = amount * sprite.Scale.X * 2 * speedMultiplier;
 		GD.Print($"Car-{id} Move {scaledAmount}");
 		tween = CreateTween();
 		var newPosition = new Vector2(
