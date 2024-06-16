@@ -7,6 +7,10 @@ public partial class CarPart : StaticBody2D
 	[Signal]
 	public delegate void HealthDepletedEventHandler(float amount);
 
+
+	public delegate void CarMoveEventHandler(float scaledAmount);
+	public event CarMoveEventHandler CarMoved;
+
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 	public Node2D sprite;
@@ -14,7 +18,6 @@ public partial class CarPart : StaticBody2D
 	public Sprite2D bodySprite;
 	public AnimationPlayer animationPlayer;
 
-	private Tween tween;
 
 	public long id;
 	public float speedMultiplier;
@@ -45,13 +48,7 @@ public partial class CarPart : StaticBody2D
 
 	public async void HandleHealthDepletedEventHandler(float amount)
 	{
-		var scaledAmount = amount * sprite.Scale.X * 2 * speedMultiplier;
-		GD.Print($"Car-{id} Move {scaledAmount}");
-		tween = CreateTween();
-		var newPosition = new Vector2(
-			GlobalPosition.X - scaledAmount,
-			GlobalPosition.Y
-		);
-		tween.TweenProperty(this, "global_position", newPosition, 0.2f);
+		var scaledAmount = amount * sprite.Scale.X * 4 * speedMultiplier;
+		CarMoved.Invoke(scaledAmount);
 	}
 }

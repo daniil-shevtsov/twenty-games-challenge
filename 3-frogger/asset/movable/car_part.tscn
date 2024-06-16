@@ -187,6 +187,7 @@ scale = Vector2(0.05, 0.05)
 libraries = {
 "": SubResource("AnimationLibrary_mjf4n")
 }
+speed_scale = 4.0
 
 [node name="Container" type="Node2D" parent="Sprite2D"]
 

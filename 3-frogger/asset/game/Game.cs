@@ -141,18 +141,27 @@ public partial class Game : Node2D
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 
 		//var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
+		var isDirectionRight = offset % 2 == 0;
+
 		car.Setup(
 			tileCount,
 			carPartScene,
 			id: generatedId,
-			speedMultiplier: speedMultiplier
+			speedMultiplier: speedMultiplier,
+			isDirectionRight: isDirectionRight
 		);
 		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 		cars[car.id] = car;
 		var bottomWaterTile = tiles.Values.Last();//tiles.Values.Where(tile => tile.tileType == TileType.Water).MaxBy(tile => tile.GlobalPosition.Y);
-		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f;
+
 		var distanceBetweenTrees = 150f;
+		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f;
 		var horizontalPosition = defaultHorizontalPosition + car.shape.Size.X * count + (distanceBetweenTrees * count);
+
+		if (isDirectionRight)
+		{
+			horizontalPosition = horizontalPosition - bounds.shape.Size.X;
+		}
 		var treeInitialPosition = new Vector2(
 			horizontalPosition,
 			GetTileOrNull(bottomWaterTile.key.Copy(newY: bottomWaterTile.key.Y + offset)).GlobalPosition.Y

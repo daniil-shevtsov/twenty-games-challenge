@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public partial class Car : StaticBody2D
 {
+	// [Signal]
+	// public delegate void CarMoveEventHandler(float amount);
+
 	private CollisionShape2D collisionShape;
 	public RectangleShape2D shape;
 
@@ -12,6 +15,9 @@ public partial class Car : StaticBody2D
 	public long id;
 	public float speedMultiplier;
 	public int lengthInTiles;
+
+	private Tween tween;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -24,12 +30,23 @@ public partial class Car : StaticBody2D
 		int lengthInTiles,
 		PackedScene carPartScene,
 		long id,
-		float speedMultiplier
+		float speedMultiplier,
+		bool isDirectionRight
 		)
 	{
 		this.id = id;
 		this.speedMultiplier = speedMultiplier;
 		this.lengthInTiles = lengthInTiles;
+
+		int directionMultiplier = 1;
+		if (isDirectionRight)
+		{
+			Scale = new Vector2(
+				-Scale.X,
+				Scale.Y
+			);
+			directionMultiplier = -1;
+		}
 
 		var animationMultiplier = new Random().NextInt64(0, 25) / 100f;
 
@@ -40,7 +57,11 @@ public partial class Car : StaticBody2D
 			AddChild(carPart);
 			await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
 			var generatedPartId = 100000 + 754 + i;
-			carPart.Setup(generatedPartId, 4 / lengthInTiles);
+			carPart.Setup(
+				generatedPartId,
+			speedMultiplier: 4 / lengthInTiles * directionMultiplier
+			);
+
 			parts.Add(carPart);
 
 			var totalWidth = carPart.shape.Size.X * lengthInTiles;
@@ -50,6 +71,8 @@ public partial class Car : StaticBody2D
 			);
 			carPart.animationPlayer.SpeedScale = 1.0f + animationMultiplier;
 			shape.Size = new Vector2(shape.Size.X + carPart.shape.Size.X, carPart.shape.Size.Y);
+			collisionShape.Position = Vector2.Zero;
+			carPart.CarMoved += HandleCarMoveEventHandler;
 		}
 		GD.Print($"Final car size: {shape.Size}");
 	}
@@ -57,5 +80,16 @@ public partial class Car : StaticBody2D
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+	}
+
+	public async void HandleCarMoveEventHandler(float scaledAmount)
+	{
+		GD.Print($"Car-{id} Move {scaledAmount}");
+		tween = CreateTween();
+		var newPosition = new Vector2(
+			GlobalPosition.X - scaledAmount,
+			GlobalPosition.Y
+		);
+		tween.TweenProperty(this, "global_position", newPosition, 0.2f);
 	}
 }
