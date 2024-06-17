@@ -81,7 +81,7 @@ public partial class Game : Node2D
 			GD.Print($"Tree Tile count: {tileCount}");
 			for (var j = 0; j < 3; ++j)
 			{
-				// SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
+				SpawnTree(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
 			}
 		}
 
@@ -91,7 +91,11 @@ public partial class Game : Node2D
 			var tileCount = random.Next(2, 5);
 			var speedMultiplier = 1f + 0.25f * tileCount; //random.Next(75, 125) / 100f + 0.25f * (i % 2);
 
-			SpawnCar(offset: -i, count: 0, speedMultiplier: speedMultiplier, tileCount: tileCount);
+			for (var j = 0; j < 3; ++j)
+			{
+				SpawnCar(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
+			}
+
 			// if (i % 2 == 0)
 			// {
 			// 	SpawnCar(offset: -i, count: 0, speedMultiplier: speedMultiplier, tileCount: tileCount);
@@ -143,6 +147,11 @@ public partial class Game : Node2D
 
 		//var treeSize = new Vector2(tileSize.X * tileCount, tileSize.Y);
 		var isDirectionRight = offset % 2 == 0;
+		var directionMultiplier = 1;
+		if (isDirectionRight)
+		{
+			directionMultiplier = -1;
+		}
 
 		car.Setup(
 			tileCount,
@@ -157,7 +166,7 @@ public partial class Game : Node2D
 
 		var distanceBetweenTrees = 150f;
 		var defaultHorizontalPosition = bounds.GlobalPosition.X + bounds.shape.Size.X / 2f + car.shape.Size.X / 2f;
-		var horizontalPosition = defaultHorizontalPosition + car.shape.Size.X * count + (distanceBetweenTrees * count);
+		var horizontalPosition = defaultHorizontalPosition + (car.shape.Size.X * count + (distanceBetweenTrees * count)) * directionMultiplier;
 
 		if (isDirectionRight)
 		{
