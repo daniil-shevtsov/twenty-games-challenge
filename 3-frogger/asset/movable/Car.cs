@@ -2,7 +2,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class Car : StaticBody2D
+public partial class Car : Area2D
 {
 	// [Signal]
 	// public delegate void CarMoveEventHandler(float amount);

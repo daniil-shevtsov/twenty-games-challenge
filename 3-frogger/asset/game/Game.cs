@@ -85,7 +85,7 @@ public partial class Game : Node2D
 			}
 		}
 
-		for (var i = minOffset; i <= maxOffset; ++i)
+		for (var i = minOffset + 1; i <= maxOffset + 1; ++i)
 		{
 			var random = new Random();
 			var tileCount = random.Next(2, 5);
@@ -182,6 +182,23 @@ public partial class Game : Node2D
 		}
 		car.ZAsRelative = true;
 		car.ZIndex = 100 + offset;
+
+		// For some reason if I don't do this, bodyentered is being triggered by the player the moment obstacle is spawned.
+		car.Monitoring = false;
+		car.BodyEntered += (Node2D body) =>
+		{
+			OnCarOverlap(car, body);
+		};
+		car.Monitoring = true;
+	}
+
+	private void OnCarOverlap(Car car, Node2D body)
+	{
+		if (body == player)
+		{
+			GD.Print($"Player collided with {car}");
+			Respawn();
+		}
 	}
 
 	private void InitTileGrid()
