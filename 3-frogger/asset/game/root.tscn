@@ -1,8 +1,32 @@
-[gd_scene load_steps=4 format=3 uid="uid://posc1u3w5v7h"]
+[gd_scene load_steps=8 format=3 uid="uid://posc1u3w5v7h"]
 
 [ext_resource type="Script" path="res://asset/game/Game.cs" id="1_qskow"]
 [ext_resource type="PackedScene" uid="uid://yuqkods02n3h" path="res://asset/player/player.tscn" id="2_3w373"]
 [ext_resource type="PackedScene" uid="uid://258hnq8w31mp" path="res://asset/game/game_bounds.tscn" id="2_l674m"]
+
+[sub_resource type="Theme" id="Theme_6da25"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ucake"]
+bg_color = Color(0.137255, 0.137255, 0.137255, 1)
+
+[sub_resource type="FontFile" id="FontFile_1l1pn"]
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/32/0/ascent = 0.0
+cache/0/32/0/descent = 0.0
+cache/0/32/0/underline_position = 0.0
+cache/0/32/0/underline_thickness = 0.0
+cache/0/32/0/scale = 1.0
+cache/0/32/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/32/0 = Vector2(0, 0)
+
+[sub_resource type="LabelSettings" id="LabelSettings_2nhgk"]
+font = SubResource("FontFile_1l1pn")
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_qskow")
@@ -14,3 +38,14 @@ position = Vector2(400, 300)
 
 [node name="Player" parent="." instance=ExtResource("2_3w373")]
 z_index = 99
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+offset_right = 97.0
+offset_bottom = 49.0
+theme = SubResource("Theme_6da25")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ucake")
+text = "Lives: 3
+Score: 96500"
+label_settings = SubResource("LabelSettings_2nhgk")

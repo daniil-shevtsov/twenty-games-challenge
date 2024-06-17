@@ -74,7 +74,6 @@ public partial class Car : Area2D
 			collisionShape.Position = Vector2.Zero;
 			carPart.CarMoved += HandleCarMoveEventHandler;
 		}
-		GD.Print($"Final car size: {shape.Size}");
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -84,7 +83,6 @@ public partial class Car : Area2D
 
 	public async void HandleCarMoveEventHandler(float scaledAmount)
 	{
-		GD.Print($"Car-{id} Move {scaledAmount}");
 		tween = CreateTween();
 		var newPosition = new Vector2(
 			GlobalPosition.X - scaledAmount,

@@ -29,9 +29,16 @@ public partial class Game : Node2D
 
 	private Tween playerMoveTween = null;
 
+	private Label label;
+
 	private bool isPaused = true;
 	private string animationName = "walk2";
 	private float tileWalkDuration = 0.25f;
+
+	private bool isPlayerDetectionEnabled = true;
+
+	private int currentLives = 3;
+	private int currentScore = 0;
 
 	static readonly int horizontalCount = 15;
 	static readonly int verticalCount = 14;
@@ -45,10 +52,15 @@ public partial class Game : Node2D
 		player = GetNode<Player>("Player");
 		camera = GetNode<Camera2D>("Camera2D");
 		bounds = GetNode<GameBounds>("GameBounds");
+		label = (Label)FindChild("Label");
 
 		SetupEverything();
 	}
 
+	private void UpdateLabel()
+	{
+		label.Text = $"Lives: {currentLives}\nScore: {currentScore}";
+	}
 
 	private async void SetupEverything()
 	{
@@ -95,11 +107,6 @@ public partial class Game : Node2D
 			{
 				SpawnCar(offset: -i, count: j, speedMultiplier: speedMultiplier, tileCount: tileCount);
 			}
-
-			// if (i % 2 == 0)
-			// {
-			// 	SpawnCar(offset: -i, count: 0, speedMultiplier: speedMultiplier, tileCount: tileCount);
-			// }
 		}
 
 		isPaused = false;
@@ -194,10 +201,10 @@ public partial class Game : Node2D
 
 	private void OnCarOverlap(Car car, Node2D body)
 	{
-		if (body == player)
+		if (body == player && isPlayerDetectionEnabled)
 		{
-			GD.Print($"Player collided with {car}");
-			Respawn();
+			GD.Print($"Player collided with {car} player: {player.GlobalPosition} car: {car.GlobalPosition}");
+			HandlePlayerDying();
 		}
 	}
 
@@ -253,11 +260,13 @@ public partial class Game : Node2D
 
 	private void InitPlayer()
 	{
+		GD.Print($"InitPlayer current={currentLives}");
 		player.Setup(tileSize);
 		var bottomCenterCoordinates = new Vector2(bounds.GlobalPosition.X, bounds.GlobalPosition.Y + bounds.shape.Size.Y / 2f);
 		var bottomCenterKey = GetKeyForCoordinates(bottomCenterCoordinates);
 		player.GlobalPosition = GetTileOrNull(bottomCenterKey).GlobalPosition;
 		playerTreeId = null;
+		GD.Print($"New player position: {player.GlobalPosition}");
 	}
 
 	private async void SpawnTile(Node scene, int x, int y, Vector2 tileSize, TileType type)
@@ -513,7 +522,7 @@ public partial class Game : Node2D
 				{
 					// GD.Print($"Player is dying because {ObjectToString(leftTile?.key)}:{leftTile?.tileType} {ObjectToString(currentTile.key)}:{currentTile.tileType} {ObjectToString(rightTile?.key)}:{rightTile?.tileType}");
 					GD.Print($"PLAYER: dying current tile {currentTile?.key} {currentTile?.tileType}");
-					HandlePlayerDying(currentTile.key);
+					HandlePlayerDying();
 				}
 
 				break;
@@ -544,9 +553,17 @@ public partial class Game : Node2D
 	private float calculateTreeMovementAmount(Tree tree, float delta) => treeSpeed * tree.speedMultiplier * delta;
 	private float calculateCarMovementAmount(Car car, float delta) => treeSpeed * car.speedMultiplier * delta;
 
-	private void HandlePlayerDying(TileKey playerTileKey)
+	private void HandlePlayerDying()
 	{
+		isPlayerDetectionEnabled = false;
+		GD.Print($"Handle playerDying current:{currentLives}");
+		GD.Print($"Old player position: {player.GlobalPosition}");
+		--currentLives;
+
+		GD.Print($"Handle playerDying new:{currentLives}");
+		UpdateLabel();
 		Respawn();
+		isPlayerDetectionEnabled = true;
 	}
 
 	private void Respawn()
